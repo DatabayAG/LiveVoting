@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LiveVoting\Player\QR;
 
 use Endroid\QrCode\QrCode;

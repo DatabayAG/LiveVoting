@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use LiveVoting\GUI\xlvoGUI;
 use LiveVoting\Results\xlvoResultsTableGUI;
 use LiveVoting\Round\xlvoRound;

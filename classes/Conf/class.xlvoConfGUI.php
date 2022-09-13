@@ -18,6 +18,14 @@ use LiveVoting\Voting\xlvoVoting;
 class xlvoConfGUI extends xlvoGUI
 {
     public const CMD_RESET_TOKEN = 'resetToken';
+    private ilGlobalTemplateInterface $tpl;
+
+    public function __construct()
+    {
+        global $DIC;
+        $this->tpl = $DIC->ui()->mainTemplate();
+        parent::__construct();
+    }
 
     public function txt(string $key): string
     {
@@ -49,7 +57,7 @@ class xlvoConfGUI extends xlvoGUI
     }
 
 
-    protected function resetToken() : void
+    protected function resetToken(): void
     {
         xlvoConf::set(xlvoConf::F_API_TOKEN, null);
         xlvoConf::getConfig(xlvoConf::F_API_TOKEN);
@@ -57,39 +65,14 @@ class xlvoConfGUI extends xlvoGUI
     }
 
 
-    protected function update() : void
+    protected function update(): void
     {
         $xlvoConfFormGUI = new xlvoConfFormGUI($this);
         $xlvoConfFormGUI->setValuesByPost();
         if ($xlvoConfFormGUI->saveObject()) {
-            $this->tpl->setO($this->txt('msg_success'), true);
+            $this->tpl->setOnScreenMessage('success', $this->txt('msg_success'), true);
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         }
         self::dic()->ui()->mainTemplate()->setContent($xlvoConfFormGUI->getHTML());
-    }
-
-
-    protected function confirmDelete() : void
-    {
-    }
-
-
-    protected function delete() : void
-    {
-    }
-
-
-    protected function add(): void
-    {
-    }
-
-
-    protected function create(): void
-    {
-    }
-
-
-    protected function edit(): void
-    {
     }
 }

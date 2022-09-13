@@ -16,7 +16,7 @@
  
 ## Documentation
 
-https://github.com/fluxapps/LiveVoting/blob/master/doc/Documentation.pdf
+https://github.com/DatabayAG/LiveVoting/blob/master/doc/Documentation.pdf
  
 ## Installation
 
@@ -25,7 +25,7 @@ Start at your ILIAS root directory
 ```bash
 mkdir -p Customizing/global/plugins/Services/Repository/RepositoryObject
 cd Customizing/global/plugins/Services/Repository/RepositoryObject
-git clone https://github.com/fluxapps/LiveVoting.git LiveVoting
+git clone git@github.com:DatabayAG/LiveVoting.git LiveVoting
 ```
 As ILIAS administrator go to "Administration->Plugins" and install/activate the plugin.  
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LiveVoting\QuestionTypes\FreeInput;
 
 use LiveVoting\Display\Bar\xlvoBarFreeInputsGUI;

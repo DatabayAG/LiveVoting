@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LiveVoting\Context\Initialisation\Version\v7;
 
 use ilGlobalTemplate;

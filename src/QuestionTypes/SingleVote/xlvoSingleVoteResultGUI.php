@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LiveVoting\QuestionTypes\SingleVote;
 
 use LiveVoting\Option\xlvoOption;

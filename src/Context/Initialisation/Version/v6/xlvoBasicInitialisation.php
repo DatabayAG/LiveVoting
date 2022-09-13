@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LiveVoting\Context\Initialisation\Version\v6;
 
 require_once './include/inc.ilias_version.php';

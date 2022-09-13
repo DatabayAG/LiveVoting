@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LiveVoting\Display\Bar;
 
 use LiveVoting\Vote\xlvoVote;

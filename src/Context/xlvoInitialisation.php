@@ -36,6 +36,7 @@ class xlvoInitialisation extends ilInitialisation
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     public const USE_OWN_GLOBAL_TPL = true;
     public const CONTEXT_PIN = 1;
@@ -48,7 +49,6 @@ class xlvoInitialisation extends ilInitialisation
      * @var int
      */
     protected static $context = self::CONTEXT_PIN;
-
 
     /**
      * xlvoInitialisation constructor.
@@ -65,6 +65,16 @@ class xlvoInitialisation extends ilInitialisation
         $this->run();
     }
 
+    /**
+     * @param int $context
+     *
+     * @throws Exception
+     */
+    public static function saveContext($context)
+    {
+        self::setContext($context);
+        xlvoContext::setContext($context);
+    }
 
     /**
      *
@@ -85,106 +95,21 @@ class xlvoInitialisation extends ilInitialisation
         }
     }
 
+    /**
+     * @return int
+     */
+    public static function getContext()
+    {
+        return self::$context;
+    }
 
     /**
      * @param int $context
-     *
-     * @return xlvoInitialisation
      */
-    public static function init($context = null)
+    public static function setContext($context)
     {
-        return new self($context);
+        self::$context = $context;
     }
-
-
-    /**
-     * @param int $context
-     *
-     * @throws Exception
-     */
-    public static function saveContext($context)
-    {
-        self::setContext($context);
-        xlvoContext::setContext($context);
-    }
-
-
-    /**
-     * set Custom Session handler which does not use db
-     */
-    public static function setSessionHandler()
-    {
-        $session = new xlvoSessionHandler();
-
-        session_set_save_handler(array(
-            &$session,
-            "open",
-        ), array(
-            &$session,
-            "close",
-        ), array(
-            &$session,
-            "read",
-        ), array(
-            &$session,
-            "write",
-        ), array(
-            &$session,
-            "destroy",
-        ), array(
-            &$session,
-            "gc",
-        ));
-    }
-
-
-    /**
-     *
-     */
-    public static function initILIAS2()
-    {
-        global $DIC;
-        require_once 'include/inc.ilias_version.php';
-        self::initDependencyInjection();
-        self::initCore();
-        self::initClient();
-        self::initUser();
-        self::initLanguage();
-        self::$tree->initLangCode();
-        self::initHTML2();
-        $GLOBALS["objDefinition"] = $DIC["objDefinition"] = new xlvoObjectDefinition();
-    }
-
-
-    /**
-     *
-     */
-    public static function initDependencyInjection()
-    {
-        global $DIC;
-        $DIC = new Container();
-        $DIC["ilLoggerFactory"] = function ($c) {
-            return ilLoggerFactory::getInstance();
-        };
-    }
-
-
-    /**
-     * @param string $a_name
-     * @param string $a_class
-     * @param null   $a_source_file
-     */
-    protected static function initGlobal($a_name, $a_class, $a_source_file = null)
-    {
-        global $DIC;
-
-        if ($DIC->offsetExists($a_name)) {
-            $DIC->offsetUnset($a_name);
-        }
-
-        parent::initGlobal($a_name, $a_class, $a_source_file);
-    }
-
 
     /**
      *
@@ -207,7 +132,14 @@ class xlvoInitialisation extends ilInitialisation
         self::initHTML();
         if (self::USE_OWN_GLOBAL_TPL) {
             if (self::version()->is6()) {
-                $tpl = new ilGlobalTemplate("tpl.main.html", true, true, 'Customizing/global/plugins/Services/Repository/RepositoryObject/LiveVoting', "DEFAULT", true);
+                $tpl = new ilGlobalTemplate(
+                    "tpl.main.html",
+                    true,
+                    true,
+                    'Customizing/global/plugins/Services/Repository/RepositoryObject/LiveVoting',
+                    "DEFAULT",
+                    true
+                );
             } else {
                 $tpl = self::plugin()->template("default/tpl.main.html");
             }
@@ -324,8 +256,8 @@ class xlvoInitialisation extends ilInitialisation
             // or not set at all (then we want the last offset, e.g. being used from a session var).
             // So I added the wrapping if statement. Seems to work (hopefully).
             // Alex April 14th 2006
-            if (isset($_GET['offset']) && $_GET['offset'] != "") {							// added April 14th 2006
-                $_GET['offset'] = (int) $_GET['offset'];		// old code
+            if (isset($_GET['offset']) && $_GET['offset'] != "") {                            // added April 14th 2006
+                $_GET['offset'] = (int) $_GET['offset'];        // old code
             }
 
         // leads to error in live voting
@@ -336,6 +268,57 @@ class xlvoInitialisation extends ilInitialisation
             // several code parts rely on ilObjUser being always included
             include_once "Services/User/classes/class.ilObjUser.php";
         }
+    }
+
+    public static function initUIFramework(Container $c)
+    {
+        parent::initUIFramework($c);
+        parent::initRefinery($c);
+    }
+
+    /**
+     * @param string $a_name
+     * @param string $a_class
+     * @param null   $a_source_file
+     */
+    protected static function initGlobal($a_name, $a_class, $a_source_file = null)
+    {
+        global $DIC;
+
+        if ($DIC->offsetExists($a_name)) {
+            $DIC->offsetUnset($a_name);
+        }
+
+        parent::initGlobal($a_name, $a_class, $a_source_file);
+    }
+
+    /**
+     *
+     */
+    public static function initILIAS2()
+    {
+        global $DIC;
+        require_once 'include/inc.ilias_version.php';
+        self::initDependencyInjection();
+        self::initCore();
+        self::initClient();
+        self::initUser();
+        self::initLanguage();
+        self::$tree->initLangCode();
+        self::initHTML2();
+        $GLOBALS["objDefinition"] = $DIC["objDefinition"] = new xlvoObjectDefinition();
+    }
+
+    /**
+     *
+     */
+    public static function initDependencyInjection()
+    {
+        global $DIC;
+        $DIC = new Container();
+        $DIC["ilLoggerFactory"] = function ($c) {
+            return ilLoggerFactory::getInstance();
+        };
     }
 
     /**
@@ -359,7 +342,11 @@ class xlvoInitialisation extends ilInitialisation
         //			$https->checkPort();
         //		}
 
-        self::initGlobal("ilObjDataCache", "ilObjectDataCache", "./Services/Object/classes/class.ilObjectDataCache.php");
+        self::initGlobal(
+            "ilObjDataCache",
+            "ilObjectDataCache",
+            "./Services/Object/classes/class.ilObjectDataCache.php"
+        );
         self::$tree = new ilTree(ROOT_FOLDER_ID);
         self::initGlobal("tree", self::$tree);
         //unset(self::$tree);
@@ -369,26 +356,41 @@ class xlvoInitialisation extends ilInitialisation
         self::initLog();
     }
 
-    public static function initUIFramework(Container $c)
-    {
-        parent::initUIFramework($c);
-        parent::initRefinery($c);
-    }
-
     /**
-     * @return int
+     * set Custom Session handler which does not use db
      */
-    public static function getContext()
+    public static function setSessionHandler()
     {
-        return self::$context;
-    }
+        $session = new xlvoSessionHandler();
 
+        session_set_save_handler(array(
+            &$session,
+            "open",
+        ), array(
+            &$session,
+            "close",
+        ), array(
+            &$session,
+            "read",
+        ), array(
+            &$session,
+            "write",
+        ), array(
+            &$session,
+            "destroy",
+        ), array(
+            &$session,
+            "gc",
+        ));
+    }
 
     /**
      * @param int $context
+     *
+     * @return xlvoInitialisation
      */
-    public static function setContext($context)
+    public static function init($context = null)
     {
-        self::$context = $context;
+        return new self($context);
     }
 }

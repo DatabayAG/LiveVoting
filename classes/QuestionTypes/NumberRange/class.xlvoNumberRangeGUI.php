@@ -24,40 +24,11 @@ class xlvoNumberRangeGUI extends xlvoQuestionTypesGUI
     public const CLEAR_BUTTON = 'voter_clear';
     public const SAVE_BUTTON_UNVOTE = 'voter_start_button_unvote';
 
-
-    /**
-     * @param xlvoVotingManager2 $manager
-     *
-     * @throws ilException
-     */
-    public function setManager($manager)
-    {
-        if ($manager === null) {
-            throw new ilException('The manager must not be null.');
-        }
-
-        parent::setManager($manager);
-    }
-
-
-    /**
-     * @param bool $current
-     */
-    public function initJS($current = false)
-    {
-        xlvoJs::getInstance()->api($this)->name(xlvoQuestionTypes::NUMBER_RANGE)->category('QuestionTypes')->addLibToHeader('bootstrap-slider.min.js')
-            ->addSettings([
-                "step" => $this->getStep()
-            ])->init();
-    }
-
-
     protected function clear()
     {
         $this->manager->unvoteAll();
         $this->afterSubmit();
     }
-
 
     /**
      *
@@ -86,7 +57,7 @@ class xlvoNumberRangeGUI extends xlvoQuestionTypesGUI
             if ($this->isVoteValid($this->getStart(), $this->getEnd(), $filteredInput)) {
                 //vote
                 $this->manager->inputOne([
-                    'input'   => $filteredInput,
+                    'input' => $filteredInput,
                     'vote_id' => '-1',
                 ]);
 
@@ -95,6 +66,78 @@ class xlvoNumberRangeGUI extends xlvoQuestionTypesGUI
         }
     }
 
+    /**
+     * @param int $start
+     * @param int $step
+     * @param float $value
+     *
+     * @return bool
+     */
+    private function isVoteValid($start, $end, $value)
+    {
+        return ($value >= $start && $value <= $end && $value === $this->snapToStep($value));
+    }
+
+    /**
+     * @param float $value
+     *
+     * @return int
+     */
+    private function snapToStep($value)
+    {
+        return intval(ceil(($value - $this->getStart()) / $this->getStep()) * $this->getStep()) + $this->getStart();
+    }
+
+    /**
+     * @return int
+     */
+    private function getStart()
+    {
+        return (int) $this->manager->getVoting()->getStartRange();
+    }
+
+    /**
+     * @return int
+     */
+    private function getEnd()
+    {
+        return (int) $this->manager->getVoting()->getEndRange();
+    }
+
+    /**
+     * @param xlvoVotingManager2 $manager
+     *
+     * @throws ilException
+     */
+    public function setManager($manager)
+    {
+        if ($manager === null) {
+            throw new ilException('The manager must not be null.');
+        }
+
+        parent::setManager($manager);
+    }
+
+    /**
+     * @param bool $current
+     */
+    public function initJS($current = false)
+    {
+        xlvoJs::getInstance()->api($this)->name(xlvoQuestionTypes::NUMBER_RANGE)->category(
+            'QuestionTypes'
+        )->addLibToHeader('bootstrap-slider.min.js')
+              ->addSettings([
+                  "step" => $this->getStep()
+              ])->init();
+    }
+
+    /**
+     * @return int
+     */
+    private function getStep()
+    {
+        return (int) $this->manager->getVoting()->getStepRange();
+    }
 
     /**
      * @return string
@@ -129,9 +172,10 @@ class xlvoNumberRangeGUI extends xlvoQuestionTypesGUI
             $template->setVariable('BTN_RESET_DISABLED', 'disabled="disabled"');
         }
 
-        return $template->get() . xlvoJs::getInstance()->name(xlvoQuestionTypes::NUMBER_RANGE)->category('QuestionTypes')->getRunCode();
+        return $template->get() . xlvoJs::getInstance()->name(xlvoQuestionTypes::NUMBER_RANGE)->category(
+            'QuestionTypes'
+        )->getRunCode();
     }
-
 
     /**
      * @return int
@@ -139,56 +183,5 @@ class xlvoNumberRangeGUI extends xlvoQuestionTypesGUI
     private function getDefaultValue()
     {
         return $this->snapToStep(($this->getStart() + $this->getEnd()) / 2);
-    }
-
-
-    /**
-     * @param int   $start
-     * @param int   $step
-     * @param float $value
-     *
-     * @return bool
-     */
-    private function isVoteValid($start, $end, $value)
-    {
-        return ($value >= $start && $value <= $end && $value === $this->snapToStep($value));
-    }
-
-
-    /**
-     * @return int
-     */
-    private function getStart()
-    {
-        return (int) $this->manager->getVoting()->getStartRange();
-    }
-
-
-    /**
-     * @return int
-     */
-    private function getEnd()
-    {
-        return (int) $this->manager->getVoting()->getEndRange();
-    }
-
-
-    /**
-     * @return int
-     */
-    private function getStep()
-    {
-        return (int) $this->manager->getVoting()->getStepRange();
-    }
-
-
-    /**
-     * @param float $value
-     *
-     * @return int
-     */
-    private function snapToStep($value)
-    {
-        return intval(ceil(($value - $this->getStart()) / $this->getStep()) * $this->getStep()) + $this->getStart();
     }
 }

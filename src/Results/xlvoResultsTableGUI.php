@@ -21,6 +21,7 @@ class xlvoResultsTableGUI extends ilTable2GUI
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var array
@@ -34,7 +35,6 @@ class xlvoResultsTableGUI extends ilTable2GUI
      * @var xlvoResultsGUI
      */
     protected $parent_obj;
-
 
     /**
      * xlvoResultsTableGUI constructor.
@@ -56,7 +56,6 @@ class xlvoResultsTableGUI extends ilTable2GUI
         $this->buildColumns();
     }
 
-
     protected function buildColumns()
     {
         $this->addColumn(self::plugin()->translate('common_position'), 'position', '1%');
@@ -69,54 +68,6 @@ class xlvoResultsTableGUI extends ilTable2GUI
         }
     }
 
-
-    /**
-     * @param $obj_id
-     * @param $round_id
-     */
-    public function buildData($obj_id, $round_id)
-    {
-        $xlvoResults = new xlvoResults($obj_id, $round_id);
-
-        $a_data = $xlvoResults->getData($this->filter, $this->parent_obj->getParticipantNameCallable(), function ($voting, $votes) {
-            $resultsGUI = xlvoResultGUI::getInstance($voting);
-
-            return $resultsGUI->getTextRepresentation($votes);
-        });
-
-        $this->setData($a_data);
-    }
-
-
-    /**
-     * @param array $record
-     */
-    public function fillRow($record)
-    {
-        $this->tpl->setVariable("POSITION", $record['position']);
-        $this->tpl->setVariable("USER", $record['participant']);
-        $this->tpl->setVariable("QUESTION", $this->shorten($record['question'], 40));
-        $this->tpl->setVariable("TITLE", $this->shorten($record['title'], 40));
-        $this->tpl->setVariable("ANSWER", $this->shorten($record['answer'], 100));
-        if ($this->isShowHistory()) {
-            $this->tpl->setVariable("ACTION", self::plugin()->translate("common_show_history"));
-            self::dic()->ctrl()->setParameter($this->parent_obj, 'round_id', $record['round_id']);
-            self::dic()->ctrl()->setParameter($this->parent_obj, 'user_id', $record['user_id']);
-            self::dic()->ctrl()->setParameter($this->parent_obj, 'user_identifier', $record['user_identifier']);
-            self::dic()->ctrl()->setParameter($this->parent_obj, 'voting_id', $record['voting_id']);
-            $this->tpl->setVariable("ACTION_URL", self::dic()->ctrl()->getLinkTarget($this->parent_obj, xlvoResultsGUI::CMD_SHOW_HISTORY));
-        }
-    }
-
-
-    public function initFilter()
-    {
-        $this->filter['participant'] = $this->getFilterItemByPostVar('participant')->getValue();
-        $this->filter['voting'] = $this->getFilterItemByPostVar('voting')->getValue();
-        $this->filter['voting_title'] = $this->getFilterItemByPostVar('voting_title')->getValue();
-    }
-
-
     /**
      * @return boolean
      */
@@ -125,7 +76,6 @@ class xlvoResultsTableGUI extends ilTable2GUI
         return $this->showHistory;
     }
 
-
     /**
      * @param boolean $showHistory
      */
@@ -133,7 +83,6 @@ class xlvoResultsTableGUI extends ilTable2GUI
     {
         $this->showHistory = $showHistory;
     }
-
 
     /**
      * @param object $a_csv
@@ -144,21 +93,6 @@ class xlvoResultsTableGUI extends ilTable2GUI
     {
         return null;
     }
-
-
-    /**
-     * @return array
-     */
-    protected function getCSVCols()
-    {
-        return array(
-            'participant' => 'participant',
-            'title'       => 'title',
-            'question'    => 'question',
-            'answer'      => 'answer',
-        );
-    }
-
 
     /**
      * @param object $a_csv
@@ -176,6 +110,62 @@ class xlvoResultsTableGUI extends ilTable2GUI
         parent::fillRowCSV($a_csv, $a_set);
     }
 
+    /**
+     * @return array
+     */
+    protected function getCSVCols()
+    {
+        return array(
+            'participant' => 'participant',
+            'title' => 'title',
+            'question' => 'question',
+            'answer' => 'answer',
+        );
+    }
+
+    /**
+     * @param $obj_id
+     * @param $round_id
+     */
+    public function buildData($obj_id, $round_id)
+    {
+        $xlvoResults = new xlvoResults($obj_id, $round_id);
+
+        $a_data = $xlvoResults->getData(
+            $this->filter,
+            $this->parent_obj->getParticipantNameCallable(),
+            function ($voting, $votes) {
+                $resultsGUI = xlvoResultGUI::getInstance($voting);
+
+                return $resultsGUI->getTextRepresentation($votes);
+            }
+        );
+
+        $this->setData($a_data);
+    }
+
+    /**
+     * @param array $record
+     */
+    public function fillRow($record)
+    {
+        $this->tpl->setVariable("POSITION", $record['position']);
+        $this->tpl->setVariable("USER", $record['participant']);
+        $this->tpl->setVariable("QUESTION", $this->shorten($record['question'], 40));
+        $this->tpl->setVariable("TITLE", $this->shorten($record['title'], 40));
+        $this->tpl->setVariable("ANSWER", $this->shorten($record['answer'], 100));
+        if ($this->isShowHistory()) {
+            $this->tpl->setVariable("ACTION", self::plugin()->translate("common_show_history"));
+            self::dic()->ctrl()->setParameter($this->parent_obj, 'round_id', $record['round_id']);
+            self::dic()->ctrl()->setParameter($this->parent_obj, 'user_id', $record['user_id']);
+            self::dic()->ctrl()->setParameter($this->parent_obj, 'user_identifier', $record['user_identifier']);
+            self::dic()->ctrl()->setParameter($this->parent_obj, 'voting_id', $record['voting_id']);
+            $this->tpl->setVariable(
+                "ACTION_URL",
+                self::dic()->ctrl()->getLinkTarget($this->parent_obj, xlvoResultsGUI::CMD_SHOW_HISTORY)
+            );
+        }
+    }
 
     /**
      * @param     $question
@@ -188,5 +178,12 @@ class xlvoResultsTableGUI extends ilTable2GUI
         $closure = $this->parent_obj->getShortener($length);
 
         return $closure($question);
+    }
+
+    public function initFilter()
+    {
+        $this->filter['participant'] = $this->getFilterItemByPostVar('participant')->getValue();
+        $this->filter['voting'] = $this->getFilterItemByPostVar('voting')->getValue();
+        $this->filter['voting_title'] = $this->getFilterItemByPostVar('voting_title')->getValue();
     }
 }

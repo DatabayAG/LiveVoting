@@ -31,6 +31,7 @@ class ilLiveVotingPlugin extends ilRepositoryObjectPlugin
 {
     use RepositoryObjectPluginUninstallTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_ID = 'xlvo';
     public const PLUGIN_NAME = 'LiveVoting';
     public const PLUGIN_CLASS_NAME = self::class;
@@ -40,6 +41,13 @@ class ilLiveVotingPlugin extends ilRepositoryObjectPlugin
      */
     protected static $instance;
 
+    /**
+     *
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
     /**
      * @return ilLiveVotingPlugin
@@ -52,34 +60,6 @@ class ilLiveVotingPlugin extends ilRepositoryObjectPlugin
 
         return self::$instance;
     }
-
-
-    /**
-     *
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getPluginName(): string
-    {
-        return self::PLUGIN_NAME;
-    }
-
-
-    /**
-     * @return bool
-     */
-    public function allowCopy(): bool
-    {
-        return true;
-    }
-
 
     /**
      * @inheritdoc
@@ -104,5 +84,21 @@ class ilLiveVotingPlugin extends ilRepositoryObjectPlugin
     protected function shouldUseOneUpdateStepOnly(): bool
     {
         return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPluginName(): string
+    {
+        return self::PLUGIN_NAME;
+    }
+
+    /**
+     * @return bool
+     */
+    public function allowCopy(): bool
+    {
+        return true;
     }
 }

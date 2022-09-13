@@ -27,11 +27,23 @@ class xlvoConfGUI extends xlvoGUI
         parent::__construct();
     }
 
-    public function txt(string $key): string
+    protected function resetToken(): void
     {
-        return self::plugin()->translate($key, 'config');
+        xlvoConf::set(xlvoConf::F_API_TOKEN, null);
+        xlvoConf::getConfig(xlvoConf::F_API_TOKEN);
+        $this->cancel();
     }
 
+    protected function update(): void
+    {
+        $xlvoConfFormGUI = new xlvoConfFormGUI($this);
+        $xlvoConfFormGUI->setValuesByPost();
+        if ($xlvoConfFormGUI->saveObject()) {
+            $this->tpl->setOnScreenMessage('success', $this->txt('msg_success'), true);
+            self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
+        }
+        self::dic()->ui()->mainTemplate()->setContent($xlvoConfFormGUI->getHTML());
+    }
 
     public function index(): void
     {
@@ -43,8 +55,14 @@ class xlvoConfGUI extends xlvoGUI
             $b = ilLinkButton::getInstance();
             $xlvoVoting = xlvoVoting::last();
             $xlvoVoting = $xlvoVoting ?: new xlvoVoting();
-            $url = xlvoConf::getBaseVoteURL() . xlvoConf::RESULT_API_URL . '?token=%s&type=%s&' . ParamManager::PARAM_PIN . '=%s';
-            $url = sprintf($url, xlvoConf::getApiToken(), xlvoConf::getConfig(xlvoConf::F_API_TYPE), xlvoPin::lookupPin($xlvoVoting->getObjId()));
+            $url = xlvoConf::getBaseVoteURL(
+            ) . xlvoConf::RESULT_API_URL . '?token=%s&type=%s&' . ParamManager::PARAM_PIN . '=%s';
+            $url = sprintf(
+                $url,
+                xlvoConf::getApiToken(),
+                xlvoConf::getConfig(xlvoConf::F_API_TYPE),
+                xlvoPin::lookupPin($xlvoVoting->getObjId())
+            );
             $b->setUrl($url);
             $b->setTarget('_blank');
             $b->setCaption($this->txt('open_result_api'), false);
@@ -56,23 +74,8 @@ class xlvoConfGUI extends xlvoGUI
         self::dic()->ui()->mainTemplate()->setContent($xlvoConfFormGUI->getHTML());
     }
 
-
-    protected function resetToken(): void
+    public function txt(string $key): string
     {
-        xlvoConf::set(xlvoConf::F_API_TOKEN, null);
-        xlvoConf::getConfig(xlvoConf::F_API_TOKEN);
-        $this->cancel();
-    }
-
-
-    protected function update(): void
-    {
-        $xlvoConfFormGUI = new xlvoConfFormGUI($this);
-        $xlvoConfFormGUI->setValuesByPost();
-        if ($xlvoConfFormGUI->saveObject()) {
-            $this->tpl->setOnScreenMessage('success', $this->txt('msg_success'), true);
-            self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
-        }
-        self::dic()->ui()->mainTemplate()->setContent($xlvoConfFormGUI->getHTML());
+        return self::plugin()->translate($key, 'config');
     }
 }

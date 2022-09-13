@@ -29,12 +29,30 @@ class xlvoFreeInputResultsGUI extends xlvoInputResultsGUI
      */
     protected $edit_mode = false;
 
-
     public function __construct(xlvoVotingManager2 $manager, xlvoVoting $voting)
     {
         parent::__construct($manager, $voting);
     }
 
+    /**
+     * @throws \srag\DIC\LiveVoting\Exception\DICException
+     */
+    public static function addJsAndCss()
+    {
+        Waiter::init(Waiter::TYPE_WAITER);
+        self::dic()->ui()->mainTemplate()->addJavaScript(
+            self::plugin()->directory() . '/node_modules/dragula/dist/dragula.js'
+        );
+        self::dic()->ui()->mainTemplate()->addJavaScript(
+            self::plugin()->directory() . '/js/QuestionTypes/FreeInput/xlvoFreeInputCategorize.js'
+        );
+        self::dic()->ui()->mainTemplate()->addCss(
+            self::plugin()->directory() . '/node_modules/dragula/dist/dragula.min.css'
+        );
+        self::dic()->ui()->mainTemplate()->addCss(
+            self::plugin()->directory() . '/templates/default/QuestionTypes/FreeInput/free_input.css'
+        );
+    }
 
     /**
      * @return string
@@ -85,12 +103,14 @@ class xlvoFreeInputResultsGUI extends xlvoInputResultsGUI
             $tpl->setVariable('PLACEHOLDER_ADD_CATEGORY', self::plugin()->translate('category_title'));
             $tpl->setVariable('LABEL_ADD_ANSWER', self::plugin()->translate('btn_add_answer'));
             $tpl->setVariable('PLACEHOLDER_ADD_ANSWER', self::plugin()->translate('voter_answer'));
-            $tpl->setVariable('BASE_URL', self::dic()->ctrl()->getLinkTargetByClass(xlvoPlayerGUI::class, xlvoPlayerGUI::CMD_API_CALL, "", true));
+            $tpl->setVariable(
+                'BASE_URL',
+                self::dic()->ctrl()->getLinkTargetByClass(xlvoPlayerGUI::class, xlvoPlayerGUI::CMD_API_CALL, "", true)
+            );
         }
 
         return $tpl->get();
     }
-
 
     public function reset()
     {
@@ -98,25 +118,11 @@ class xlvoFreeInputResultsGUI extends xlvoInputResultsGUI
         /** @var xlvoFreeInputCategory $category */
         foreach (
             xlvoFreeInputCategory::where(['voting_id' => $this->manager->getVoting()->getId()])
-                ->get() as $category
+                                 ->get() as $category
         ) {
             $category->delete();
         }
     }
-
-
-    /**
-     * @throws \srag\DIC\LiveVoting\Exception\DICException
-     */
-    public static function addJsAndCss()
-    {
-        Waiter::init(Waiter::TYPE_WAITER);
-        self::dic()->ui()->mainTemplate()->addJavaScript(self::plugin()->directory() . '/node_modules/dragula/dist/dragula.js');
-        self::dic()->ui()->mainTemplate()->addJavaScript(self::plugin()->directory() . '/js/QuestionTypes/FreeInput/xlvoFreeInputCategorize.js');
-        self::dic()->ui()->mainTemplate()->addCss(self::plugin()->directory() . '/node_modules/dragula/dist/dragula.min.css');
-        self::dic()->ui()->mainTemplate()->addCss(self::plugin()->directory() . '/templates/default/QuestionTypes/FreeInput/free_input.css');
-    }
-
 
     /**
      * @param xlvoVote[] $votes

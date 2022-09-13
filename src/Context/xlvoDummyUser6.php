@@ -18,6 +18,7 @@ class xlvoDummyUser6 extends ilObjUser implements xlvoDummyUser
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
     /**
@@ -39,7 +40,6 @@ class xlvoDummyUser6 extends ilObjUser implements xlvoDummyUser
         return self::dic()->language()->getLangKey();
     }
 
-
     /**
      * @return int
      */
@@ -47,7 +47,6 @@ class xlvoDummyUser6 extends ilObjUser implements xlvoDummyUser
     {
         return 13;
     }
-
 
     /**
      * This dummy method returns statically false.

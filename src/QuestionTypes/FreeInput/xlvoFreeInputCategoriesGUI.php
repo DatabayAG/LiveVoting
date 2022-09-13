@@ -21,6 +21,7 @@ use srag\DIC\LiveVoting\DICTrait;
 class xlvoFreeInputCategoriesGUI
 {
     use DICTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     public const TITLE = 'title';
     public const VOTES = 'votes';
@@ -33,7 +34,6 @@ class xlvoFreeInputCategoriesGUI
      */
     protected $categories = [];
 
-
     /**
      * xlvoFreeInputCategoriesGUI constructor.
      *
@@ -45,8 +45,10 @@ class xlvoFreeInputCategoriesGUI
         $this->setRemovable($edit_mode);
         /** @var xlvoFreeInputCategory $category */
         foreach (
-            xlvoFreeInputCategory::where(['voting_id' => $manager->getVoting()->getId(), 'round_id' => $manager->getPlayer()->getRoundId()])
-                ->get() as $category
+            xlvoFreeInputCategory::where(
+                ['voting_id' => $manager->getVoting()->getId(), 'round_id' => $manager->getPlayer()->getRoundId()]
+            )
+                                 ->get() as $category
         ) {
             $bar_collection = new xlvoBarGroupingCollectionGUI();
             $bar_collection->setRemovable($this->isRemovable());
@@ -58,6 +60,21 @@ class xlvoFreeInputCategoriesGUI
         }
     }
 
+    /**
+     * @return bool
+     */
+    public function isRemovable()
+    {
+        return $this->removable;
+    }
+
+    /**
+     * @param bool $removable
+     */
+    public function setRemovable($removable)
+    {
+        $this->removable = $removable;
+    }
 
     /**
      * @param xlvoBarFreeInputsGUI $bar_gui
@@ -73,7 +90,6 @@ class xlvoFreeInputCategoriesGUI
         }
         $this->categories[$cat_id][self::VOTES]->addBar($bar_gui);
     }
-
 
     /**
      * @return string
@@ -100,23 +116,5 @@ class xlvoFreeInputCategoriesGUI
         }
 
         return $tpl->get();
-    }
-
-
-    /**
-     * @return bool
-     */
-    public function isRemovable()
-    {
-        return $this->removable;
-    }
-
-
-    /**
-     * @param bool $removable
-     */
-    public function setRemovable($removable)
-    {
-        $this->removable = $removable;
     }
 }

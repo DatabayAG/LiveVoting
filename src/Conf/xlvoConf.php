@@ -178,90 +178,6 @@ class xlvoConf extends CachingActiveRecord
      * @deprecated
      */
     public const TABLE_NAME = 'xlvo_config';
-
-
-    /**
-     * @return string
-     *
-     * @deprecated
-     */
-    public function getConnectorContainerName()
-    {
-        return self::TABLE_NAME;
-    }
-
-
-    /**
-     * @return string
-     *
-     * @deprecated
-     */
-    public static function returnDbTableName()
-    {
-        return self::TABLE_NAME;
-    }
-
-
-    /**
-     * @return bool
-     *
-     * @deprecated
-     */
-    public static function isLatexEnabled()
-    {
-        $mathJaxSetting = new ilSetting("MathJax");
-
-        return (bool) $mathJaxSetting->get("enable");
-    }
-
-
-    /**
-     * @return string
-     *
-     * @deprecated
-     */
-    public static function getApiToken()
-    {
-        $token = self::getConfig(self::F_API_TOKEN);
-        if (!$token) {
-            $token = md5(time()); // TODO: Use other not depcreated, safer hash algo (Like `hash("sha256", $hash)`)
-            self::set(self::F_API_TOKEN, $token);
-        }
-
-        return $token;
-    }
-
-
-    /**
-     * @return string
-     *
-     * @deprecated
-     */
-    public static function getBaseVoteURL()
-    {
-        if (self::getConfig(self::F_ALLOW_SHORTLINK_VOTE)) {
-            $url = self::getConfig(self::F_BASE_URL_VOTE);
-            $url = rtrim($url, "/") . "/";
-        } else {
-            $str = strstr(ILIAS_HTTP_PATH, 'Customizing', true);
-            $url = rtrim($str, "/") . "/";
-        }
-
-        return $url;
-    }
-
-
-    /**
-     * @return string
-     *
-     * @deprecated
-     */
-    public static function getFullApiURL()
-    {
-        return self::getBaseVoteURL() . ltrim(self::API_URL, "./");
-    }
-
-
     /**
      * @var array
      *
@@ -280,79 +196,6 @@ class xlvoConf extends CachingActiveRecord
      * @deprecated
      */
     protected $ar_safe_read = false;
-
-
-    /**
-     * @return bool
-     *
-     * @deprecated
-     */
-    public static function isConfigUpToDate()
-    {
-        return self::getConfig(self::F_CONFIG_VERSION) == self::CONFIG_VERSION;
-    }
-
-
-    /**
-     * @deprecated
-     */
-    public static function load()
-    {
-        parent::get();
-    }
-
-
-    /**
-     * @param $name
-     *
-     * @return mixed
-     *
-     * @deprecated
-     */
-    public static function getConfig($name)
-    {
-        if (!self::$cache_loaded[$name]) {
-            $obj = new self($name);
-            self::$cache[$name] = json_decode($obj->getValue());
-            self::$cache_loaded[$name] = true;
-        }
-
-        return self::$cache[$name];
-    }
-
-
-    /**
-     * @param $name
-     * @param $value
-     *
-     * @deprecated
-     */
-    public static function set($name, $value)
-    {
-        $obj = new self($name);
-        $obj->setValue(json_encode($value));
-
-        $obj->store();
-    }
-
-
-    /**
-     * @param string $name
-     *
-     * @deprecated
-     */
-    public static function remove($name)
-    {
-        /**
-         * @var xlvoConf $obj
-         */
-        $obj = self::find($name);
-        if ($obj !== null) {
-            $obj->delete();
-        }
-    }
-
-
     /**
      * @var string
      *
@@ -377,28 +220,71 @@ class xlvoConf extends CachingActiveRecord
      */
     protected $value;
 
-
     /**
-     * @param string $name
+     * @return string
      *
      * @deprecated
      */
-    public function setName($name)
+    public static function returnDbTableName()
     {
-        $this->name = $name;
+        return self::TABLE_NAME;
     }
 
+    /**
+     * @return bool
+     *
+     * @deprecated
+     */
+    public static function isLatexEnabled()
+    {
+        $mathJaxSetting = new ilSetting("MathJax");
+
+        return (bool) $mathJaxSetting->get("enable");
+    }
 
     /**
      * @return string
      *
      * @deprecated
      */
-    public function getName()
+    public static function getApiToken()
     {
-        return $this->name;
+        $token = self::getConfig(self::F_API_TOKEN);
+        if (!$token) {
+            $token = md5(time()); // TODO: Use other not depcreated, safer hash algo (Like `hash("sha256", $hash)`)
+            self::set(self::F_API_TOKEN, $token);
+        }
+
+        return $token;
     }
 
+    /**
+     * @param $name
+     *
+     * @return mixed
+     *
+     * @deprecated
+     */
+    public static function getConfig($name)
+    {
+        if (!self::$cache_loaded[$name]) {
+            $obj = new self($name);
+            self::$cache[$name] = json_decode($obj->getValue());
+            self::$cache_loaded[$name] = true;
+        }
+
+        return self::$cache[$name];
+    }
+
+    /**
+     * @return string
+     *
+     * @deprecated
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
 
     /**
      * @param string $value
@@ -410,14 +296,109 @@ class xlvoConf extends CachingActiveRecord
         $this->value = $value;
     }
 
+    /**
+     * @param $name
+     * @param $value
+     *
+     * @deprecated
+     */
+    public static function set($name, $value)
+    {
+        $obj = new self($name);
+        $obj->setValue(json_encode($value));
+
+        $obj->store();
+    }
 
     /**
      * @return string
      *
      * @deprecated
      */
-    public function getValue()
+    public static function getFullApiURL()
     {
-        return $this->value;
+        return self::getBaseVoteURL() . ltrim(self::API_URL, "./");
+    }
+
+    /**
+     * @return string
+     *
+     * @deprecated
+     */
+    public static function getBaseVoteURL()
+    {
+        if (self::getConfig(self::F_ALLOW_SHORTLINK_VOTE)) {
+            $url = self::getConfig(self::F_BASE_URL_VOTE);
+            $url = rtrim($url, "/") . "/";
+        } else {
+            $str = strstr(ILIAS_HTTP_PATH, 'Customizing', true);
+            $url = rtrim($str, "/") . "/";
+        }
+
+        return $url;
+    }
+
+    /**
+     * @return bool
+     *
+     * @deprecated
+     */
+    public static function isConfigUpToDate()
+    {
+        return self::getConfig(self::F_CONFIG_VERSION) == self::CONFIG_VERSION;
+    }
+
+    /**
+     * @deprecated
+     */
+    public static function load()
+    {
+        parent::get();
+    }
+
+    /**
+     * @param string $name
+     *
+     * @deprecated
+     */
+    public static function remove($name)
+    {
+        /**
+         * @var xlvoConf $obj
+         */
+        $obj = self::find($name);
+        if ($obj !== null) {
+            $obj->delete();
+        }
+    }
+
+    /**
+     * @return string
+     *
+     * @deprecated
+     */
+    public function getConnectorContainerName()
+    {
+        return self::TABLE_NAME;
+    }
+
+    /**
+     * @return string
+     *
+     * @deprecated
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @deprecated
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
     }
 }

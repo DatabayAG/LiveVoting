@@ -18,12 +18,12 @@ class xlvoJsResponse
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var mixed
      */
     protected $data;
-
 
     /**
      * xlvoJsResponse constructor.
@@ -35,7 +35,6 @@ class xlvoJsResponse
         $this->data = $data;
     }
 
-
     /**
      * @param $data
      *
@@ -45,7 +44,6 @@ class xlvoJsResponse
     {
         return new self($data);
     }
-
 
     public function send()
     {

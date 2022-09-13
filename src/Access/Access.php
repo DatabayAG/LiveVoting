@@ -19,12 +19,19 @@ final class Access
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var self
      */
     protected static $instance = null;
 
+    /**
+     * Access constructor
+     */
+    private function __construct()
+    {
+    }
 
     /**
      * @return self
@@ -36,13 +43,5 @@ final class Access
         }
 
         return self::$instance;
-    }
-
-
-    /**
-     * Access constructor
-     */
-    private function __construct()
-    {
     }
 }

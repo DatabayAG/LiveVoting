@@ -27,6 +27,7 @@ abstract class xlvoInputResultsGUI
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var xlvoVoting
@@ -36,7 +37,6 @@ abstract class xlvoInputResultsGUI
      * @var xlvoVotingManager2
      */
     protected $manager;
-
 
     /**
      * xlvoInputResultsGUI constructor.
@@ -50,42 +50,12 @@ abstract class xlvoInputResultsGUI
         $this->voting = $voting;
     }
 
-
-    /**
-     * @param string $key
-     *
-     * @return string
-     */
-    protected function txt($key)
-    {
-        return self::plugin()->translate($this->manager->getVoting()->getVotingType() . '_' . $key, 'qtype');
-    }
-
-
-    /**
-     *
-     */
-    public function reset()
-    {
-        /**
-         * @var xlvoVote $xlvoVote
-         */
-        foreach (
-            xlvoVote::where(['voting_id' => $this->manager->getVoting()->getId(), 'round_id' => $this->manager->getPlayer()->getRoundId()])
-                ->get() as $xlvoVote
-        ) {
-            $xlvoVote->delete();
-        }
-    }
-
-
     /**
      * void method to add necessary JS and CSS to maintemplate
      */
     public static function addJsAndCss()
     {
     }
-
 
     /**
      * @param xlvoVotingManager2 $manager
@@ -112,12 +82,41 @@ abstract class xlvoInputResultsGUI
         }
     }
 
+    /**
+     * @param string $key
+     *
+     * @return string
+     */
+    protected function txt($key)
+    {
+        return self::plugin()->translate($this->manager->getVoting()->getVotingType() . '_' . $key, 'qtype');
+    }
+
+    /**
+     *
+     */
+    public function reset()
+    {
+        /**
+         * @var xlvoVote $xlvoVote
+         */
+        foreach (
+            xlvoVote::where(
+                [
+                    'voting_id' => $this->manager->getVoting()->getId(),
+                    'round_id' => $this->manager->getPlayer()->getRoundId()
+                ]
+            )
+                    ->get() as $xlvoVote
+        ) {
+            $xlvoVote->delete();
+        }
+    }
 
     /**
      * @return string
      */
     abstract public function getHTML();
-
 
     /**
      * @param xlvoVote[] $votes

@@ -19,8 +19,8 @@ class xlvoContextLiveVoting implements ilContextTemplate
 {
     use DICTrait;
     use LiveVotingTrait;
-    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
     /**
      * @return bool
@@ -30,7 +30,6 @@ class xlvoContextLiveVoting implements ilContextTemplate
         return false;
     }
 
-
     /**
      * @return bool
      */
@@ -38,7 +37,6 @@ class xlvoContextLiveVoting implements ilContextTemplate
     {
         return true;
     }
-
 
     /**
      * @return bool
@@ -48,7 +46,6 @@ class xlvoContextLiveVoting implements ilContextTemplate
         return true;
     }
 
-
     /**
      * @return bool
      */
@@ -56,7 +53,6 @@ class xlvoContextLiveVoting implements ilContextTemplate
     {
         return true;
     }
-
 
     /**
      * @return bool
@@ -66,7 +62,6 @@ class xlvoContextLiveVoting implements ilContextTemplate
         return true;
     }
 
-
     /**
      * @return bool
      */
@@ -74,7 +69,6 @@ class xlvoContextLiveVoting implements ilContextTemplate
     {
         return true;
     }
-
 
     /**
      * @return bool
@@ -84,7 +78,6 @@ class xlvoContextLiveVoting implements ilContextTemplate
         return false;
     }
 
-
     /**
      * Check if persistent sessions are supported
      * false for context cli
@@ -93,7 +86,6 @@ class xlvoContextLiveVoting implements ilContextTemplate
     {
         return false;
     }
-
 
     /**
      * Check if push messages are supported, see #0018206

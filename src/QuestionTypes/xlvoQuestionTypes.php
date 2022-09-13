@@ -22,6 +22,7 @@ class xlvoQuestionTypes
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     public const TYPE_SINGLE_VOTE = 1;
     public const TYPE_FREE_INPUT = 2;
@@ -50,13 +51,12 @@ class xlvoQuestionTypes
      */
     protected static $class_map
         = array(
-            self::TYPE_SINGLE_VOTE   => self::SINGLE_VOTE,
-            self::TYPE_FREE_INPUT    => self::FREE_INPUT,
+            self::TYPE_SINGLE_VOTE => self::SINGLE_VOTE,
+            self::TYPE_FREE_INPUT => self::FREE_INPUT,
             self::TYPE_CORRECT_ORDER => self::CORRECT_ORDER,
-            self::TYPE_FREE_ORDER    => self::FREE_ORDER,
-            self::TYPE_NUMBER_RANGE  => self::NUMBER_RANGE
+            self::TYPE_FREE_ORDER => self::FREE_ORDER,
+            self::TYPE_NUMBER_RANGE => self::NUMBER_RANGE
         );
-
 
     /**
      * @return array
@@ -75,7 +75,6 @@ class xlvoQuestionTypes
 
         return $types;
     }
-
 
     /**
      * @param $type

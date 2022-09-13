@@ -15,7 +15,6 @@ use LiveVoting\QuestionTypes\xlvoSubFormGUI;
 use srag\CustomInputGUIs\LiveVoting\MultiLineNewInputGUI\MultiLineNewInputGUI;
 use srag\CustomInputGUIs\LiveVoting\TextInputGUI\TextInputGUI;
 use srag\CustomInputGUIs\LiveVoting\HiddenInputGUI\HiddenInputGUI;
-use ilTemplate;
 use ilGlobalPageTemplate;
 
 /**
@@ -40,11 +39,6 @@ class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
      */
     protected $options = array();
 
-    public function addJsAndCss(ilGlobalPageTemplate $ilTemplate)
-    {
-        $ilTemplate->addCSS(self::CSS_FILE_PATH);
-    }
-
     /**
      *
      */
@@ -54,10 +48,15 @@ class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
         $xlvoMultiLineInputGUI->setShowInputLabel(false);
         $xlvoMultiLineInputGUI->setShowSort(false);
 
-        $randomiseOptionSequenceAfterSave = new ilCheckboxInputGUI($this->txt(self::OPTION_RANDOMIZE_OPTIONS_AFTER_SAVE), self::OPTION_RANDOMIZE_OPTIONS_AFTER_SAVE);
+        $randomiseOptionSequenceAfterSave = new ilCheckboxInputGUI(
+            $this->txt(self::OPTION_RANDOMIZE_OPTIONS_AFTER_SAVE),
+            self::OPTION_RANDOMIZE_OPTIONS_AFTER_SAVE
+        );
         $randomiseOptionSequenceAfterSave->setOptionTitle($this->txt(self::OPTION_RANDOMIZE_OPTIONS_AFTER_SAVE_INFO));
         //$xlvoMultiLineInputGUI->setPositionMovable(true); // Allow move position
-        $randomiseOptionSequenceAfterSave->setChecked($this->getXlvoVoting()->getRandomiseOptionSequence()); // Should shuffled?
+        $randomiseOptionSequenceAfterSave->setChecked(
+            $this->getXlvoVoting()->getRandomiseOptionSequence()
+        ); // Should shuffled?
 
         $h = new HiddenInputGUI(self::F_ID);
         $xlvoMultiLineInputGUI->addInput($h);
@@ -81,7 +80,6 @@ class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
         $this->addFormElement($randomiseOptionSequenceAfterSave);
         $this->addFormElement($xlvoMultiLineInputGUI);
     }
-
 
     /**
      * @param ilFormPropertyGUI $element
@@ -121,7 +119,6 @@ class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
         }
     }
 
-
     /**
      * @param ilFormPropertyGUI $element
      *
@@ -132,7 +129,9 @@ class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
     {
         if ($this->getXlvoVoting()->getRandomiseOptionSequence()) {
             // Sort options by correct position if shuffled
-            $this->options = xlvoOption::where(array("voting_id" => $this->getXlvoVoting()->getId()))->orderBy("correct_position")->get();
+            $this->options = xlvoOption::where(array("voting_id" => $this->getXlvoVoting()->getId()))->orderBy(
+                "correct_position"
+            )->get();
         } else {
             // Sort options by position if not shuffled
             $this->options = $this->getXlvoVoting()->getVotingOptions();
@@ -142,9 +141,9 @@ class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
                 $array = [];
                 foreach ($this->options as $option) {
                     $array[] = [
-                        self::F_ID               => $option->getId(),
-                        self::F_TEXT             => $option->getTextForEditor(),
-                        self::F_POSITION         => $option->getPosition(),
+                        self::F_ID => $option->getId(),
+                        self::F_TEXT => $option->getTextForEditor(),
+                        self::F_POSITION => $option->getPosition(),
                         self::F_CORRECT_POSITION => /*($this->getXlvoVoting()->getRandomiseOptionSequence() ? "<br>" : "")
                             . */
                             $option->getCorrectPosition()/* . ($this->getXlvoVoting()->getRandomiseOptionSequence() ? "." : "")
@@ -160,7 +159,6 @@ class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
                 break;
         }
     }
-
 
     /**
      *
@@ -199,7 +197,6 @@ class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
         $this->getXlvoVoting()->store();
     }
 
-
     /**
      * Randomises the position of the given options the position in the array is not modified at all.
      *
@@ -231,11 +228,10 @@ class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
         $this->randomiseOptionPosition($options);
     }
 
-
     /**
      * Searches an option within the given option array by position.
      *
-     * @param xlvoOption[] $options  The options which should be used to search the position.
+     * @param xlvoOption[] $options The options which should be used to search the position.
      * @param int          $position The position which should be searched for.
      *
      * @return xlvoOption
@@ -251,7 +247,6 @@ class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
 
         throw new InvalidArgumentException("Supplied position \"$position\" can't be found within the given options.");
     }
-
 
     /**
      * Checks if at least one element is not correctly ordered.
@@ -270,5 +265,10 @@ class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
         }
 
         return $incorrectOrder > 0;
+    }
+
+    public function addJsAndCss(ilGlobalPageTemplate $ilTemplate)
+    {
+        $ilTemplate->addCSS(self::CSS_FILE_PATH);
     }
 }

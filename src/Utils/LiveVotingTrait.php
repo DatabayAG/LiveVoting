@@ -24,7 +24,6 @@ trait LiveVotingTrait
         return Access::getInstance();
     }
 
-
     /**
      * @return Ilias
      */

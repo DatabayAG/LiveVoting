@@ -21,10 +21,6 @@ class xlvoMainGUI extends xlvoGUI
     public const TAB_PUBLICATION_USAGE = 'publication_usage';
     public const TAB_EXPORT = 'export';
 
-
-    /**
-     * @return void
-     */
     public function executeCommand(): void
     {
         $nextClass = self::dic()->ctrl()->getNextClass();

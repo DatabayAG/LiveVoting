@@ -20,8 +20,8 @@ class xlvoVoteHistoryTableGUI extends ilTable2GUI
 {
     use DICTrait;
     use LiveVotingTrait;
-    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
     public function __construct($a_parent_obj, $a_parent_cmd)
     {
@@ -34,25 +34,22 @@ class xlvoVoteHistoryTableGUI extends ilTable2GUI
         $this->buildColumns();
     }
 
-
     protected function buildColumns()
     {
         $this->addColumn(self::plugin()->translate('common_answer'), 'answer', '80%');
         $this->addColumn(self::plugin()->translate('common_time'), 'time', '20%');
     }
 
-
     public function parseData($user_id, $user_identifier, $voting_id, $round_id)
     {
         $data = xlvoVoteHistoryObject::where(array(
-            "user_id"         => $user_id ? $user_id : null,
+            "user_id" => $user_id ? $user_id : null,
             "user_identifier" => $user_identifier ? $user_identifier : null,
-            "voting_id"       => $voting_id,
-            "round_id"        => $round_id
+            "voting_id" => $voting_id,
+            "round_id" => $round_id
         ))->orderBy("timestamp", "DESC")->getArray(null, array("answer", "timestamp"));
         $this->setData($data);
     }
-
 
     public function fillRow($set)
     {

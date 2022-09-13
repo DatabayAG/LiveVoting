@@ -20,8 +20,8 @@ class xlvoObjectDefinition
 {
     use DICTrait;
     use LiveVotingTrait;
-    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
     /**
      * @return bool
@@ -31,7 +31,6 @@ class xlvoObjectDefinition
         return false;
     }
 
-
     /**
      * @return string
      */
@@ -39,7 +38,6 @@ class xlvoObjectDefinition
     {
         return ''; //"sys"
     }
-
 
     public function getOrgUnitPermissionTypes()
     {

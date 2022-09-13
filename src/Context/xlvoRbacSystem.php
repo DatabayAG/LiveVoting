@@ -21,8 +21,8 @@ class xlvoRbacSystem
 {
     use DICTrait;
     use LiveVotingTrait;
-    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
     /**
      * This is only a stub of the check access method which returns always false.

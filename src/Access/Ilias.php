@@ -19,12 +19,19 @@ final class Ilias
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var self
      */
     protected static $instance = null;
 
+    /**
+     * Ilias constructor
+     */
+    private function __construct()
+    {
+    }
 
     /**
      * @return self
@@ -36,13 +43,5 @@ final class Ilias
         }
 
         return self::$instance;
-    }
-
-
-    /**
-     * Ilias constructor
-     */
-    private function __construct()
-    {
     }
 }

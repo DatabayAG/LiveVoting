@@ -25,18 +25,6 @@ class xlvoNumberRangeResultGUI extends xlvoResultGUI
         return $this->createCSV($votes);
     }
 
-
-    /**
-     * @param xlvoVote[] $votes
-     *
-     * @return string
-     */
-    public function getAPIRepresentation(array $votes)
-    {
-        return $this->createCSV($votes);
-    }
-
-
     /**
      * @param array $votes The votes which should be used to create the csv string.
      *
@@ -52,5 +40,15 @@ class xlvoNumberRangeResultGUI extends xlvoResultGUI
         }
 
         return implode(', ', $testVotes);
+    }
+
+    /**
+     * @param xlvoVote[] $votes
+     *
+     * @return string
+     */
+    public function getAPIRepresentation(array $votes)
+    {
+        return $this->createCSV($votes);
     }
 }

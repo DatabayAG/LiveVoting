@@ -39,7 +39,6 @@ class xlvoSingleVoteResultGUI extends xlvoResultGUI
         return implode(", ", $strings);
     }
 
-
     /**
      * @param xlvoVote[] $votes
      *

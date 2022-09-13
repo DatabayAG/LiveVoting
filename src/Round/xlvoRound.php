@@ -18,79 +18,6 @@ use LiveVoting\Cache\CachingActiveRecord;
 class xlvoRound extends CachingActiveRecord
 {
     public const TABLE_NAME = 'rep_robj_xlvo_round_n';
-
-
-    /**
-     * @return string
-     */
-    public function getConnectorContainerName()
-    {
-        return self::TABLE_NAME;
-    }
-
-
-    /**
-     * @return string
-     * @deprecated
-     */
-    public static function returnDbTableName()
-    {
-        return self::TABLE_NAME;
-    }
-
-
-    /**
-     * @param $obj_id
-     *
-     * @return int
-     */
-    public static function getLatestRoundId($obj_id)
-    {
-        $q = "SELECT result.id FROM (SELECT id FROM " . self::TABLE_NAME . " WHERE " . self::TABLE_NAME
-            . ".obj_id = %s) AS result ORDER BY result.id DESC LIMIT 1";
-        //$q = "SELECT MAX(id) FROM " . self::TABLE_NAME . " WHERE obj_id = %s";
-        $result = self::dic()->database()->queryF($q, array('integer'), array($obj_id));
-        $data = self::dic()->database()->fetchObject($result);
-
-        if (!isset($data->id)) {
-            $round = self::createFirstRound($obj_id);
-
-            return $round->getId();
-        }
-
-        return $data->id;
-    }
-
-
-    /**
-     * Gets you the latest round for this object. creates the first one if there is no round yet.
-     *
-     * @param $obj_id int
-     *
-     * @return xlvoRound
-     */
-    public static function getLatestRound($obj_id)
-    {
-        return xlvoRound::find(self::getLatestRoundId($obj_id));
-    }
-
-
-    /**
-     * @param $obj_id int
-     *
-     * @return xlvoRound
-     */
-    public static function createFirstRound($obj_id)
-    {
-        $round = new xlvoRound();
-        $round->setRoundNumber(1);
-        $round->setObjId($obj_id);
-        $round->store();
-
-        return $round;
-    }
-
-
     /**
      * @var int
      *
@@ -126,6 +53,63 @@ class xlvoRound extends CachingActiveRecord
      */
     protected $title;
 
+    /**
+     * @return string
+     * @deprecated
+     */
+    public static function returnDbTableName()
+    {
+        return self::TABLE_NAME;
+    }
+
+    /**
+     * Gets you the latest round for this object. creates the first one if there is no round yet.
+     *
+     * @param $obj_id int
+     *
+     * @return xlvoRound
+     */
+    public static function getLatestRound($obj_id)
+    {
+        return xlvoRound::find(self::getLatestRoundId($obj_id));
+    }
+
+    /**
+     * @param $obj_id
+     *
+     * @return int
+     */
+    public static function getLatestRoundId($obj_id)
+    {
+        $q = "SELECT result.id FROM (SELECT id FROM " . self::TABLE_NAME . " WHERE " . self::TABLE_NAME
+            . ".obj_id = %s) AS result ORDER BY result.id DESC LIMIT 1";
+        //$q = "SELECT MAX(id) FROM " . self::TABLE_NAME . " WHERE obj_id = %s";
+        $result = self::dic()->database()->queryF($q, array('integer'), array($obj_id));
+        $data = self::dic()->database()->fetchObject($result);
+
+        if (!isset($data->id)) {
+            $round = self::createFirstRound($obj_id);
+
+            return $round->getId();
+        }
+
+        return $data->id;
+    }
+
+    /**
+     * @param $obj_id int
+     *
+     * @return xlvoRound
+     */
+    public static function createFirstRound($obj_id)
+    {
+        $round = new xlvoRound();
+        $round->setRoundNumber(1);
+        $round->setObjId($obj_id);
+        $round->store();
+
+        return $round;
+    }
 
     /**
      * @return int
@@ -135,7 +119,6 @@ class xlvoRound extends CachingActiveRecord
         return $this->id;
     }
 
-
     /**
      * @param int $id
      */
@@ -144,6 +127,13 @@ class xlvoRound extends CachingActiveRecord
         $this->id = $id;
     }
 
+    /**
+     * @return string
+     */
+    public function getConnectorContainerName()
+    {
+        return self::TABLE_NAME;
+    }
 
     /**
      * @return int
@@ -153,7 +143,6 @@ class xlvoRound extends CachingActiveRecord
         return $this->obj_id;
     }
 
-
     /**
      * @param int $obj_id
      */
@@ -161,7 +150,6 @@ class xlvoRound extends CachingActiveRecord
     {
         $this->obj_id = $obj_id;
     }
-
 
     /**
      * @return int
@@ -171,7 +159,6 @@ class xlvoRound extends CachingActiveRecord
         return $this->round_number;
     }
 
-
     /**
      * @param int $round_number
      */
@@ -180,7 +167,6 @@ class xlvoRound extends CachingActiveRecord
         $this->round_number = $round_number;
     }
 
-
     /**
      * @return string
      */
@@ -188,7 +174,6 @@ class xlvoRound extends CachingActiveRecord
     {
         return $this->title;
     }
-
 
     /**
      * @param string $title

@@ -19,6 +19,7 @@ abstract class xlvoAbstractBarGUI implements xlvoGeneralBarGUI
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var bool
@@ -41,7 +42,6 @@ abstract class xlvoAbstractBarGUI implements xlvoGeneralBarGUI
      */
     protected $tpl;
 
-
     /**
      * xlvoAbstractBarGUI constructor.
      */
@@ -49,16 +49,15 @@ abstract class xlvoAbstractBarGUI implements xlvoGeneralBarGUI
     {
     }
 
-
     /**
-     *
+     * @return string
      */
-    protected function initTemplate()
+    public function getHTML()
     {
-        $this->tpl = self::plugin()->template('default/Display/Bar/tpl.bar_free_input.html');
-        self::dic()->ui()->mainTemplate()->addCss(self::plugin()->directory() . "/templates/default/Display/Bar/bar.css");
-    }
+        $this->render();
 
+        return $this->tpl->get();
+    }
 
     /**
      *
@@ -81,35 +80,16 @@ abstract class xlvoAbstractBarGUI implements xlvoGeneralBarGUI
         }
     }
 
-
     /**
-     * @return string
+     *
      */
-    public function getHTML()
+    protected function initTemplate()
     {
-        $this->render();
-
-        return $this->tpl->get();
+        $this->tpl = self::plugin()->template('default/Display/Bar/tpl.bar_free_input.html');
+        self::dic()->ui()->mainTemplate()->addCss(
+            self::plugin()->directory() . "/templates/default/Display/Bar/bar.css"
+        );
     }
-
-
-    /**
-     * @return bool
-     */
-    public function isStrong()
-    {
-        return $this->strong;
-    }
-
-
-    /**
-     * @param bool $strong
-     */
-    public function setStrong($strong)
-    {
-        $this->strong = $strong;
-    }
-
 
     /**
      * @return bool
@@ -119,7 +99,6 @@ abstract class xlvoAbstractBarGUI implements xlvoGeneralBarGUI
         return $this->center;
     }
 
-
     /**
      * @param bool $center
      */
@@ -127,7 +106,6 @@ abstract class xlvoAbstractBarGUI implements xlvoGeneralBarGUI
     {
         $this->center = $center;
     }
-
 
     /**
      * @return bool
@@ -137,7 +115,6 @@ abstract class xlvoAbstractBarGUI implements xlvoGeneralBarGUI
         return $this->big;
     }
 
-
     /**
      * @param bool $big
      */
@@ -145,7 +122,6 @@ abstract class xlvoAbstractBarGUI implements xlvoGeneralBarGUI
     {
         $this->big = $big;
     }
-
 
     /**
      * @return bool
@@ -155,12 +131,27 @@ abstract class xlvoAbstractBarGUI implements xlvoGeneralBarGUI
         return $this->dark;
     }
 
-
     /**
      * @param bool $dark
      */
     public function setDark($dark)
     {
         $this->dark = $dark;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStrong()
+    {
+        return $this->strong;
+    }
+
+    /**
+     * @param bool $strong
+     */
+    public function setStrong($strong)
+    {
+        $this->strong = $strong;
     }
 }

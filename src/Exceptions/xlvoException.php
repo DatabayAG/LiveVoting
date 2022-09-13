@@ -18,8 +18,8 @@ class xlvoException extends ilException
 {
     use DICTrait;
     use LiveVotingTrait;
-    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
     /**
      * @param string $message

@@ -37,17 +37,6 @@ class xlvoFreeInputGUI extends xlvoQuestionTypesGUI
      */
     protected $tpl;
 
-
-    /**
-     * @param bool $current
-     */
-    public function initJS($current = false)
-    {
-        MultiLineNewInputGUI::init();
-        xlvoJs::getInstance()->api($this)->name(xlvoQuestionTypes::FREE_INPUT)->category('QuestionTypes')->init();
-    }
-
-
     /**
      *
      */
@@ -58,11 +47,18 @@ class xlvoFreeInputGUI extends xlvoQuestionTypesGUI
         $this->manager->unvoteAll();
         if ($this->manager->getVoting()->isMultiFreeInput()) {
             $array = array();
-            foreach (filter_input(INPUT_POST, self::F_VOTE_MULTI_LINE_INPUT, FILTER_DEFAULT, FILTER_FORCE_ARRAY) as $item) {
+            foreach (
+                filter_input(
+                    INPUT_POST,
+                    self::F_VOTE_MULTI_LINE_INPUT,
+                    FILTER_DEFAULT,
+                    FILTER_FORCE_ARRAY
+                ) as $item
+            ) {
                 $input = ilUtil::secureString($item[self::F_FREE_INPUT]);
                 if (!empty($input) && strlen($input) <= $input_gui->getMaxLength()) {
                     $array[] = array(
-                        "input"   => $input,
+                        "input" => $input,
                         "vote_id" => $item[self::F_VOTE_ID],
                     );
                 }
@@ -72,33 +68,12 @@ class xlvoFreeInputGUI extends xlvoQuestionTypesGUI
             $input = ilUtil::secureString(filter_input(INPUT_POST, self::F_FREE_INPUT));
             if (!empty($input) && strlen($input) <= $input_gui->getMaxLength()) {
                 $this->manager->inputOne(array(
-                    "input"   => $input,
+                    "input" => $input,
                     "vote_id" => filter_input(INPUT_POST, self::F_VOTE_ID),
                 ));
             }
         }
     }
-
-
-    /* *
-     *
-     * /
-    protected function clear() {
-        $this->manager->clear();
-        $this->afterSubmit();
-    }*/
-
-    /**
-     * @return string
-     */
-    public function getMobileHTML()
-    {
-        $this->tpl = self::plugin()->template('default/QuestionTypes/FreeInput/tpl.free_input.html');
-        $this->render();
-
-        return $this->tpl->get() . xlvoJs::getInstance()->name(xlvoQuestionTypes::FREE_INPUT)->category('QuestionTypes')->getRunCode();
-    }
-
 
     /**
      * @param string $a_title
@@ -125,6 +100,46 @@ class xlvoFreeInputGUI extends xlvoQuestionTypesGUI
     }
 
 
+    /* *
+     *
+     * /
+    protected function clear() {
+        $this->manager->clear();
+        $this->afterSubmit();
+    }*/
+
+    /**
+     * @param bool $current
+     */
+    public function initJS($current = false)
+    {
+        MultiLineNewInputGUI::init();
+        xlvoJs::getInstance()->api($this)->name(xlvoQuestionTypes::FREE_INPUT)->category('QuestionTypes')->init();
+    }
+
+    /**
+     * @return string
+     */
+    public function getMobileHTML()
+    {
+        $this->tpl = self::plugin()->template('default/QuestionTypes/FreeInput/tpl.free_input.html');
+        $this->render();
+
+        return $this->tpl->get() . xlvoJs::getInstance()->name(xlvoQuestionTypes::FREE_INPUT)->category(
+            'QuestionTypes'
+        )->getRunCode();
+    }
+
+    /**
+     *
+     */
+    protected function render()
+    {
+        $form = $this->getForm();
+
+        $this->tpl->setVariable('FREE_INPUT_FORM', $form->getHTML());
+    }
+
     /**
      * @return ilPropertyFormGUI
      */
@@ -137,6 +152,43 @@ class xlvoFreeInputGUI extends xlvoQuestionTypesGUI
         }
     }
 
+    /**
+     * @return ilPropertyFormGUI
+     */
+    protected function getMultiForm()
+    {
+        $form = new ilPropertyFormGUI();
+        $form->setFormAction(self::dic()->ctrl()->getFormAction($this));
+
+        $xlvoVotes = $this->manager->getVotesOfUser();
+        if (count($xlvoVotes) > 0) {
+            $te = new ilNonEditableValueGUI();
+            $te->setValue($this->txt('your_input'));
+            $form->addItem($te);
+            //$form->addCommandButton(self::CMD_CLEAR, $this->txt('delete_all'));
+        }
+
+        $mli = new MultiLineNewInputGUI($this->txt('answers'), self::F_VOTE_MULTI_LINE_INPUT);
+        $te = $this->getTextInputGUI($this->txt('text'), self::F_FREE_INPUT);
+
+        $hi2 = new HiddenInputGUI(self::F_VOTE_ID);
+        $mli->addInput($te);
+        $mli->addInput($hi2);
+
+        $form->addItem($mli);
+        $array = array();
+        foreach ($xlvoVotes as $xlvoVote) {
+            $array[] = array(
+                self::F_FREE_INPUT => $xlvoVote->getFreeInput(),
+                self::F_VOTE_ID => $xlvoVote->getId(),
+            );
+        }
+
+        $form->setValuesByArray(array(self::F_VOTE_MULTI_LINE_INPUT => $array));
+        $form->addCommandButton(self::CMD_SUBMIT, $this->txt('send'));
+
+        return $form;
+    }
 
     /**
      * @return ilPropertyFormGUI
@@ -168,46 +220,6 @@ class xlvoFreeInputGUI extends xlvoQuestionTypesGUI
         return $form;
     }
 
-
-    /**
-     * @return ilPropertyFormGUI
-     */
-    protected function getMultiForm()
-    {
-        $form = new ilPropertyFormGUI();
-        $form->setFormAction(self::dic()->ctrl()->getFormAction($this));
-
-        $xlvoVotes = $this->manager->getVotesOfUser();
-        if (count($xlvoVotes) > 0) {
-            $te = new ilNonEditableValueGUI();
-            $te->setValue($this->txt('your_input'));
-            $form->addItem($te);
-            //$form->addCommandButton(self::CMD_CLEAR, $this->txt('delete_all'));
-        }
-
-        $mli = new MultiLineNewInputGUI($this->txt('answers'), self::F_VOTE_MULTI_LINE_INPUT);
-        $te = $this->getTextInputGUI($this->txt('text'), self::F_FREE_INPUT);
-
-        $hi2 = new HiddenInputGUI(self::F_VOTE_ID);
-        $mli->addInput($te);
-        $mli->addInput($hi2);
-
-        $form->addItem($mli);
-        $array = array();
-        foreach ($xlvoVotes as $xlvoVote) {
-            $array[] = array(
-                self::F_FREE_INPUT => $xlvoVote->getFreeInput(),
-                self::F_VOTE_ID    => $xlvoVote->getId(),
-            );
-        }
-
-        $form->setValuesByArray(array(self::F_VOTE_MULTI_LINE_INPUT => $array));
-        $form->addCommandButton(self::CMD_SUBMIT, $this->txt('send'));
-
-        return $form;
-    }
-
-
     /**
      * @return ilButtonBase[]
      * @throws \srag\DIC\LiveVoting\Exception\DICException
@@ -223,14 +235,19 @@ class xlvoFreeInputGUI extends xlvoQuestionTypesGUI
         $b->setUrl('#');
 
         if ($this->getButtonsStates()[self::BUTTON_CATEGORIZE] == 'true') {
-            $b->setCaption(GlyphGUI::get('folder-close') . '&nbsp' . self::plugin()->translate('categorize_done', 'btn'), false);
+            $b->setCaption(
+                GlyphGUI::get('folder-close') . '&nbsp' . self::plugin()->translate('categorize_done', 'btn'),
+                false
+            );
         } else {
-            $b->setCaption(GlyphGUI::get('folder-open') . '&nbsp' . self::plugin()->translate('categorize', 'btn'), false);
+            $b->setCaption(
+                GlyphGUI::get('folder-open') . '&nbsp' . self::plugin()->translate('categorize', 'btn'),
+                false
+            );
         }
 
         return array($b);
     }
-
 
     /**
      * @param $button_id
@@ -240,16 +257,5 @@ class xlvoFreeInputGUI extends xlvoQuestionTypesGUI
     {
         $data = $this->getButtonsStates()[self::BUTTON_CATEGORIZE] == 'true' ? 'false' : 'true';
         $this->saveButtonState($button_id, $data);
-    }
-
-
-    /**
-     *
-     */
-    protected function render()
-    {
-        $form = $this->getForm();
-
-        $this->tpl->setVariable('FREE_INPUT_FORM', $form->getHTML());
     }
 }

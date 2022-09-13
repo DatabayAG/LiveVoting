@@ -45,7 +45,6 @@ class xlvoNumberRangeSubFormGUI extends xlvoSubFormGUI
     public const STEP_RANGE_DEFAULT_VALUE = 1;
     public const STEP_RANGE_INVALID_INFO = 'qtype_6_invalid_step_range';
 
-
     /**
      *
      */
@@ -57,17 +56,46 @@ class xlvoNumberRangeSubFormGUI extends xlvoSubFormGUI
         $percentageCheckBox->setChecked(((int) $this->getXlvoVoting()->getStartRange()) === 1);
 
         //create badge box option for the result display
-        $alternativeResultDisplayModeCheckBox = new ilCheckboxInputGUI($this->txt(self::OPTION_ALTERNATIVE_RESULT_DISPLAY_MODE), self::OPTION_ALTERNATIVE_RESULT_DISPLAY_MODE);
+        $alternativeResultDisplayModeCheckBox = new ilCheckboxInputGUI(
+            $this->txt(self::OPTION_ALTERNATIVE_RESULT_DISPLAY_MODE),
+            self::OPTION_ALTERNATIVE_RESULT_DISPLAY_MODE
+        );
         $alternativeResultDisplayModeCheckBox->setInfo($this->txt(self::OPTION_ALTERNATIVE_RESULT_DISPLAY_MODE_INFO));
-        $alternativeResultDisplayModeCheckBox->setChecked(((int) $this->getXlvoVoting()->getAltResultDisplayMode()) === 1);
+        $alternativeResultDisplayModeCheckBox->setChecked(
+            ((int) $this->getXlvoVoting()->getAltResultDisplayMode()) === 1
+        );
 
-        $displayMode = new ilRadioGroupInputGUI($this->txt(self::OPTION_ALTERNATIVE_RESULT_DISPLAY_MODE), self::OPTION_ALTERNATIVE_RESULT_DISPLAY_MODE);
-        $displayMode->addOption(new ilRadioOption($this->txt('display_mode_nr_'
-            . xlvoNumberRangeResultsGUI::DISPLAY_MODE_GROUPED_TEXT), xlvoNumberRangeResultsGUI::DISPLAY_MODE_GROUPED_TEXT));
-        $displayMode->addOption(new ilRadioOption($this->txt('display_mode_nr_'
-            . xlvoNumberRangeResultsGUI::DISPLAY_MODE_GROUPED_TEXT_EXTENDED), xlvoNumberRangeResultsGUI::DISPLAY_MODE_GROUPED_TEXT_EXTENDED));
-        $displayMode->addOption(new ilRadioOption($this->txt('display_mode_nr_'
-            . xlvoNumberRangeResultsGUI::DISPLAY_MODE_BARS), xlvoNumberRangeResultsGUI::DISPLAY_MODE_BARS));
+        $displayMode = new ilRadioGroupInputGUI(
+            $this->txt(self::OPTION_ALTERNATIVE_RESULT_DISPLAY_MODE),
+            self::OPTION_ALTERNATIVE_RESULT_DISPLAY_MODE
+        );
+        $displayMode->addOption(
+            new ilRadioOption(
+                $this->txt(
+                    'display_mode_nr_'
+                    . xlvoNumberRangeResultsGUI::DISPLAY_MODE_GROUPED_TEXT
+                ),
+                xlvoNumberRangeResultsGUI::DISPLAY_MODE_GROUPED_TEXT
+            )
+        );
+        $displayMode->addOption(
+            new ilRadioOption(
+                $this->txt(
+                    'display_mode_nr_'
+                    . xlvoNumberRangeResultsGUI::DISPLAY_MODE_GROUPED_TEXT_EXTENDED
+                ),
+                xlvoNumberRangeResultsGUI::DISPLAY_MODE_GROUPED_TEXT_EXTENDED
+            )
+        );
+        $displayMode->addOption(
+            new ilRadioOption(
+                $this->txt(
+                    'display_mode_nr_'
+                    . xlvoNumberRangeResultsGUI::DISPLAY_MODE_BARS
+                ),
+                xlvoNumberRangeResultsGUI::DISPLAY_MODE_BARS
+            )
+        );
 
         $displayMode->setValue($this->getXlvoVoting()->getAltResultDisplayMode());
 
@@ -102,7 +130,6 @@ class xlvoNumberRangeSubFormGUI extends xlvoSubFormGUI
         $this->addFormElement($stepRange);
     }
 
-
     /**
      * @param ilFormPropertyGUI $element
      * @param string|array      $value
@@ -135,7 +162,6 @@ class xlvoNumberRangeSubFormGUI extends xlvoSubFormGUI
         }
     }
 
-
     /**
      * @param ilFormPropertyGUI $element
      *
@@ -163,7 +189,6 @@ class xlvoNumberRangeSubFormGUI extends xlvoSubFormGUI
         }
     }
 
-
     /**
      * @return void
      * @throws xlvoSubFormGUIHandleFieldException
@@ -176,17 +201,21 @@ class xlvoNumberRangeSubFormGUI extends xlvoSubFormGUI
         $range = ($end - $start);
 
         if (!($start < $end && $start <= self::START_RANGE_MAX && $start >= self::START_RANGE_MIN)) {
-            throw new xlvoSubFormGUIHandleFieldException(self::plugin()->translate(self::START_RANGE_INVALID_INFO, "", [
-                self::START_RANGE_MIN,
-                self::START_RANGE_MAX
-            ]));
+            throw new xlvoSubFormGUIHandleFieldException(
+                self::plugin()->translate(self::START_RANGE_INVALID_INFO, "", [
+                    self::START_RANGE_MIN,
+                    self::START_RANGE_MAX
+                ])
+            );
         }
 
         if (!($end > $start && $end <= self::END_RANGE_MAX && $end >= self::END_RANGE_MIN)) {
-            throw new xlvoSubFormGUIHandleFieldException(self::plugin()->translate(self::END_RANGE_INVALID_INFO, "", [
-                self::END_RANGE_MIN,
-                self::END_RANGE_MAX
-            ]));
+            throw new xlvoSubFormGUIHandleFieldException(
+                self::plugin()->translate(self::END_RANGE_INVALID_INFO, "", [
+                    self::END_RANGE_MIN,
+                    self::END_RANGE_MAX
+                ])
+            );
         }
 
         if (!($step < $range && $range % $step === 0)) {

@@ -23,6 +23,7 @@ class xlvoJs
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     public const DEVELOP = false;
     public const API_URL = xlvoConf::API_URL;
@@ -57,7 +58,6 @@ class xlvoJs
      */
     protected $settings;
 
-
     /**
      * xlvoJs constructor.
      */
@@ -66,7 +66,6 @@ class xlvoJs
         $this->settings = new xlvoJsSettings();
     }
 
-
     /**
      * @return xlvoJs
      */
@@ -74,7 +73,6 @@ class xlvoJs
     {
         return new self();
     }
-
 
     /**
      * @param array $settings
@@ -90,7 +88,6 @@ class xlvoJs
         return $this;
     }
 
-
     /**
      * @param array $translations
      *
@@ -104,7 +101,6 @@ class xlvoJs
 
         return $this;
     }
-
 
     /**
      * @param xlvoGUI $xlvoGUI
@@ -122,11 +118,13 @@ class xlvoJs
 
         ParamManager::getInstance();
 
-        $this->settings->addSetting(self::BASE_URL_SETTING, self::dic()->ctrl()->getLinkTargetByClass($additional_classes, $cmd, null, true));
+        $this->settings->addSetting(
+            self::BASE_URL_SETTING,
+            self::dic()->ctrl()->getLinkTargetByClass($additional_classes, $cmd, null, true)
+        );
 
         return $this;
     }
-
 
     /**
      * @param string $name
@@ -140,7 +138,6 @@ class xlvoJs
         return $this;
     }
 
-
     /**
      * @param string $category
      *
@@ -153,7 +150,6 @@ class xlvoJs
         return $this;
     }
 
-
     /**
      * @param xlvoGUI $xlvoGUI
      * @param string  $cmd
@@ -162,11 +158,23 @@ class xlvoJs
      */
     public function ilias(xlvoGUI $xlvoGUI, $cmd = '')
     {
-        $this->settings->addSetting(self::BASE_URL_SETTING, self::dic()->ctrl()->getLinkTarget($xlvoGUI, $cmd, '', true));
+        $this->settings->addSetting(
+            self::BASE_URL_SETTING,
+            self::dic()->ctrl()->getLinkTarget($xlvoGUI, $cmd, '', true)
+        );
 
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function getLibraryURL()
+    {
+        $this->resolveLib();
+
+        return $this->lib;
+    }
 
     /**
      *
@@ -186,18 +194,6 @@ class xlvoJs
         }
     }
 
-
-    /**
-     * @return string
-     */
-    public function getLibraryURL()
-    {
-        $this->resolveLib();
-
-        return $this->lib;
-    }
-
-
     /**
      * @return $this
      */
@@ -210,76 +206,6 @@ class xlvoJs
 
         return $this;
     }
-
-
-    /**
-     * @param string $code
-     *
-     * @return $this
-     */
-    public function addOnLoadCode($code)
-    {
-        self::dic()->ui()->mainTemplate()->addOnLoadCode($code);
-
-        return $this;
-    }
-
-
-    /**
-     * @param string $method
-     * @param string $params
-     *
-     * @return $this
-     */
-    public function call($method, $params = '')
-    {
-        if (!$this->init) {
-            return $this;
-        }
-        $this->addOnLoadCode($this->getCallCode($method, $params));
-
-        return $this;
-    }
-
-
-    /**
-     * @return $this
-     */
-    public function setInitCode()
-    {
-        return $this->call("init", $this->settings->asJson());
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getRunCode()
-    {
-        return '<script>' . $this->getCallCode("run") . '</script>';
-    }
-
-
-    /**
-     * @return $thiss
-     */
-    public function setRunCode()
-    {
-        return $this->call("run");
-    }
-
-
-    /**
-     * @param string $method
-     * @param string $params
-     *
-     * @return string
-     */
-    public function getCallCode($method, $params = '')
-    {
-        return ilLiveVotingPlugin::PLUGIN_ID . $this->name . '.' . $method . '(' . $params . ');';
-    }
-
 
     /**
      * @param string $name_of_lib
@@ -299,12 +225,78 @@ class xlvoJs
     }
 
     /**
+     * @return $this
+     */
+    public function setInitCode()
+    {
+        return $this->call("init", $this->settings->asJson());
+    }
+
+    /**
+     * @param string $method
+     * @param string $params
+     *
+     * @return $this
+     */
+    public function call($method, $params = '')
+    {
+        if (!$this->init) {
+            return $this;
+        }
+        $this->addOnLoadCode($this->getCallCode($method, $params));
+
+        return $this;
+    }
+
+    /**
+     * @param string $code
+     *
+     * @return $this
+     */
+    public function addOnLoadCode($code)
+    {
+        self::dic()->ui()->mainTemplate()->addOnLoadCode($code);
+
+        return $this;
+    }
+
+    /**
+     * @param string $method
+     * @param string $params
+     *
+     * @return string
+     */
+    public function getCallCode($method, $params = '')
+    {
+        return ilLiveVotingPlugin::PLUGIN_ID . $this->name . '.' . $method . '(' . $params . ');';
+    }
+
+    /**
+     * @return string
+     */
+    public function getRunCode()
+    {
+        return '<script>' . $this->getCallCode("run") . '</script>';
+    }
+
+    /**
+     * @return $thiss
+     */
+    public function setRunCode()
+    {
+        return $this->call("run");
+    }
+
+    /**
      *
      */
     public function initMathJax()
     {
         $mathJaxSetting = new ilSetting("MathJax");
-        if (strpos($mathJaxSetting->get('path_to_mathjax'), 'mathjax@3') !== false) { // not sure if this check will work with >v3
+        if (strpos(
+            $mathJaxSetting->get('path_to_mathjax'),
+            'mathjax@3'
+        ) !== false) { // not sure if this check will work with >v3
             // mathjax v3 needs to be configured differently
             $this->addLibToHeader('mathjax_config.js');
         }

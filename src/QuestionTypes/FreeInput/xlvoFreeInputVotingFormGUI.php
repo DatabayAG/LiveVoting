@@ -17,7 +17,6 @@ class xlvoFreeInputVotingFormGUI extends xlvoVotingFormGUI
 {
     public const USE_F_COLUMNS = false;
 
-
     /**
      * @param xlvoVotingGUI $parent_gui
      * @param xlvoVoting    $xlvoVoting

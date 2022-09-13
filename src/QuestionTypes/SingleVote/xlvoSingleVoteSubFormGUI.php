@@ -33,7 +33,6 @@ class xlvoSingleVoteSubFormGUI extends xlvoSubFormGUI
      */
     protected $options = array();
 
-
     /**
      *
      */
@@ -61,7 +60,6 @@ class xlvoSingleVoteSubFormGUI extends xlvoSubFormGUI
 
         $this->addFormElement($xlvoMultiLineInputGUI);
     }
-
 
     /**
      * @param ilFormPropertyGUI $element
@@ -99,7 +97,6 @@ class xlvoSingleVoteSubFormGUI extends xlvoSubFormGUI
         }
     }
 
-
     /**
      * @param ilFormPropertyGUI $element
      *
@@ -120,7 +117,7 @@ class xlvoSingleVoteSubFormGUI extends xlvoSubFormGUI
                 $options = $this->getXlvoVoting()->getVotingOptions();
                 foreach ($options as $option) {
                     $array[] = array(
-                        self::F_ID   => $option->getId(),
+                        self::F_ID => $option->getId(),
                         self::F_TEXT => $option->getTextForEditor(),
                     );
                 }
@@ -134,7 +131,6 @@ class xlvoSingleVoteSubFormGUI extends xlvoSubFormGUI
                 break;
         }
     }
-
 
     /**
      *

@@ -33,6 +33,7 @@ class xlvoDisplayPlayerGUI
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var ilTemplate
@@ -51,7 +52,6 @@ class xlvoDisplayPlayerGUI
      */
     protected $manager;
 
-
     /**
      * xlvoDisplayPlayerGUI constructor.
      *
@@ -63,6 +63,23 @@ class xlvoDisplayPlayerGUI
         $this->tpl = self::plugin()->template('default/Player/tpl.player.html');
     }
 
+    /**
+     * @param bool $inner
+     *
+     * @return string
+     */
+    public function getHTML($inner = false)
+    {
+        $this->render();
+        $open = '<div id="xlvo-display-player" class="display-player panel panel-primary">';
+        $close = '</div>';
+
+        if ($inner) {
+            return $this->tpl->get();
+        } else {
+            return $open . $this->tpl->get() . $close;
+        }
+    }
 
     /**
      * @throws xlvoVotingManagerException
@@ -104,9 +121,12 @@ class xlvoDisplayPlayerGUI
         $this->tpl->setVariable('PIN', xlvoPin::formatPin($config->getPin()));
         if ($this->manager->getVotingConfig()->isShowAttendees()) {
             $this->tpl->setCurrentBlock('attendees');
-            $this->tpl->setVariable('ONLINE_TEXT', self::plugin()->translate("start_online", "", [
+            $this->tpl->setVariable(
+                'ONLINE_TEXT',
+                self::plugin()->translate("start_online", "", [
                 xlvoVoter::countVoters($this->manager->getPlayer()->getId())
-            ]));
+            ])
+            );
             $this->tpl->parseCurrentBlock();
         }
         if ($this->manager->getPlayer()->isCountDownRunning()) {
@@ -118,31 +138,14 @@ class xlvoDisplayPlayerGUI
         }
 
         //parse votes block
-        $this->tpl->setVariable('VOTERS_TEXT', self::plugin()->translate('player_voters_description', "", [$this->manager->countVoters()]));
+        $this->tpl->setVariable(
+            'VOTERS_TEXT',
+            self::plugin()->translate('player_voters_description', "", [$this->manager->countVoters()])
+        );
 
         $this->tpl->setVariable('COUNT', $this->manager->countVotings());
         $this->tpl->setVariable('POSITION', $this->manager->getVotingPosition());
     }
-
-
-    /**
-     * @param bool $inner
-     *
-     * @return string
-     */
-    public function getHTML($inner = false)
-    {
-        $this->render();
-        $open = '<div id="xlvo-display-player" class="display-player panel panel-primary">';
-        $close = '</div>';
-
-        if ($inner) {
-            return $this->tpl->get();
-        } else {
-            return $open . $this->tpl->get() . $close;
-        }
-    }
-
 
     /**
      * @param xlvoOption $option

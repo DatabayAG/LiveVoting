@@ -44,6 +44,29 @@ class xlvoVoter2GUI extends xlvoGUI
      */
     protected $manager;
 
+    /**
+     * @throws Exception
+     */
+    protected function checkPin()
+    {
+        $param_manager = ParamManager::getInstance();
+
+        try {
+            $pin = filter_input(INPUT_POST, self::F_PIN_INPUT);
+
+            xlvoPin::checkPinAndGetObjId($pin);
+
+            $param_manager->setPin($_POST[self::F_PIN_INPUT]);
+
+            self::dic()->ctrl()->redirect($this, self::CMD_START_VOTER_PLAYER);
+        } catch (xlvoVoterException $e) {
+            $param_manager->setPin('');
+
+            ilUtil::sendFailure($this->txt('msg_validation_error_pin_' . $e->getCode()));
+
+            $this->index();
+        }
+    }
 
     /**
      * @param string $key
@@ -54,49 +77,6 @@ class xlvoVoter2GUI extends xlvoGUI
     {
         return self::plugin()->translate($key, 'voter');
     }
-
-
-    /**
-     * @throws ilCtrlException
-     * @throws xlvoVotingManagerException
-     */
-    public function executeCommand()
-    {
-        $param_manager = ParamManager::getInstance();
-
-        $this->pin = $param_manager->getPin();
-        $this->manager = new xlvoVotingManager2($this->pin);
-        $nextClass = self::dic()->ctrl()->getNextClass();
-        switch ($nextClass) {
-            case '':
-                if (!$this->manager->getVotingConfig()->isAnonymous()
-                    && (is_null(self::dic()->user()) || self::dic()->user()->getId() == 13
-                        || self::dic()->user()->getId() == 0)
-                ) {
-                    //remove plugin path to get "real" web root otherwise we break installations with context paths -> http://demo.ilias.ch/test/goto.php
-                    $plugin_path = substr(self::plugin()->directory(), 2); // Remove ./
-                    $ilias_base_path = str_replace($plugin_path, '', ILIAS_HTTP_PATH);
-                    $login_target = "{$ilias_base_path}goto.php?target=xlvo_1_pin_" . $this->pin;
-
-                    //redirect
-                    self::dic()->ctrl()->redirectToURL($login_target);
-                } else {
-                    parent::executeCommand();
-                }
-
-                break;
-            default:
-                // Question-types
-                require_once self::dic()->ctrl()->lookupClassPath($nextClass);
-                $gui = new $nextClass();
-                if ($gui instanceof xlvoQuestionTypesGUI) {
-                    $gui->setManager($this->manager);
-                }
-                self::dic()->ctrl()->forwardCommand($gui);
-                break;
-        }
-    }
-
 
     /**
      *
@@ -129,32 +109,6 @@ class xlvoVoter2GUI extends xlvoGUI
         }
     }
 
-
-    /**
-     * @throws Exception
-     */
-    protected function checkPin()
-    {
-        $param_manager = ParamManager::getInstance();
-
-        try {
-            $pin = filter_input(INPUT_POST, self::F_PIN_INPUT);
-
-            xlvoPin::checkPinAndGetObjId($pin);
-
-            $param_manager->setPin($_POST[self::F_PIN_INPUT]);
-
-            self::dic()->ctrl()->redirect($this, self::CMD_START_VOTER_PLAYER);
-        } catch (xlvoVoterException $e) {
-            $param_manager->setPin('');
-
-            ilUtil::sendFailure($this->txt('msg_validation_error_pin_' . $e->getCode()));
-
-            $this->index();
-        }
-    }
-
-
     /**
      * @throws ilException
      */
@@ -176,32 +130,18 @@ class xlvoVoter2GUI extends xlvoGUI
         }
     }
 
-
-    /**
-     *
-     */
-    protected function getVotingData()
-    {
-        /**
-         * @var xlvoVotingConfig $showAttendees
-         */
-        $showAttendees = xlvoVotingConfig::find($this->manager->getVoting()->getObjId());
-        if ($showAttendees->isShowAttendees()) {
-            xlvoVoter::register($this->manager->getPlayer()->getId());
-        }
-
-        xlvoJsResponse::getInstance($this->manager->getPlayer()->getStdClassForVoter())->send();
-    }
-
-
     /**
      * @throws ilException
      */
     protected function initJsAndCss()
     {
         self::dic()->ui()->mainTemplate()->addCss(self::plugin()->directory() . '/templates/default/Voter/voter.css');
-        self::dic()->ui()->mainTemplate()->addCss(self::plugin()->directory() . '/templates/default/libs/bootstrap-slider.min.css');
-        self::dic()->ui()->mainTemplate()->addCss(self::plugin()->directory() . '/templates/default/QuestionTypes/NumberRange/number_range.css');
+        self::dic()->ui()->mainTemplate()->addCss(
+            self::plugin()->directory() . '/templates/default/libs/bootstrap-slider.min.css'
+        );
+        self::dic()->ui()->mainTemplate()->addCss(
+            self::plugin()->directory() . '/templates/default/QuestionTypes/NumberRange/number_range.css'
+        );
         iljQueryUtil::initjQueryUI();
 
         $t = array('player_seconds');
@@ -224,17 +164,36 @@ class xlvoVoter2GUI extends xlvoGUI
         $mathJaxSetting = new ilSetting("MathJax");
         $settings = array(
             'use_mathjax' => (bool) $mathJaxSetting->get("enable"),
-            'debug'       => self::DEBUG,
-            'delay'       => $delay,
+            'debug' => self::DEBUG,
+            'delay' => $delay,
         );
 
-        xlvoJs::getInstance()->api($this, array(ilUIPluginRouterGUI::class))->addSettings($settings)->name('Voter')->addTranslations($t)->init()
-            ->setRunCode();
+        xlvoJs::getInstance()->api($this, array(ilUIPluginRouterGUI::class))->addSettings($settings)->name(
+            'Voter'
+        )->addTranslations($t)->init()
+              ->setRunCode();
         foreach (xlvoQuestionTypes::getActiveTypes() as $type) {
-            xlvoQuestionTypesGUI::getInstance($this->manager, $type)->initJS($type == $this->manager->getVoting()->getVotingType());
+            xlvoQuestionTypesGUI::getInstance($this->manager, $type)->initJS(
+                $type == $this->manager->getVoting()->getVotingType()
+            );
         }
     }
 
+    /**
+     *
+     */
+    protected function getVotingData()
+    {
+        /**
+         * @var xlvoVotingConfig $showAttendees
+         */
+        $showAttendees = xlvoVotingConfig::find($this->manager->getVoting()->getObjId());
+        if ($showAttendees->isShowAttendees()) {
+            xlvoVoter::register($this->manager->getPlayer()->getId());
+        }
+
+        xlvoJsResponse::getInstance($this->manager->getPlayer()->getStdClassForVoter())->send();
+    }
 
     /**
      * @throws xlvoVotingManagerException
@@ -300,5 +259,46 @@ class xlvoVoter2GUI extends xlvoGUI
         }
         echo $tpl->get();
         exit;
+    }
+
+    /**
+     * @throws ilCtrlException
+     * @throws xlvoVotingManagerException
+     */
+    public function executeCommand()
+    {
+        $param_manager = ParamManager::getInstance();
+
+        $this->pin = $param_manager->getPin();
+        $this->manager = new xlvoVotingManager2($this->pin);
+        $nextClass = self::dic()->ctrl()->getNextClass();
+        switch ($nextClass) {
+            case '':
+                if (!$this->manager->getVotingConfig()->isAnonymous()
+                    && (is_null(self::dic()->user()) || self::dic()->user()->getId() == 13
+                        || self::dic()->user()->getId() == 0)
+                ) {
+                    //remove plugin path to get "real" web root otherwise we break installations with context paths -> http://demo.ilias.ch/test/goto.php
+                    $plugin_path = substr(self::plugin()->directory(), 2); // Remove ./
+                    $ilias_base_path = str_replace($plugin_path, '', ILIAS_HTTP_PATH);
+                    $login_target = "{$ilias_base_path}goto.php?target=xlvo_1_pin_" . $this->pin;
+
+                    //redirect
+                    self::dic()->ctrl()->redirectToURL($login_target);
+                } else {
+                    parent::executeCommand();
+                }
+
+                break;
+            default:
+                // Question-types
+                require_once self::dic()->ctrl()->lookupClassPath($nextClass);
+                $gui = new $nextClass();
+                if ($gui instanceof xlvoQuestionTypesGUI) {
+                    $gui->setManager($this->manager);
+                }
+                self::dic()->ctrl()->forwardCommand($gui);
+                break;
+        }
     }
 }

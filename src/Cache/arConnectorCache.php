@@ -23,11 +23,11 @@ class arConnectorCache extends arConnector
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const CACHE_TTL_SECONDS = 1800;
     private $arConnectorDB;
     private $cache;
-    public const CACHE_TTL_SECONDS = 1800;
-
 
     /**
      * arConnectorCache constructor.
@@ -40,7 +40,6 @@ class arConnectorCache extends arConnector
         $this->cache = xlvoCacheFactory::getInstance();
     }
 
-
     /**
      * @param ActiveRecord $ar
      *
@@ -51,7 +50,6 @@ class arConnectorCache extends arConnector
         return $this->arConnectorDB->nextID($ar);
     }
 
-
     /**
      * @param ActiveRecord $ar
      *
@@ -61,7 +59,6 @@ class arConnectorCache extends arConnector
     {
         return $this->arConnectorDB->checkConnection($ar);
     }
-
 
     /**
      * @param ActiveRecord  $ar
@@ -74,7 +71,6 @@ class arConnectorCache extends arConnector
         return $this->arConnectorDB->installDatabase($ar, $fields);
     }
 
-
     /**
      * @param ActiveRecord $ar
      *
@@ -84,7 +80,6 @@ class arConnectorCache extends arConnector
     {
         return $this->arConnectorDB->updateDatabase($ar);
     }
-
 
     /**
      * @param ActiveRecord $ar
@@ -96,7 +91,6 @@ class arConnectorCache extends arConnector
         return $this->arConnectorDB->resetDatabase($ar);
     }
 
-
     /**
      * @param ActiveRecord $ar
      *
@@ -106,7 +100,6 @@ class arConnectorCache extends arConnector
     {
         $this->arConnectorDB->truncateDatabase($ar);
     }
-
 
     /**
      * @param ActiveRecord $ar
@@ -119,7 +112,6 @@ class arConnectorCache extends arConnector
         return $this->arConnectorDB->checkTableExists($ar);
     }
 
-
     /**
      * @param ActiveRecord  $ar
      * @param               $field_name
@@ -130,7 +122,6 @@ class arConnectorCache extends arConnector
     {
         return $this->arConnectorDB->checkFieldExists($ar, $field_name);
     }
-
 
     /**
      * @param ActiveRecord  $ar
@@ -143,7 +134,6 @@ class arConnectorCache extends arConnector
     {
         return $this->arConnectorDB->removeField($ar, $field_name);
     }
-
 
     /**
      * @param ActiveRecord  $ar
@@ -158,7 +148,6 @@ class arConnectorCache extends arConnector
         return $this->arConnectorDB->renameField($ar, $old_name, $new_name);
     }
 
-
     /**
      * @param ActiveRecord $ar
      *
@@ -170,6 +159,22 @@ class arConnectorCache extends arConnector
         $this->storeActiveRecordInCache($ar);
     }
 
+    /**
+     * Stores an active record into the xlvoCache.
+     *
+     * @param ActiveRecord $ar
+     *
+     * @return void
+     */
+    private function storeActiveRecordInCache(ActiveRecord $ar)
+    {
+        if ($this->cache->isActive()) {
+            $key = $ar->getConnectorContainerName() . "_" . $ar->getPrimaryFieldValue();
+            $value = $ar->__asStdClass();
+
+            $this->cache->set($key, $value, self::CACHE_TTL_SECONDS);
+        }
+    }
 
     /**
      * @param ActiveRecord $ar
@@ -201,7 +206,6 @@ class arConnectorCache extends arConnector
         return $results;
     }
 
-
     /**
      * @param ActiveRecord $ar
      *
@@ -212,7 +216,6 @@ class arConnectorCache extends arConnector
         $this->arConnectorDB->update($ar);
         $this->storeActiveRecordInCache($ar);
     }
-
 
     /**
      * @param ActiveRecord $ar
@@ -229,7 +232,6 @@ class arConnectorCache extends arConnector
         }
     }
 
-
     /**
      * @param ActiveRecordList $arl
      *
@@ -240,7 +242,6 @@ class arConnectorCache extends arConnector
         return $this->arConnectorDB->readSet($arl);
     }
 
-
     /**
      * @param ActiveRecordList $arl
      *
@@ -250,7 +251,6 @@ class arConnectorCache extends arConnector
     {
         return $this->arConnectorDB->affectedRows($arl);
     }
-
 
     /**
      * @param $value
@@ -263,30 +263,11 @@ class arConnectorCache extends arConnector
         return $this->arConnectorDB->quote($value, $type);
     }
 
-
     /**
      * @param ActiveRecord $ar
      */
     public function updateIndices(ActiveRecord $ar)
     {
         $this->arConnectorDB->updateIndices($ar);
-    }
-
-
-    /**
-     * Stores an active record into the xlvoCache.
-     *
-     * @param ActiveRecord $ar
-     *
-     * @return void
-     */
-    private function storeActiveRecordInCache(ActiveRecord $ar)
-    {
-        if ($this->cache->isActive()) {
-            $key = $ar->getConnectorContainerName() . "_" . $ar->getPrimaryFieldValue();
-            $value = $ar->__asStdClass();
-
-            $this->cache->set($key, $value, self::CACHE_TTL_SECONDS);
-        }
     }
 }

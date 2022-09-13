@@ -18,12 +18,12 @@ class xlvoStyleDefinition
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var xlvoSkin
      */
     protected $skin;
-
 
     /**
      * xlvoStyleDefinition constructor.
@@ -33,7 +33,6 @@ class xlvoStyleDefinition
         $this->skin = new xlvoSkin();
     }
 
-
     /**
      * @return string
      */
@@ -41,7 +40,6 @@ class xlvoStyleDefinition
     {
         return $this->skin;
     }
-
 
     /**
      * @return string
@@ -61,6 +59,22 @@ class xlvoSkin
 {
     use DICTrait;
 
+    /**
+     * @return bool
+     */
+    public function hasStyle()
+    {
+        return false;
+    }
+
+    /**
+     * @return ilSkinStyleXML
+     */
+    public function getDefaultStyle()
+    {
+        // required with ilias 5.4
+        return new ilSkinStyleXML($this->getId(), $this->getName());
+    }
 
     /**
      * @return string
@@ -70,31 +84,11 @@ class xlvoSkin
         return 'delos';
     }
 
-
-    /**
-     * @return bool
-     */
-    public function hasStyle()
-    {
-        return false;
-    }
-
-
     /**
      * @return string
      */
     public function getName()
     {
         return 'Delos';
-    }
-
-
-    /**
-     * @return ilSkinStyleXML
-     */
-    public function getDefaultStyle()
-    {
-        // required with ilias 5.4
-        return new ilSkinStyleXML($this->getId(), $this->getName());
     }
 }

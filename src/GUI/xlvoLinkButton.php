@@ -20,15 +20,17 @@ class xlvoLinkButton extends ilLinkButton
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     public const TYPE_XLVO_LINK = 'xlvo_link';
 
-
-    public function clearClasses()
+    /**
+     * @return xlvoLinkButton
+     */
+    public static function getInstance()
     {
-        $this->css = array();
+        return new self(self::TYPE_XLVO_LINK);
     }
-
 
     /**
      * Prepare render
@@ -38,12 +40,8 @@ class xlvoLinkButton extends ilLinkButton
         $this->addCSSClass('btn');
     }
 
-
-    /**
-     * @return xlvoLinkButton
-     */
-    public static function getInstance()
+    public function clearClasses()
     {
-        return new self(self::TYPE_XLVO_LINK);
+        $this->css = array();
     }
 }

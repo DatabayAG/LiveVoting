@@ -29,6 +29,7 @@ class xlvoConfFormGUI extends ilPropertyFormGUI
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var xlvoConf
@@ -38,7 +39,6 @@ class xlvoConfFormGUI extends ilPropertyFormGUI
      * @var xlvoConfGUI
      */
     protected $parent_gui;
-
 
     /**
      * xlvoConfFormGUI constructor.
@@ -53,7 +53,6 @@ class xlvoConfFormGUI extends ilPropertyFormGUI
         $this->initForm();
     }
 
-
     /**
      *
      */
@@ -63,11 +62,21 @@ class xlvoConfFormGUI extends ilPropertyFormGUI
         $this->setFormAction(self::dic()->ctrl()->getFormAction($this->parent_gui));
         $this->initButtons();
 
-        $use_shortlink_vote = new ilCheckboxInputGUI($this->parent_gui->txt(xlvoConf::F_ALLOW_SHORTLINK_VOTE), xlvoConf::F_ALLOW_SHORTLINK_VOTE);
-        $use_shortlink_vote->setInfo($this->parent_gui->txt(xlvoConf::F_ALLOW_SHORTLINK_VOTE . '_info') . '<br><br><span class="label label-default">'
-            . xlvoConf::REWRITE_RULE_VOTE . '</span><br><br>');
+        $use_shortlink_vote = new ilCheckboxInputGUI(
+            $this->parent_gui->txt(xlvoConf::F_ALLOW_SHORTLINK_VOTE),
+            xlvoConf::F_ALLOW_SHORTLINK_VOTE
+        );
+        $use_shortlink_vote->setInfo(
+            $this->parent_gui->txt(
+                xlvoConf::F_ALLOW_SHORTLINK_VOTE . '_info'
+            ) . '<br><br><span class="label label-default">'
+            . xlvoConf::REWRITE_RULE_VOTE . '</span><br><br>'
+        );
 
-        $shortlink_vote = new TextInputGUI($this->parent_gui->txt(xlvoConf::F_ALLOW_SHORTLINK_VOTE_LINK), xlvoConf::F_ALLOW_SHORTLINK_VOTE_LINK);
+        $shortlink_vote = new TextInputGUI(
+            $this->parent_gui->txt(xlvoConf::F_ALLOW_SHORTLINK_VOTE_LINK),
+            xlvoConf::F_ALLOW_SHORTLINK_VOTE_LINK
+        );
         $shortlink_vote->setInfo($this->parent_gui->txt(xlvoConf::F_ALLOW_SHORTLINK_VOTE_LINK . '_info'));
         $use_shortlink_vote->addSubItem($shortlink_vote);
 
@@ -75,22 +84,36 @@ class xlvoConfFormGUI extends ilPropertyFormGUI
         $base_url_vote->setInfo($this->parent_gui->txt(xlvoConf::F_BASE_URL_VOTE . '_info'));
         $use_shortlink_vote->addSubItem($base_url_vote);
 
-        $use_shortlink_presenter = new ilCheckboxInputGUI($this->parent_gui->txt(xlvoConf::F_ALLOW_SHORTLINK_PRESENTER), xlvoConf::F_ALLOW_SHORTLINK_PRESENTER);
-        $use_shortlink_presenter->setInfo($this->parent_gui->txt(xlvoConf::F_ALLOW_SHORTLINK_PRESENTER . '_info')
-            . '<br><br><span class="label label-default">' . xlvoConf::REWRITE_RULE_PRESENTER . '</span><br><br>');
+        $use_shortlink_presenter = new ilCheckboxInputGUI(
+            $this->parent_gui->txt(xlvoConf::F_ALLOW_SHORTLINK_PRESENTER),
+            xlvoConf::F_ALLOW_SHORTLINK_PRESENTER
+        );
+        $use_shortlink_presenter->setInfo(
+            $this->parent_gui->txt(xlvoConf::F_ALLOW_SHORTLINK_PRESENTER . '_info')
+            . '<br><br><span class="label label-default">' . xlvoConf::REWRITE_RULE_PRESENTER . '</span><br><br>'
+        );
 
-        $shortlink_presenter = new TextInputGUI($this->parent_gui->txt(xlvoConf::F_ALLOW_SHORTLINK_PRESENTER_LINK), xlvoConf::F_ALLOW_SHORTLINK_PRESENTER_LINK);
+        $shortlink_presenter = new TextInputGUI(
+            $this->parent_gui->txt(xlvoConf::F_ALLOW_SHORTLINK_PRESENTER_LINK),
+            xlvoConf::F_ALLOW_SHORTLINK_PRESENTER_LINK
+        );
         $shortlink_presenter->setInfo($this->parent_gui->txt(xlvoConf::F_ALLOW_SHORTLINK_PRESENTER_LINK . '_info'));
         $use_shortlink_presenter->addSubItem($shortlink_presenter);
 
-        $request_frequency = new ilNumberInputGUI($this->parent_gui->txt(xlvoConf::F_REQUEST_FREQUENCY), xlvoConf::F_REQUEST_FREQUENCY);
+        $request_frequency = new ilNumberInputGUI(
+            $this->parent_gui->txt(xlvoConf::F_REQUEST_FREQUENCY),
+            xlvoConf::F_REQUEST_FREQUENCY
+        );
         $request_frequency->setInfo($this->parent_gui->txt(xlvoConf::F_REQUEST_FREQUENCY . '_info'));
         $request_frequency->allowDecimals(true);
         $request_frequency->setMinValue(xlvoConf::MIN_CLIENT_UPDATE_FREQUENCY, false);
         $request_frequency->setMaxValue(xlvoConf::MAX_CLIENT_UPDATE_FREQUENCY, false);
 
         //global cache setting
-        $global_cache_enabled = new ilCheckboxInputGUI($this->parent_gui->txt(xlvoConf::F_USE_GLOBAL_CACHE), xlvoConf::F_USE_GLOBAL_CACHE);
+        $global_cache_enabled = new ilCheckboxInputGUI(
+            $this->parent_gui->txt(xlvoConf::F_USE_GLOBAL_CACHE),
+            xlvoConf::F_USE_GLOBAL_CACHE
+        );
         $global_cache_enabled->setInfo($this->parent_gui->txt(xlvoConf::F_USE_GLOBAL_CACHE . '_info'));
 
         // Results API
@@ -100,7 +123,7 @@ class xlvoConfFormGUI extends ilPropertyFormGUI
         $api_type = new ilSelectInputGUI($this->parent_gui->txt(xlvoConf::F_API_TYPE), xlvoConf::F_API_TYPE);
         $api_type->setOptions(array(
             xlvoApi::TYPE_JSON => 'JSON',
-            xlvoApi::TYPE_XML  => 'XML',
+            xlvoApi::TYPE_XML => 'XML',
         ));
         $result_api->addSubItem($api_type);
 
@@ -110,15 +133,30 @@ class xlvoConfFormGUI extends ilPropertyFormGUI
         $result_api->addSubItem($api_token);
 
         // PPT Export
-        $ppt_export = new ilCheckboxInputGUI($this->parent_gui->txt(xlvoConf::F_ACTIVATE_POWERPOINT_EXPORT), xlvoConf::F_ACTIVATE_POWERPOINT_EXPORT);
-        $ppt_export->setInfo(htmlspecialchars($this->parent_gui->txt(xlvoConf::F_ACTIVATE_POWERPOINT_EXPORT . '_info')) . '<br><br><i>'
-            . htmlspecialchars($this->parent_gui->txt(xlvoConf::F_ACTIVATE_POWERPOINT_EXPORT . "_info_manual")) . '</i><ol>'
-            . implode("", array_map(function ($step) {
-                return '<li>' . htmlspecialchars($this->parent_gui->txt(xlvoConf::F_ACTIVATE_POWERPOINT_EXPORT . "_info_manual_" . $step)) . '</li>';
-            }, range(1, 4))) . '</ol>');
+        $ppt_export = new ilCheckboxInputGUI(
+            $this->parent_gui->txt(xlvoConf::F_ACTIVATE_POWERPOINT_EXPORT),
+            xlvoConf::F_ACTIVATE_POWERPOINT_EXPORT
+        );
+        $ppt_export->setInfo(
+            htmlspecialchars($this->parent_gui->txt(xlvoConf::F_ACTIVATE_POWERPOINT_EXPORT . '_info')) . '<br><br><i>'
+            . htmlspecialchars(
+                $this->parent_gui->txt(xlvoConf::F_ACTIVATE_POWERPOINT_EXPORT . "_info_manual")
+            ) . '</i><ol>'
+            . implode(
+                "",
+                array_map(function ($step) {
+                    return '<li>' . htmlspecialchars(
+                        $this->parent_gui->txt(xlvoConf::F_ACTIVATE_POWERPOINT_EXPORT . "_info_manual_" . $step)
+                    ) . '</li>';
+                }, range(1, 4))
+            ) . '</ol>'
+        );
 
         // Use serif font for PIN's
-        $use_serif_font_for_pins = new ilCheckboxInputGUI($this->parent_gui->txt(xlvoConf::F_USE_SERIF_FONT_FOR_PINS), xlvoConf::F_USE_SERIF_FONT_FOR_PINS);
+        $use_serif_font_for_pins = new ilCheckboxInputGUI(
+            $this->parent_gui->txt(xlvoConf::F_USE_SERIF_FONT_FOR_PINS),
+            xlvoConf::F_USE_SERIF_FONT_FOR_PINS
+        );
         $use_serif_font_for_pins->setInfo($this->parent_gui->txt(xlvoConf::F_USE_SERIF_FONT_FOR_PINS . '_info'));
 
         //add items to GUI
@@ -131,7 +169,6 @@ class xlvoConfFormGUI extends ilPropertyFormGUI
         $this->addItem($use_serif_font_for_pins);
     }
 
-
     /**
      *
      */
@@ -140,7 +177,6 @@ class xlvoConfFormGUI extends ilPropertyFormGUI
         $this->addCommandButton(xlvoConfGUI::CMD_UPDATE, $this->parent_gui->txt(xlvoConfGUI::CMD_UPDATE));
         $this->addCommandButton(xlvoConfGUI::CMD_CANCEL, $this->parent_gui->txt(xlvoConfGUI::CMD_CANCEL));
     }
-
 
     /**
      *
@@ -153,7 +189,6 @@ class xlvoConfFormGUI extends ilPropertyFormGUI
         }
         $this->setValuesByArray($array);
     }
-
 
     /**
      * @param $item
@@ -174,6 +209,25 @@ class xlvoConfFormGUI extends ilPropertyFormGUI
         }
     }
 
+    /**
+     * @param $item
+     *
+     * @return bool
+     */
+    public static function checkItem($item)
+    {
+        return !$item instanceof ilFormSectionHeaderGUI && !$item instanceof ilNonEditableValueGUI;
+    }
+
+    /**
+     * @param $item
+     *
+     * @return bool
+     */
+    public static function checkForSubItem($item)
+    {
+        return !$item instanceof ilFormSectionHeaderGUI and !$item instanceof ilMultiSelectInputGUI;
+    }
 
     /**
      * @return bool
@@ -191,7 +245,6 @@ class xlvoConfFormGUI extends ilPropertyFormGUI
         return true;
     }
 
-
     /**
      * @param $item
      */
@@ -206,27 +259,5 @@ class xlvoConfFormGUI extends ilPropertyFormGUI
                 }
             }
         }
-    }
-
-
-    /**
-     * @param $item
-     *
-     * @return bool
-     */
-    public static function checkForSubItem($item)
-    {
-        return !$item instanceof ilFormSectionHeaderGUI and !$item instanceof ilMultiSelectInputGUI;
-    }
-
-
-    /**
-     * @param $item
-     *
-     * @return bool
-     */
-    public static function checkItem($item)
-    {
-        return !$item instanceof ilFormSectionHeaderGUI && !$item instanceof ilNonEditableValueGUI;
     }
 }

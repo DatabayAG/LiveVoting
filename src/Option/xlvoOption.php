@@ -22,27 +22,6 @@ class xlvoOption extends CachingActiveRecord
     public const STAT_INACTIVE = 0;
     public const STAT_ACTIVE = 1;
     public const TABLE_NAME = 'rep_robj_xlvo_option_n';
-
-
-    /**
-     * @return string
-     */
-    public function getConnectorContainerName()
-    {
-        return self::TABLE_NAME;
-    }
-
-
-    /**
-     * @return string
-     * @deprecated
-     */
-    public static function returnDbTableName()
-    {
-        return self::TABLE_NAME;
-    }
-
-
     /**
      * @var string
      *
@@ -51,53 +30,6 @@ class xlvoOption extends CachingActiveRecord
      * @db_length           256
      */
     protected $text;
-
-
-    /**
-     * @return string
-     */
-    public function getText()
-    {
-        return $this->text;
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getTextForPresentation()
-    {
-        return ilUtil::prepareTextareaOutput($this->getTextForEditor(), true);
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getTextForEditor()
-    {
-        return ilRTE::_replaceMediaObjectImageSrc($this->text, 1);
-    }
-
-
-    /**
-     * @param string $text
-     */
-    public function setText($text)
-    {
-        $this->text = $text;
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getCipher()
-    {
-        return chr($this->getPosition() + 64);
-    }
-
-
     /**
      * @var int
      *
@@ -149,78 +81,46 @@ class xlvoOption extends CachingActiveRecord
      */
     protected $correct_position = null;
 
-
     /**
-     * @return int
+     * @return string
+     * @deprecated
      */
-    public function getId()
+    public static function returnDbTableName()
     {
-        return $this->id;
+        return self::TABLE_NAME;
     }
-
-
-    /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
 
     /**
      * @return string
      */
-    public function getVotingId()
+    public function getConnectorContainerName()
     {
-        return $this->voting_id;
+        return self::TABLE_NAME;
     }
-
 
     /**
-     * @param string $voting_id
+     * @return string
      */
-    public function setVotingId($voting_id)
+    public function getTextForPresentation()
     {
-        $this->voting_id = $voting_id;
+        return ilUtil::prepareTextareaOutput($this->getTextForEditor(), true);
     }
-
 
     /**
-     * @return int
+     * @return string
      */
-    public function getType()
+    public function getTextForEditor()
     {
-        return $this->type;
+        return ilRTE::_replaceMediaObjectImageSrc($this->text, 1);
     }
-
 
     /**
-     * @param int $type
+     * @return string
      */
-    public function setType($type)
+    public function getCipher()
     {
-        $this->type = $type;
+        return chr($this->getPosition() + 64);
     }
-
-
-    /**
-     * @return int
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-
-    /**
-     * @param int $status
-     */
-    public function setStatus($status)
-    {
-        $this->status = $status;
-    }
-
 
     /**
      * @return int
@@ -230,7 +130,6 @@ class xlvoOption extends CachingActiveRecord
         return $this->position;
     }
 
-
     /**
      * @param int $position
      */
@@ -239,6 +138,53 @@ class xlvoOption extends CachingActiveRecord
         $this->position = $position;
     }
 
+    /**
+     * @return string
+     */
+    public function getVotingId()
+    {
+        return $this->voting_id;
+    }
+
+    /**
+     * @param string $voting_id
+     */
+    public function setVotingId($voting_id)
+    {
+        $this->voting_id = $voting_id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param int $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param int $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
 
     /**
      * @return string
@@ -248,7 +194,6 @@ class xlvoOption extends CachingActiveRecord
         return $this->correct_position;
     }
 
-
     /**
      * @param string $correct_position
      */
@@ -256,7 +201,6 @@ class xlvoOption extends CachingActiveRecord
     {
         $this->correct_position = $correct_position;
     }
-
 
     /**
      * @return stdClass
@@ -269,5 +213,37 @@ class xlvoOption extends CachingActiveRecord
         $class->Position = (int) $this->getPosition();
 
         return $class;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getText()
+    {
+        return $this->text;
+    }
+
+    /**
+     * @param string $text
+     */
+    public function setText($text)
+    {
+        $this->text = $text;
     }
 }

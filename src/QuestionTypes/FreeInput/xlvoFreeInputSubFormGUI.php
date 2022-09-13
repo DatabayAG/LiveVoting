@@ -25,7 +25,6 @@ class xlvoFreeInputSubFormGUI extends xlvoSubFormGUI
     public const ANSWER_FIELD_SINGLE_LINE = 1;
     public const ANSWER_FIELD_MULTI_LINE = 2;
 
-
     /**
      *
      */
@@ -38,14 +37,19 @@ class xlvoFreeInputSubFormGUI extends xlvoSubFormGUI
         $answer_field = new ilRadioGroupInputGUI($this->txt(self::F_ANSWER_FIELD), self::F_ANSWER_FIELD);
         //$answer_field->setInfo($this->txt(self::F_ANSWER_FIELD . '_info'));
         $this->addFormElement($answer_field);
-        $answer_field_single_line = new ilRadioOption($this->txt(self::F_ANSWER_FIELD . '_single_line'), self::ANSWER_FIELD_SINGLE_LINE);
+        $answer_field_single_line = new ilRadioOption(
+            $this->txt(self::F_ANSWER_FIELD . '_single_line'),
+            self::ANSWER_FIELD_SINGLE_LINE
+        );
         $answer_field_single_line->setInfo($this->txt(self::F_ANSWER_FIELD . '_single_line_info'));
         $answer_field->addOption($answer_field_single_line);
-        $answer_field_multi_line = new ilRadioOption($this->txt(self::F_ANSWER_FIELD . '_multi_line'), self::ANSWER_FIELD_MULTI_LINE);
+        $answer_field_multi_line = new ilRadioOption(
+            $this->txt(self::F_ANSWER_FIELD . '_multi_line'),
+            self::ANSWER_FIELD_MULTI_LINE
+        );
         $answer_field_multi_line->setInfo($this->txt(self::F_ANSWER_FIELD . '_multi_line_info'));
         $answer_field->addOption($answer_field_multi_line);
     }
-
 
     /**
      * @param ilFormPropertyGUI $element
@@ -66,7 +70,6 @@ class xlvoFreeInputSubFormGUI extends xlvoSubFormGUI
                 throw new ilException('Unknown element can not get the value.');
         }
     }
-
 
     /**
      * @param ilFormPropertyGUI $element

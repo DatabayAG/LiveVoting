@@ -23,6 +23,7 @@ final class ParamManager
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     public const PARAM_BASE_CLASS_NAME = ilUIPluginRouterGUI::class;
     public const PARAM_REF_ID = 'ref_id';
@@ -60,7 +61,6 @@ final class ParamManager
      */
     protected $ppt = false;
 
-
     /**
      * ParamManager constructor
      */
@@ -71,19 +71,17 @@ final class ParamManager
         $this->loadAndPersistAllParams();
     }
 
-
     /**
-     * @return self
+     *
      */
-    public static function getInstance()
+    private function loadBaseClassIfNecessary()
     {
-        if (!isset(self::$instance)) {
-            self::$instance = new self();
+        $baseClass = filter_input(INPUT_GET, "baseClass");
+
+        if (empty($baseClass)) {
+            self::dic()->ctrl()->initBaseClass(ilUIPluginRouterGUI::class);
         }
-
-        return self::$instance;
     }
-
 
     /**
      *
@@ -116,19 +114,17 @@ final class ParamManager
         }
     }
 
-
     /**
-     *
+     * @return self
      */
-    private function loadBaseClassIfNecessary()
+    public static function getInstance()
     {
-        $baseClass = filter_input(INPUT_GET, "baseClass");
-
-        if (empty($baseClass)) {
-            self::dic()->ctrl()->initBaseClass(ilUIPluginRouterGUI::class);
+        if (!isset(self::$instance)) {
+            self::$instance = new self();
         }
-    }
 
+        return self::$instance;
+    }
 
     /**
      * @return int
@@ -150,7 +146,6 @@ final class ParamManager
         return $this->ref_id;
     }
 
-
     /**
      * @param int $ref_id
      */
@@ -161,7 +156,6 @@ final class ParamManager
         self::dic()->ctrl()->setParameterByClass(self::PARAM_BASE_CLASS_NAME, self::PARAM_REF_ID, $ref_id);
     }
 
-
     /**
      * @return string
      */
@@ -169,7 +163,6 @@ final class ParamManager
     {
         return $this->pin;
     }
-
 
     /**
      * @param string $pin
@@ -181,7 +174,6 @@ final class ParamManager
         self::dic()->ctrl()->setParameterByClass(self::PARAM_BASE_CLASS_NAME, self::PARAM_PIN, $pin);
     }
 
-
     /**
      * @return string
      */
@@ -189,7 +181,6 @@ final class ParamManager
     {
         return $this->puk;
     }
-
 
     /**
      * @param string $puk
@@ -201,7 +192,6 @@ final class ParamManager
         self::dic()->ctrl()->setParameterByClass(self::PARAM_BASE_CLASS_NAME, self::PARAM_PUK, $puk);
     }
 
-
     /**
      * @return int
      */
@@ -209,7 +199,6 @@ final class ParamManager
     {
         return $this->voting;
     }
-
 
     /**
      * @param int $voting
@@ -221,7 +210,6 @@ final class ParamManager
         self::dic()->ctrl()->setParameterByClass(self::PARAM_BASE_CLASS_NAME, self::PARAM_VOTING, $voting);
     }
 
-
     /**
      * @return bool
      */
@@ -229,7 +217,6 @@ final class ParamManager
     {
         return $this->ppt;
     }
-
 
     /**
      * @param bool $ppt

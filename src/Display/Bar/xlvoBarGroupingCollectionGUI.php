@@ -39,7 +39,6 @@ final class xlvoBarGroupingCollectionGUI extends xlvoBarCollectionGUI
      */
     private $sorted = false;
 
-
     /**
      * Adds a bar to the grouping collection.
      *
@@ -61,6 +60,40 @@ final class xlvoBarGroupingCollectionGUI extends xlvoBarCollectionGUI
         }
     }
 
+    /**
+     * Checks the collection state. If the collection is no longer
+     * usable a ilException is thrown. This method does nothing, if
+     * the collection is ready to go.
+     *
+     * @return void
+     * @throws ilException If the bars are already rendered.
+     */
+    private function checkCollectionState()
+    {
+        if ($this->rendered) {
+            throw new ilException(
+                "The bars are already rendered, therefore the collection can't be modified or rendered."
+            );
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRemovable()
+    {
+        return $this->removable;
+    }
+
+    /**
+     * @param bool $removable
+     *
+     * @return static
+     */
+    public function setRemovable($removable)
+    {
+        $this->removable = $removable;
+    }
 
     /**
      * @param bool $enabled
@@ -69,7 +102,6 @@ final class xlvoBarGroupingCollectionGUI extends xlvoBarCollectionGUI
     {
         $this->sorted = $enabled;
     }
-
 
     /**
      * Render the template.
@@ -105,162 +137,6 @@ final class xlvoBarGroupingCollectionGUI extends xlvoBarCollectionGUI
 
         return $this->tpl->get();
     }
-
-
-    /**
-     * Add a solution to the collection.
-     *
-     * @param string $html The html which should be displayed as the solution.
-     *
-     * @return void
-     * @throws ilException If the bars are already rendered.
-     */
-    public function addSolution($html)
-    {
-        $this->checkCollectionState();
-        parent::addSolution($html);
-    }
-
-
-    /**
-     * Set the total votes of this question.
-     *
-     * @param int $total_votes The total votes done.
-     *
-     * @return void
-     * @throws ilException If the bars are already rendered.
-     */
-    public function setTotalVotes($total_votes)
-    {
-        $this->checkCollectionState();
-        parent::setTotalVotes($total_votes);
-    }
-
-
-    /**
-     * Indicates if the voters should be shown by the collection.
-     *
-     * @param bool $show_total_votes Should the total votes be displayed?
-     *
-     * @return void
-     * @throws ilException If the bars are already rendered.
-     */
-    public function setShowTotalVotes($show_total_votes)
-    {
-        $this->checkCollectionState();
-        parent::setShowTotalVotes($show_total_votes);
-    }
-
-
-    /**
-     * Set the number of the voter participating at this question.
-     *
-     * @param int $total_voters The number of voters.
-     *
-     * @return void
-     * @throws ilException If the bars are already rendered.
-     */
-    public function setTotalVoters($total_voters)
-    {
-        $this->checkCollectionState();
-        parent::setTotalVoters($total_voters);
-    }
-
-
-    /**
-     * @param bool $show_total_voters
-     *
-     * @return void
-     * @throws ilException If the bars are already rendered.
-     */
-    public function setShowTotalVoters($show_total_voters)
-    {
-        $this->checkCollectionState();
-        parent::setShowTotalVoters($show_total_voters);
-    }
-
-
-    /**
-     * This method renders the bars.
-     *
-     * @param xlvoBarFreeInputsGUI $bar   The bar which should be rendered into the template.
-     * @param int                  $count The times the bar got grouped.
-     *
-     * @return void
-     */
-    private function renderBar(xlvoBarFreeInputsGUI $bar, $count)
-    {
-        $bar->setOccurrences($count);
-
-        $this->tpl->setCurrentBlock(self::TEMPLATE_BLOCK_NAME);
-        $this->tpl->setVariable('BAR', $bar->getHTML());
-        $this->tpl->parseCurrentBlock();
-    }
-
-
-    /**
-     * Count the occurrences of bar within the given collection of bar.
-     *
-     * @param xlvoBarFreeInputsGUI[] $bars The collection which should be searched
-     * @param xlvoBarFreeInputsGUI   $bar
-     *
-     * @return int The times bar was found in bars.
-     */
-    private function countItemOccurence(array $bars, xlvoBarFreeInputsGUI $bar)
-    {
-        $count = 0;
-        foreach ($bars as $entry) {
-            if ($bar->equals($entry)) {
-                $count++;
-            }
-        }
-
-        return $count;
-    }
-
-
-    /**
-     * Filter the array by freetext input.
-     * The filter is case insensitive.
-     *
-     * @param xlvoBarFreeInputsGUI[] $bars The array which should be filtered.
-     *
-     * @return xlvoBarFreeInputsGUI[] The new array which contains only unique bars.
-     */
-    private function makeUniqueArray(array $bars)
-    {
-        /**
-         * @var xlvoBarFreeInputsGUI $filter
-         */
-        $uniqueBars = [];
-
-        while (count($bars) > 0) {
-            $bar = reset($bars);
-            $bars = array_filter($bars, function ($item) use ($bar) {
-                return !$bar->equals($item);
-            });
-            $uniqueBars[] = $bar;
-        }
-
-        return $uniqueBars;
-    }
-
-
-    /**
-     * Checks the collection state. If the collection is no longer
-     * usable a ilException is thrown. This method does nothing, if
-     * the collection is ready to go.
-     *
-     * @return void
-     * @throws ilException If the bars are already rendered.
-     */
-    private function checkCollectionState()
-    {
-        if ($this->rendered) {
-            throw new ilException("The bars are already rendered, therefore the collection can't be modified or rendered.");
-        }
-    }
-
 
     /**
      * Creates a copy with unique elements of the supplied array and sorts the content afterwards.
@@ -306,23 +182,134 @@ final class xlvoBarGroupingCollectionGUI extends xlvoBarCollectionGUI
         return $sortedResult;
     }
 
-
     /**
-     * @return bool
+     * Filter the array by freetext input.
+     * The filter is case insensitive.
+     *
+     * @param xlvoBarFreeInputsGUI[] $bars The array which should be filtered.
+     *
+     * @return xlvoBarFreeInputsGUI[] The new array which contains only unique bars.
      */
-    public function isRemovable()
+    private function makeUniqueArray(array $bars)
     {
-        return $this->removable;
+        /**
+         * @var xlvoBarFreeInputsGUI $filter
+         */
+        $uniqueBars = [];
+
+        while (count($bars) > 0) {
+            $bar = reset($bars);
+            $bars = array_filter($bars, function ($item) use ($bar) {
+                return !$bar->equals($item);
+            });
+            $uniqueBars[] = $bar;
+        }
+
+        return $uniqueBars;
     }
 
+    /**
+     * Count the occurrences of bar within the given collection of bar.
+     *
+     * @param xlvoBarFreeInputsGUI[] $bars The collection which should be searched
+     * @param xlvoBarFreeInputsGUI   $bar
+     *
+     * @return int The times bar was found in bars.
+     */
+    private function countItemOccurence(array $bars, xlvoBarFreeInputsGUI $bar)
+    {
+        $count = 0;
+        foreach ($bars as $entry) {
+            if ($bar->equals($entry)) {
+                $count++;
+            }
+        }
+
+        return $count;
+    }
 
     /**
-     * @param bool $removable
+     * This method renders the bars.
      *
-     * @return static
+     * @param xlvoBarFreeInputsGUI $bar The bar which should be rendered into the template.
+     * @param int                  $count The times the bar got grouped.
+     *
+     * @return void
      */
-    public function setRemovable($removable)
+    private function renderBar(xlvoBarFreeInputsGUI $bar, $count)
     {
-        $this->removable = $removable;
+        $bar->setOccurrences($count);
+
+        $this->tpl->setCurrentBlock(self::TEMPLATE_BLOCK_NAME);
+        $this->tpl->setVariable('BAR', $bar->getHTML());
+        $this->tpl->parseCurrentBlock();
+    }
+
+    /**
+     * Add a solution to the collection.
+     *
+     * @param string $html The html which should be displayed as the solution.
+     *
+     * @return void
+     * @throws ilException If the bars are already rendered.
+     */
+    public function addSolution($html)
+    {
+        $this->checkCollectionState();
+        parent::addSolution($html);
+    }
+
+    /**
+     * Set the total votes of this question.
+     *
+     * @param int $total_votes The total votes done.
+     *
+     * @return void
+     * @throws ilException If the bars are already rendered.
+     */
+    public function setTotalVotes($total_votes)
+    {
+        $this->checkCollectionState();
+        parent::setTotalVotes($total_votes);
+    }
+
+    /**
+     * Indicates if the voters should be shown by the collection.
+     *
+     * @param bool $show_total_votes Should the total votes be displayed?
+     *
+     * @return void
+     * @throws ilException If the bars are already rendered.
+     */
+    public function setShowTotalVotes($show_total_votes)
+    {
+        $this->checkCollectionState();
+        parent::setShowTotalVotes($show_total_votes);
+    }
+
+    /**
+     * Set the number of the voter participating at this question.
+     *
+     * @param int $total_voters The number of voters.
+     *
+     * @return void
+     * @throws ilException If the bars are already rendered.
+     */
+    public function setTotalVoters($total_voters)
+    {
+        $this->checkCollectionState();
+        parent::setTotalVoters($total_voters);
+    }
+
+    /**
+     * @param bool $show_total_voters
+     *
+     * @return void
+     * @throws ilException If the bars are already rendered.
+     */
+    public function setShowTotalVoters($show_total_voters)
+    {
+        $this->checkCollectionState();
+        parent::setShowTotalVoters($show_total_voters);
     }
 }

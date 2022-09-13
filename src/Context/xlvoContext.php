@@ -19,17 +19,16 @@ class xlvoContext extends ilContext
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     public const XLVO_CONTEXT = 'xlvo_context';
     public const CONTEXT_PIN = 1;
     public const CONTEXT_ILIAS = 2;
 
-
     public function __construct()
     {
         self::init(xlvoContextLiveVoting::class);
     }
-
 
     /**
      * @param int $context
@@ -47,20 +46,6 @@ class xlvoContext extends ilContext
 
         return true;
     }
-
-
-    /**
-     * @return int
-     */
-    public static function getContext()
-    {
-        if (!empty($_COOKIE[xlvoContext::XLVO_CONTEXT])) {
-            return $_COOKIE[xlvoContext::XLVO_CONTEXT];
-        }
-
-        return xlvoContext::CONTEXT_ILIAS;
-    }
-
 
     /**
      * Sets the xlvo context cookie.
@@ -81,5 +66,17 @@ class xlvoContext extends ilContext
         if (!$result) {
             throw new Exception("error setting cookie");
         }
+    }
+
+    /**
+     * @return int
+     */
+    public static function getContext()
+    {
+        if (!empty($_COOKIE[xlvoContext::XLVO_CONTEXT])) {
+            return $_COOKIE[xlvoContext::XLVO_CONTEXT];
+        }
+
+        return xlvoContext::CONTEXT_ILIAS;
     }
 }

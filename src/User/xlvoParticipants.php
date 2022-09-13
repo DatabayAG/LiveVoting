@@ -18,6 +18,7 @@ class xlvoParticipants
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var xlvoParticipants[]
@@ -28,7 +29,6 @@ class xlvoParticipants
      */
     protected $obj_id;
 
-
     /**
      * xlvoParticipants constructor.
      *
@@ -38,7 +38,6 @@ class xlvoParticipants
     {
         $this->obj_id = $obj_id;
     }
-
 
     /**
      * @param $obj_id
@@ -54,7 +53,6 @@ class xlvoParticipants
         return self::$instances[$obj_id];
     }
 
-
     /**
      * @param int $round_id
      * @param     $filter   string what's the participant id or identifier you're looking for?
@@ -66,7 +64,11 @@ class xlvoParticipants
         if ($filter) {
             $query = "SELECT DISTINCT user_identifier, user_id FROM " . xlvoVote::TABLE_NAME
                 . " WHERE round_id = %s AND (user_identifier LIKE %s OR user_id = %s)";
-            $result = self::dic()->database()->queryF($query, array("integer", "text", "integer"), array($round_id, $filter, $filter));
+            $result = self::dic()->database()->queryF(
+                $query,
+                array("integer", "text", "integer"),
+                array($round_id, $filter, $filter)
+            );
         } else {
             $query = "SELECT DISTINCT user_identifier, user_id FROM " . xlvoVote::TABLE_NAME . " WHERE round_id = %s";
             $result = self::dic()->database()->queryF($query, array("integer"), array($round_id));

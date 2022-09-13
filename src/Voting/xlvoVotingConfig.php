@@ -40,27 +40,6 @@ class xlvoVotingConfig extends CachingActiveRecord
     public const F_VOTING_HISTORY = "voting_history";
     public const F_SHOW_ATTENDEES = "show_attendees";
     public const TABLE_NAME = 'rep_robj_xlvo_config_n';
-
-
-    /**
-     * @return string
-     */
-    public function getConnectorContainerName()
-    {
-        return self::TABLE_NAME;
-    }
-
-
-    /**
-     * @return string
-     * @deprecated
-     */
-    public static function returnDbTableName()
-    {
-        return self::TABLE_NAME;
-    }
-
-
     /**
      * @var int
      *
@@ -184,6 +163,22 @@ class xlvoVotingConfig extends CachingActiveRecord
      */
     protected $puk = '';
 
+    /**
+     * @return string
+     * @deprecated
+     */
+    public static function returnDbTableName()
+    {
+        return self::TABLE_NAME;
+    }
+
+    /**
+     * @return string
+     */
+    public function getConnectorContainerName()
+    {
+        return self::TABLE_NAME;
+    }
 
     /**
      * @return bool
@@ -207,6 +202,21 @@ class xlvoVotingConfig extends CachingActiveRecord
         return $available;
     }
 
+    /**
+     * @return int
+     */
+    public function getObjId()
+    {
+        return $this->obj_id;
+    }
+
+    /**
+     * @param int $obj_id
+     */
+    public function setObjId($obj_id)
+    {
+        $this->obj_id = $obj_id;
+    }
 
     /**
      * @param bool $force_not_format
@@ -228,7 +238,10 @@ class xlvoVotingConfig extends CachingActiveRecord
                     $url = xlvoConf::getConfig(xlvoConf::F_ALLOW_SHORTLINK_VOTE_LINK);
                     $url = rtrim($url, "/") . "/";
                 } else {
-                    $url = ILIAS_HTTP_PATH . substr(self::plugin()->directory(), 1) . '/pin.php?' . ParamManager::PARAM_PIN . '=';
+                    $url = ILIAS_HTTP_PATH . substr(
+                        self::plugin()->directory(),
+                        1
+                    ) . '/pin.php?' . ParamManager::PARAM_PIN . '=';
                 }
                 $url .= xlvoPin::formatPin($this->getPin(), $force_not_format);
                 break;
@@ -240,6 +253,37 @@ class xlvoVotingConfig extends CachingActiveRecord
         return $url;
     }
 
+    /**
+     * @return boolean
+     */
+    public function isAnonymous()
+    {
+        return $this->anonymous;
+    }
+
+    /**
+     * @param boolean $anonymous
+     */
+    public function setAnonymous($anonymous)
+    {
+        $this->anonymous = $anonymous;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPin()
+    {
+        return $this->pin;
+    }
+
+    /**
+     * @param int $pin
+     */
+    public function setPin($pin)
+    {
+        $this->pin = $pin;
+    }
 
     /**
      * @param int|null $voting_id
@@ -262,7 +306,10 @@ class xlvoVotingConfig extends CachingActiveRecord
         if ($shortLinkEnabled) {
             $url = xlvoConf::getConfig(xlvoConf::F_ALLOW_SHORTLINK_PRESENTER_LINK);
             $url = rtrim($url, "/") . "/";
-            $url .= xlvoPin::formatPin($this->getPin(), $force_not_format) . "/" . Puk::formatPin($this->getPuk(), $force_not_format);
+            $url .= xlvoPin::formatPin($this->getPin(), $force_not_format) . "/" . Puk::formatPin(
+                $this->getPuk(),
+                $force_not_format
+            );
             if ($voting_id !== null) {
                 $url .= "/" . $voting_id;
             }
@@ -270,7 +317,10 @@ class xlvoVotingConfig extends CachingActiveRecord
                 $url .= "/1";
             }
         } else {
-            $url = ILIAS_HTTP_PATH . substr(self::plugin()->directory(), 1) . '/presenter.php?' . ParamManager::PARAM_PIN . '='
+            $url = ILIAS_HTTP_PATH . substr(
+                self::plugin()->directory(),
+                1
+            ) . '/presenter.php?' . ParamManager::PARAM_PIN . '='
                 . xlvoPin::formatPin($this->getPin(), $force_not_format) . "&" . ParamManager::PARAM_PUK . "="
                 . Puk::formatPin($this->getPuk(), $force_not_format);
             if ($voting_id !== null) {
@@ -288,42 +338,21 @@ class xlvoVotingConfig extends CachingActiveRecord
         return $url;
     }
 
-
     /**
-     * @return int
+     * @return string
      */
-    public function getObjId()
+    public function getPuk()
     {
-        return $this->obj_id;
+        return $this->puk;
     }
 
-
     /**
-     * @param int $obj_id
+     * @param string $puk
      */
-    public function setObjId($obj_id)
+    public function setPuk($puk)
     {
-        $this->obj_id = $obj_id;
+        $this->puk = $puk;
     }
-
-
-    /**
-     * @return int
-     */
-    public function getPin()
-    {
-        return $this->pin;
-    }
-
-
-    /**
-     * @param int $pin
-     */
-    public function setPin($pin)
-    {
-        $this->pin = $pin;
-    }
-
 
     /**
      * @return boolean
@@ -333,7 +362,6 @@ class xlvoVotingConfig extends CachingActiveRecord
         return $this->obj_online;
     }
 
-
     /**
      * @param boolean $obj_online
      */
@@ -341,25 +369,6 @@ class xlvoVotingConfig extends CachingActiveRecord
     {
         $this->obj_online = $obj_online;
     }
-
-
-    /**
-     * @return boolean
-     */
-    public function isAnonymous()
-    {
-        return $this->anonymous;
-    }
-
-
-    /**
-     * @param boolean $anonymous
-     */
-    public function setAnonymous($anonymous)
-    {
-        $this->anonymous = $anonymous;
-    }
-
 
     /**
      * @return boolean
@@ -369,7 +378,6 @@ class xlvoVotingConfig extends CachingActiveRecord
         return $this->terminable;
     }
 
-
     /**
      * @param boolean $terminable
      */
@@ -377,7 +385,6 @@ class xlvoVotingConfig extends CachingActiveRecord
     {
         $this->terminable = $terminable;
     }
-
 
     /**
      * @return string
@@ -387,7 +394,6 @@ class xlvoVotingConfig extends CachingActiveRecord
         return $this->start_date;
     }
 
-
     /**
      * @param string $start_date
      */
@@ -395,7 +401,6 @@ class xlvoVotingConfig extends CachingActiveRecord
     {
         $this->start_date = $start_date;
     }
-
 
     /**
      * @return string
@@ -405,7 +410,6 @@ class xlvoVotingConfig extends CachingActiveRecord
         return $this->end_date;
     }
 
-
     /**
      * @param string $end_date
      */
@@ -413,7 +417,6 @@ class xlvoVotingConfig extends CachingActiveRecord
     {
         $this->end_date = $end_date;
     }
-
 
     /**
      * @return boolean
@@ -423,7 +426,6 @@ class xlvoVotingConfig extends CachingActiveRecord
         return $this->reuse_status;
     }
 
-
     /**
      * @param boolean $reuse_status
      */
@@ -431,7 +433,6 @@ class xlvoVotingConfig extends CachingActiveRecord
     {
         $this->reuse_status = $reuse_status;
     }
-
 
     /**
      * @return string
@@ -441,7 +442,6 @@ class xlvoVotingConfig extends CachingActiveRecord
         return $this->last_access;
     }
 
-
     /**
      * @param string $last_access
      */
@@ -449,7 +449,6 @@ class xlvoVotingConfig extends CachingActiveRecord
     {
         $this->last_access = $last_access;
     }
-
 
     /**
      * @return boolean
@@ -459,7 +458,6 @@ class xlvoVotingConfig extends CachingActiveRecord
         return $this->full_screen;
     }
 
-
     /**
      * @param boolean $full_screen
      */
@@ -467,7 +465,6 @@ class xlvoVotingConfig extends CachingActiveRecord
     {
         $this->full_screen = $full_screen;
     }
-
 
     /**
      * @return boolean
@@ -477,7 +474,6 @@ class xlvoVotingConfig extends CachingActiveRecord
         return $this->show_attendees;
     }
 
-
     /**
      * @param boolean $show_attendees
      */
@@ -485,7 +481,6 @@ class xlvoVotingConfig extends CachingActiveRecord
     {
         $this->show_attendees = $show_attendees;
     }
-
 
     /**
      * @return boolean
@@ -495,7 +490,6 @@ class xlvoVotingConfig extends CachingActiveRecord
         return $this->self_vote;
     }
 
-
     /**
      * @param boolean $self_vote
      */
@@ -503,7 +497,6 @@ class xlvoVotingConfig extends CachingActiveRecord
     {
         $this->self_vote = $self_vote;
     }
-
 
     /**
      * @return boolean
@@ -513,7 +506,6 @@ class xlvoVotingConfig extends CachingActiveRecord
         return $this->keyboard_active;
     }
 
-
     /**
      * @param boolean $keyboard_active
      */
@@ -521,7 +513,6 @@ class xlvoVotingConfig extends CachingActiveRecord
     {
         $this->keyboard_active = $keyboard_active;
     }
-
 
     /**
      * @return int
@@ -531,7 +522,6 @@ class xlvoVotingConfig extends CachingActiveRecord
         return $this->frozen_behaviour;
     }
 
-
     /**
      * @param boolean $frozen_behaviour
      */
@@ -539,7 +529,6 @@ class xlvoVotingConfig extends CachingActiveRecord
     {
         $this->frozen_behaviour = $frozen_behaviour;
     }
-
 
     /**
      * @return int
@@ -549,7 +538,6 @@ class xlvoVotingConfig extends CachingActiveRecord
         return $this->results_behaviour;
     }
 
-
     /**
      * @param int $results_behaviour
      */
@@ -557,7 +545,6 @@ class xlvoVotingConfig extends CachingActiveRecord
     {
         $this->results_behaviour = $results_behaviour;
     }
-
 
     /**
      * @return int
@@ -567,30 +554,11 @@ class xlvoVotingConfig extends CachingActiveRecord
         return $this->voting_history;
     }
 
-
     /**
      * @param int $voting_history
      */
     public function setVotingHistory($voting_history)
     {
         $this->voting_history = $voting_history;
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getPuk()
-    {
-        return $this->puk;
-    }
-
-
-    /**
-     * @param string $puk
-     */
-    public function setPuk($puk)
-    {
-        $this->puk = $puk;
     }
 }

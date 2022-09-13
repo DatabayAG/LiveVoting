@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace LiveVoting\Cache;
 
-use ilException;
 use ilLiveVotingPlugin;
 use LiveVoting\Cache\Version\v52\xlvoCache;
 use LiveVoting\Utils\LiveVotingTrait;
@@ -20,9 +19,9 @@ class xlvoCacheFactory
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     private static $cache_instance = null;
-
 
     /**
      * Generates an new instance of the live voting service.

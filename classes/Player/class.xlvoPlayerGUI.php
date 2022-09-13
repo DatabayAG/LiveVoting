@@ -56,15 +56,8 @@ class xlvoPlayerGUI extends xlvoGUI
     public const CMD_GET_PLAYER_DATA = 'getPlayerData';
     public const CMD_API_CALL = 'apiCall';
     public const DEBUG = false;
-    /**
-     * @var xlvoVotingManager2
-     */
-    protected $manager;
+    protected xlvoVotingManager2 $manager;
 
-
-    /**
-     *
-     */
     public function __construct()
     {
         parent::__construct();
@@ -75,27 +68,16 @@ class xlvoPlayerGUI extends xlvoGUI
         self::dic()->ui()->mainTemplate()->addCss(self::plugin()->directory() . '/templates/default/default.css');
     }
 
-
-    /**
-     * @param string $key
-     *
-     * @return string
-     */
-    protected function txt($key)
-    {
-        return self::plugin()->translate($key, 'player');
-    }
-
-
-    /**
-     *
-     */
     protected function index(): void
     {
         try {
             $this->manager->prepareStart();
         } catch (xlvoPlayerException $e) {
-            ilUtil::sendFailure($this->txt('msg_no_start_' . $e->getCode()), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                'failure',
+                $this->txt('msg_no_start_' . $e->getCode()),
+                true
+            );
 
             return;
         }
@@ -127,7 +109,10 @@ class xlvoPlayerGUI extends xlvoGUI
         $template->setVariable('PIN', xlvoPin::formatPin($xlvoVotingConfig->getPin()));
 
         $param_manager = ParamManager::getInstance();
-        $template->setVariable('QR-CODE', xlvoQR::getImageDataString($xlvoVotingConfig->getShortLinkURL(true, $param_manager->getRefId()), 180));
+        $template->setVariable(
+            'QR-CODE',
+            xlvoQR::getImageDataString($xlvoVotingConfig->getShortLinkURL(true, $param_manager->getRefId()), 180)
+        );
 
         $template->setVariable('SHORTLINK', $xlvoVotingConfig->getShortLinkURL(false, $param_manager->getRefId()));
         $template->setVariable('MODAL', xlvoQRModalGUI::getInstanceFromVotingConfig($xlvoVotingConfig)->getHTML());
@@ -144,16 +129,67 @@ class xlvoPlayerGUI extends xlvoGUI
         self::dic()->ui()->mainTemplate()->setContent($template->get());
     }
 
+    protected function txt(string $key): string
+    {
+        return self::plugin()->translate($key, 'player');
+    }
+
+    /**
+     * @param bool $async
+     *
+     * @return ilAdvancedSelectionListGUI
+     */
+    protected function getVotingSelectionList($async = true)
+    {
+        $current_selection_list = new ilAdvancedSelectionListGUI();
+        $current_selection_list->setItemLinkClass('xlvo-preview');
+        $current_selection_list->setListTitle($this->txt('voting_list'));
+        $current_selection_list->setId('xlvo_select');
+        $current_selection_list->setTriggerEvent('xlvo_voting');
+        $current_selection_list->setUseImages(false);
+        /**
+         * @var xlvoVoting[] $votings
+         */
+        foreach ($this->manager->getAllVotings() as $voting) {
+            $id = $voting->getId();
+            $t = $voting->getTitle();
+            self::dic()->ctrl()->setParameterByClass(xlvoPlayerGUI::class, ParamManager::PARAM_VOTING, $id);
+
+            $target = self::dic()->ctrl()->getLinkTarget(new xlvoPlayerGUI(), self::CMD_START_PLAYER);
+            if ($async) {
+                $current_selection_list->addItem(
+                    $t,
+                    $id,
+                    $target,
+                    '',
+                    '',
+                    '',
+                    '',
+                    false,
+                    'xlvoPlayer.open(' . $id . ')'
+                );
+            } else {
+                $current_selection_list->addItem($t, $id, $target);
+            }
+        }
+
+        return $current_selection_list;
+    }
 
     /**
      *
      */
     protected function getAttendees(): void
     {
-        xlvoJsResponse::getInstance(self::plugin()->translate("start_online", "", [xlvoVoter::countVoters($this->manager->getPlayer()->getId())]))
-            ->send();
+        xlvoJsResponse::getInstance(
+            self::plugin()->translate(
+                "start_online",
+                "",
+                [xlvoVoter::countVoters($this->manager->getPlayer()->getId())]
+            )
+        )
+                      ->send();
     }
-
 
     /**
      *
@@ -170,265 +206,57 @@ class xlvoPlayerGUI extends xlvoGUI
         $this->handlePreview();
     }
 
-
-    /**
-     *
-     */
-    protected function startPlayer(): void
-    {
-        $this->initJsAndCss();
-        $this->manager->prepare();
-
-        if ($voting_id = trim(filter_input(INPUT_GET, ParamManager::PARAM_VOTING), "/")) {
-            $this->manager->getPlayer()->setActiveVoting($voting_id);
-            $this->manager->getPlayer()->store();
-        }
-
-        $this->initToolbarDuringVoting();
-        $modal = xlvoQRModalGUI::getInstanceFromVotingConfig($this->manager->getVotingConfig())->getHTML();
-        $this->setContent($modal . $this->getPlayerHTML());
-        $this->handlePreview();
-    }
-
-
     /**
      * @throws ilException
+     * @throws xlvoVotingManagerException
      */
-    protected function startPresenter(): void
+    protected function initJsAndCss()
     {
-        try {
-            xlvoPin::checkPinAndGetObjId($this->param_manager->getPin());
-        } catch (Throwable $e) {
-            throw new ilException("PlayerGUI startPresenter: Wrong PIN! (1)");
-        }
-
-        if ($this->param_manager->getVoting() === 0) {
-            throw new ilException("PlayerGUI startPresenter: No Voting!");
-        }
-
-        $this->manager = new xlvoVotingManager2($this->param_manager->getPin(), $this->param_manager->getVoting());
-
-        /**
-         * @var xlvoVotingConfig|null $xlvoVotingConfig
-         */
-        $xlvoVotingConfig = xlvoVotingConfig::find($this->manager->getObjId());
-
-        if ($xlvoVotingConfig === null) {
-            /* || !ilObjLiveVotingAccess::hasWriteAccess($this->manager->getObjId())*/
-            throw new ilException("PlayerGUI startPresenter: Wrong PIN! (2)");
-        }
-
-        if ($xlvoVotingConfig->getPuk() !== $this->param_manager->getPuk()) {
-            throw new ilException("Wrong PUK!");
-        }
-
-        self::dic()->ctrl()->saveParameter($this, "ref_id");
-
-        if ($this->param_manager->getVoting()) {
-            $this->manager->open($this->param_manager->getVoting());
-        }
-
-        $this->startPlayer();
-    }
-
-
-    /**
-     *
-     */
-    protected function getPlayerData(): void
-    {
-        $this->manager->attend();
-
-        //Set Active Voting of Presenter via URL - bot don't save it - PLLV-272
-        if ($this->param_manager->getVoting() > 0) {
-            $this->manager->getPlayer()->setActiveVoting($this->param_manager->getVoting());
-        }
-
-        $results = array(
-            'player'       => $this->manager->getPlayer()->getStdClassForPlayer(),
-            'player_html'  => $this->getPlayerHTML(true),
-            'buttons_html' => $this->getButtonsHTML(),
+        $mathJaxSetting = new ilSetting("MathJax");
+        $settings = array(
+            'status_running' => xlvoPlayer::STAT_RUNNING,
+            'identifier' => self::IDENTIFIER,
+            'use_mathjax' => (bool) $mathJaxSetting->get("enable"),
+            'debug' => self::DEBUG
         );
-        xlvoJsResponse::getInstance($results)->send();
-    }
 
+        xlvoJs::getInstance()->initMathJax();
 
-    /**
-     * @param bool $inner
-     *
-     * @return string
-     */
-    protected function getPlayerHTML($inner = false): string
-    {
-        $xlvoDisplayPlayerGUI = new xlvoDisplayPlayerGUI($this->manager);
-
-        return $xlvoDisplayPlayerGUI->getHTML($inner);
-    }
-
-
-    /**
-     * @return string
-     */
-    protected function getButtonsHTML(): string
-    {
-        // Buttons from Questions
-        $xlvoQuestionTypesGUI = xlvoQuestionTypesGUI::getInstance($this->manager);
-        if ($xlvoQuestionTypesGUI->hasButtons()) {
-            $toolbar = new xlvoToolbarGUI();
-
-            foreach ($xlvoQuestionTypesGUI->getButtonInstances() as $buttonInstance) {
-                if ($buttonInstance instanceof ilButton || $buttonInstance instanceof ilButtonBase) {
-                    $toolbar->addButtonInstance($buttonInstance);
-                }
-            }
-
-            return $toolbar->getHTML();
+        $keyboard = new stdClass();
+        $keyboard->active = $this->manager->getVotingConfig()->isKeyboardActive();
+        if ($keyboard->active) {
+            $keyboard->toggle_results = 9;
+            $keyboard->toggle_freeze = 32;
+            $keyboard->previous = 37;
+            $keyboard->next = 39;
         }
+        $settings['keyboard'] = $keyboard;
 
-        return '';
+        $settings['xlvo_ppt'] = $this->param_manager->isPpt();
+
+        iljQueryUtil::initjQuery();
+
+        //self::dic()->ui()->mainTemplate()->addJavaScript("https://appsforoffice.microsoft.com/lib/1/hosted/Office.js");
+        //self::dic()->ui()->mainTemplate()->addJavaScript(self::plugin()->directory() . '/js/PPT/xlvoPPT.min.js');
+
+        xlvoJs::getInstance()->addLibToHeader('screenfull.min.js');
+        xlvoJs::getInstance()->ilias($this)->addSettings($settings)->name('Player')->addTranslations(array(
+            'voting_confirm_reset',
+        ))->init()->setRunCode();
+
+        //xlvoJs::getInstance()->ilias($this)->name('PPT')->init()->setRunCode();
+
+        self::dic()->ui()->mainTemplate()->addCss(self::plugin()->directory() . '/templates/default/Player/player.css');
+        self::dic()->ui()->mainTemplate()->addCss(
+            self::plugin()->directory() . '/templates/default/Display/Bar/bar.css'
+        );
+
+        xlvoFreeInputResultsGUI::addJsAndCss();
+        xlvoCorrectOrderResultsGUI::addJsAndCss();
+        xlvoFreeOrderResultsGUI::addJsAndCss();
+        xlvoNumberRangeResultsGUI::addJsAndCss();
+        xlvoSingleVoteResultsGUI::addJsAndCss();
     }
-
-
-    /**
-     *
-     */
-    protected function next(): void
-    {
-        $this->manager->next();
-        self::dic()->ctrl()->redirect($this, self::CMD_START_PLAYER);
-    }
-
-
-    /**
-     *
-     */
-    protected function previous(): void
-    {
-        $this->manager->previous();
-        self::dic()->ctrl()->redirect($this, self::CMD_START_PLAYER);
-    }
-
-
-    /**
-     *
-     */
-    protected function terminate(): void
-    {
-        $this->manager->terminate();
-        self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
-    }
-
-
-    /**
-     * @throws ilException
-     */
-    protected function apiCall(): void
-    {
-        /*if ($_POST['xvi'] > 0) {
-            $this->manager->getPlayer()->setActiveVoting($_POST['xvi']);
-        }*/
-
-        $return_value = true;
-        switch ($_POST['call']) {
-            case 'toggle_freeze':
-                //$this->manager->getPlayer()->setStatus(xlvoPlayer::STAT_RUNNING);
-                $this->manager->getPlayer()->toggleFreeze(trim(filter_input(INPUT_GET, ParamManager::PARAM_VOTING), "/"));
-                break;
-            case 'toggle_results':
-                $this->manager->getPlayer()->toggleResults();
-                break;
-            case 'reset':
-                $this->manager->reset();
-                break;
-            case 'next':
-                $this->manager->next();
-                break;
-            case 'previous':
-                $this->manager->previous();
-                break;
-            case 'open':
-                $this->manager->open($_POST[self::IDENTIFIER]);
-                break;
-            case 'countdown':
-                $this->manager->countdown($_POST['seconds']);
-                break;
-            case 'input':
-                xlvoUser::getInstance()->setIdentifier(self::dic()->user()->getId())->setType(xlvoUser::TYPE_ILIAS);
-                $this->manager->inputOne(['input' => $_POST['input']]);
-                break;
-            case 'add_vote':
-                xlvoUser::getInstance()->setIdentifier(self::dic()->user()->getId())->setType(xlvoUser::TYPE_ILIAS);
-                $vote_id = $this->manager->addInput($_POST['input']);
-                $return_value = ['vote_id' => $vote_id];
-                break;
-            case 'remove_vote':
-                $vote = xlvoVote::find($_POST['vote_id']);
-                // also delete votes with same input in the same category
-                foreach (
-                    xlvoVote::where([
-                        'voting_id'           => $vote->getVotingId(),
-                        'round_id'            => $vote->getRoundId(),
-                        'free_input'          => $vote->getFreeInput(),
-                        'free_input_category' => $vote->getFreeInputCategory()
-                    ])->get() as $vote
-                ) {
-                    $vote->delete();
-                }
-                break;
-            case 'add_category':
-                $category = new xlvoFreeInputCategory();
-                $category->setTitle($_POST['title']);
-                $category->setVotingId($this->manager->getVoting()->getId());
-                $category->setRoundId($this->manager->getPlayer()->getRoundId());
-                $category->create();
-                $return_value = ['category_id' => $category->getId()];
-                break;
-            case 'remove_category':
-                /** @var xlvoVote $vote */
-                foreach (
-                    xlvoVote::where([
-                        'voting_id'           => $this->manager->getVoting()->getId(),
-                        'round_id'            => $this->manager->getplayer()->getRoundId(),
-                        'free_input_category' => $_POST['category_id']
-                    ])->get() as $vote
-                ) {
-                    $vote->setFreeInputCategory(0);
-                    $vote->update();
-                }
-                xlvoFreeInputCategory::find($_POST['category_id'])->delete();
-                break;
-            case 'change_category':
-                /** @var $vote xlvoVote */
-                $vote = xlvoVote::find($_POST['vote_id']);
-
-                // also change category of all same inputs in the same category
-                foreach (
-                    xlvoVote::where([
-                        'voting_id'           => $vote->getVotingId(),
-                        'round_id'            => $vote->getRoundId(),
-                        'free_input'          => $vote->getFreeInput(),
-                        'free_input_category' => $vote->getFreeInputCategory()
-                    ])->get() as $vote
-                ) {
-                    $vote->setFreeInputCategory($_POST['category_id']);
-                    $vote->update();
-                }
-
-                break;
-            case 'button':
-                /**
-                 * QuestionGUIs can add own button which have to call the player with 'call=button&button_id={cmd}&data=[some,data]
-                 */
-                $xlvoQuestionTypesGUI = xlvoQuestionTypesGUI::getInstance($this->manager);
-                $xlvoQuestionTypesGUI->handleButtonCall($_POST['button_id'], $_POST['button_data']);
-                $return_value = new stdClass();
-                $return_value->buttons_html = $this->getButtonsHTML();
-                break;
-        }
-
-        xlvoJsResponse::getInstance($return_value)->send();
-    }
-
 
     /**
      * Set Toolbar Content and Buttons for the Player.
@@ -553,7 +381,6 @@ class xlvoPlayerGUI extends xlvoGUI
         }
     }
 
-
     /**
      * Adds a button to the toolbar and make it stick to it,
      * which means that the button is also visible if the mobile size of the website is used.
@@ -567,90 +394,32 @@ class xlvoPlayerGUI extends xlvoGUI
         self::dic()->toolbar()->addStickyItem($button);
     }
 
+    /**
+     * @param string $content
+     */
+    protected function setContent(string $content)/* : void*/
+    {
+        if (self::dic()->ui()->mainTemplate()->blockExists("xlvo_player_content")) {
+            self::dic()->ui()->mainTemplate()->setVariable(
+                'PLAYER_CONTENT',
+                self::dic()->toolbar()->getHTML() . $content
+            );
+        } else {
+            self::dic()->ui()->mainTemplate()->setContent($content);
+        }
+    }
 
     /**
-     * @param bool $async
+     * @param bool $inner
      *
-     * @return ilAdvancedSelectionListGUI
+     * @return string
      */
-    protected function getVotingSelectionList($async = true)
+    protected function getPlayerHTML($inner = false): string
     {
-        $current_selection_list = new ilAdvancedSelectionListGUI();
-        $current_selection_list->setItemLinkClass('xlvo-preview');
-        $current_selection_list->setListTitle($this->txt('voting_list'));
-        $current_selection_list->setId('xlvo_select');
-        $current_selection_list->setTriggerEvent('xlvo_voting');
-        $current_selection_list->setUseImages(false);
-        /**
-         * @var xlvoVoting[] $votings
-         */
-        foreach ($this->manager->getAllVotings() as $voting) {
-            $id = $voting->getId();
-            $t = $voting->getTitle();
-            self::dic()->ctrl()->setParameterByClass(xlvoPlayerGUI::class, ParamManager::PARAM_VOTING, $id);
+        $xlvoDisplayPlayerGUI = new xlvoDisplayPlayerGUI($this->manager);
 
-            $target = self::dic()->ctrl()->getLinkTarget(new xlvoPlayerGUI(), self::CMD_START_PLAYER);
-            if ($async) {
-                $current_selection_list->addItem($t, $id, $target, '', '', '', '', false, 'xlvoPlayer.open(' . $id . ')');
-            } else {
-                $current_selection_list->addItem($t, $id, $target);
-            }
-        }
-
-        return $current_selection_list;
+        return $xlvoDisplayPlayerGUI->getHTML($inner);
     }
-
-
-    /**
-     * @throws ilException
-     * @throws xlvoVotingManagerException
-     */
-    protected function initJsAndCss()
-    {
-        $mathJaxSetting = new ilSetting("MathJax");
-        $settings = array(
-            'status_running' => xlvoPlayer::STAT_RUNNING,
-            'identifier'     => self::IDENTIFIER,
-            'use_mathjax'    => (bool) $mathJaxSetting->get("enable"),
-            'debug'          => self::DEBUG
-        );
-
-        xlvoJs::getInstance()->initMathJax();
-
-        $keyboard = new stdClass();
-        $keyboard->active = $this->manager->getVotingConfig()->isKeyboardActive();
-        if ($keyboard->active) {
-            $keyboard->toggle_results = 9;
-            $keyboard->toggle_freeze = 32;
-            $keyboard->previous = 37;
-            $keyboard->next = 39;
-        }
-        $settings['keyboard'] = $keyboard;
-
-        $settings['xlvo_ppt'] = $this->param_manager->isPpt();
-
-        iljQueryUtil::initjQuery();
-
-        //self::dic()->ui()->mainTemplate()->addJavaScript("https://appsforoffice.microsoft.com/lib/1/hosted/Office.js");
-        //self::dic()->ui()->mainTemplate()->addJavaScript(self::plugin()->directory() . '/js/PPT/xlvoPPT.min.js');
-
-        xlvoJs::getInstance()->addLibToHeader('screenfull.min.js');
-        xlvoJs::getInstance()->ilias($this)->addSettings($settings)->name('Player')->addTranslations(array(
-            'voting_confirm_reset',
-        ))->init()->setRunCode();
-
-        //xlvoJs::getInstance()->ilias($this)->name('PPT')->init()->setRunCode();
-
-        self::dic()->ui()->mainTemplate()->addCss(self::plugin()->directory() . '/templates/default/Player/player.css');
-        self::dic()->ui()->mainTemplate()->addCss(self::plugin()->directory() . '/templates/default/Display/Bar/bar.css');
-
-        xlvoFreeInputResultsGUI::addJsAndCss();
-        xlvoCorrectOrderResultsGUI::addJsAndCss();
-        xlvoFreeOrderResultsGUI::addJsAndCss();
-        xlvoNumberRangeResultsGUI::addJsAndCss();
-        xlvoSingleVoteResultsGUI::addJsAndCss();
-    }
-
 
     /**
      * @throws xlvoVotingManagerException
@@ -662,21 +431,251 @@ class xlvoPlayerGUI extends xlvoGUI
 
             $param_manager = ParamManager::getInstance();
 
-            $preview->setVariable('URL', $this->manager->getVotingConfig()->getShortLinkURL(false, $param_manager->getRefId()));
+            $preview->setVariable(
+                'URL',
+                $this->manager->getVotingConfig()->getShortLinkURL(false, $param_manager->getRefId())
+            );
             self::dic()->ui()->mainTemplate()->setRightContent($preview->get());
         }
     }
 
+    /**
+     * @throws ilException
+     */
+    protected function startPresenter(): void
+    {
+        try {
+            xlvoPin::checkPinAndGetObjId($this->param_manager->getPin());
+        } catch (Throwable $e) {
+            throw new ilException("PlayerGUI startPresenter: Wrong PIN! (1)");
+        }
+
+        if ($this->param_manager->getVoting() === 0) {
+            throw new ilException("PlayerGUI startPresenter: No Voting!");
+        }
+
+        $this->manager = new xlvoVotingManager2($this->param_manager->getPin(), $this->param_manager->getVoting());
+
+        /**
+         * @var xlvoVotingConfig|null $xlvoVotingConfig
+         */
+        $xlvoVotingConfig = xlvoVotingConfig::find($this->manager->getObjId());
+
+        if ($xlvoVotingConfig === null) {
+            /* || !ilObjLiveVotingAccess::hasWriteAccess($this->manager->getObjId())*/
+            throw new ilException("PlayerGUI startPresenter: Wrong PIN! (2)");
+        }
+
+        if ($xlvoVotingConfig->getPuk() !== $this->param_manager->getPuk()) {
+            throw new ilException("Wrong PUK!");
+        }
+
+        self::dic()->ctrl()->saveParameter($this, "ref_id");
+
+        if ($this->param_manager->getVoting()) {
+            $this->manager->open($this->param_manager->getVoting());
+        }
+
+        $this->startPlayer();
+    }
 
     /**
-     * @param string $content
+     *
      */
-    protected function setContent(string $content)/* : void*/
+    protected function startPlayer(): void
     {
-        if (self::dic()->ui()->mainTemplate()->blockExists("xlvo_player_content")) {
-            self::dic()->ui()->mainTemplate()->setVariable('PLAYER_CONTENT', self::dic()->toolbar()->getHTML() . $content);
-        } else {
-            self::dic()->ui()->mainTemplate()->setContent($content);
+        $this->initJsAndCss();
+        $this->manager->prepare();
+
+        if ($voting_id = trim(filter_input(INPUT_GET, ParamManager::PARAM_VOTING), "/")) {
+            $this->manager->getPlayer()->setActiveVoting($voting_id);
+            $this->manager->getPlayer()->store();
         }
+
+        $this->initToolbarDuringVoting();
+        $modal = xlvoQRModalGUI::getInstanceFromVotingConfig($this->manager->getVotingConfig())->getHTML();
+        $this->setContent($modal . $this->getPlayerHTML());
+        $this->handlePreview();
+    }
+
+    /**
+     *
+     */
+    protected function getPlayerData(): void
+    {
+        $this->manager->attend();
+
+        //Set Active Voting of Presenter via URL - bot don't save it - PLLV-272
+        if ($this->param_manager->getVoting() > 0) {
+            $this->manager->getPlayer()->setActiveVoting($this->param_manager->getVoting());
+        }
+
+        $results = array(
+            'player' => $this->manager->getPlayer()->getStdClassForPlayer(),
+            'player_html' => $this->getPlayerHTML(true),
+            'buttons_html' => $this->getButtonsHTML(),
+        );
+        xlvoJsResponse::getInstance($results)->send();
+    }
+
+    /**
+     * @return string
+     */
+    protected function getButtonsHTML(): string
+    {
+        // Buttons from Questions
+        $xlvoQuestionTypesGUI = xlvoQuestionTypesGUI::getInstance($this->manager);
+        if ($xlvoQuestionTypesGUI->hasButtons()) {
+            $toolbar = new xlvoToolbarGUI();
+
+            foreach ($xlvoQuestionTypesGUI->getButtonInstances() as $buttonInstance) {
+                if ($buttonInstance instanceof ilButton || $buttonInstance instanceof ilButtonBase) {
+                    $toolbar->addButtonInstance($buttonInstance);
+                }
+            }
+
+            return $toolbar->getHTML();
+        }
+
+        return '';
+    }
+
+    /**
+     *
+     */
+    protected function next(): void
+    {
+        $this->manager->next();
+        self::dic()->ctrl()->redirect($this, self::CMD_START_PLAYER);
+    }
+
+    /**
+     *
+     */
+    protected function previous(): void
+    {
+        $this->manager->previous();
+        self::dic()->ctrl()->redirect($this, self::CMD_START_PLAYER);
+    }
+
+    /**
+     *
+     */
+    protected function terminate(): void
+    {
+        $this->manager->terminate();
+        self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
+    }
+
+    /**
+     * @throws ilException
+     */
+    protected function apiCall(): void
+    {
+        /*if ($_POST['xvi'] > 0) {
+            $this->manager->getPlayer()->setActiveVoting($_POST['xvi']);
+        }*/
+
+        $return_value = true;
+        switch ($_POST['call']) {
+            case 'toggle_freeze':
+                //$this->manager->getPlayer()->setStatus(xlvoPlayer::STAT_RUNNING);
+                $this->manager->getPlayer()->toggleFreeze(
+                    trim(filter_input(INPUT_GET, ParamManager::PARAM_VOTING), "/")
+                );
+                break;
+            case 'toggle_results':
+                $this->manager->getPlayer()->toggleResults();
+                break;
+            case 'reset':
+                $this->manager->reset();
+                break;
+            case 'next':
+                $this->manager->next();
+                break;
+            case 'previous':
+                $this->manager->previous();
+                break;
+            case 'open':
+                $this->manager->open($_POST[self::IDENTIFIER]);
+                break;
+            case 'countdown':
+                $this->manager->countdown($_POST['seconds']);
+                break;
+            case 'input':
+                xlvoUser::getInstance()->setIdentifier(self::dic()->user()->getId())->setType(xlvoUser::TYPE_ILIAS);
+                $this->manager->inputOne(['input' => $_POST['input']]);
+                break;
+            case 'add_vote':
+                xlvoUser::getInstance()->setIdentifier(self::dic()->user()->getId())->setType(xlvoUser::TYPE_ILIAS);
+                $vote_id = $this->manager->addInput($_POST['input']);
+                $return_value = ['vote_id' => $vote_id];
+                break;
+            case 'remove_vote':
+                $vote = xlvoVote::find($_POST['vote_id']);
+                // also delete votes with same input in the same category
+                foreach (
+                    xlvoVote::where([
+                        'voting_id' => $vote->getVotingId(),
+                        'round_id' => $vote->getRoundId(),
+                        'free_input' => $vote->getFreeInput(),
+                        'free_input_category' => $vote->getFreeInputCategory()
+                    ])->get() as $vote
+                ) {
+                    $vote->delete();
+                }
+                break;
+            case 'add_category':
+                $category = new xlvoFreeInputCategory();
+                $category->setTitle($_POST['title']);
+                $category->setVotingId($this->manager->getVoting()->getId());
+                $category->setRoundId($this->manager->getPlayer()->getRoundId());
+                $category->create();
+                $return_value = ['category_id' => $category->getId()];
+                break;
+            case 'remove_category':
+                /** @var xlvoVote $vote */
+                foreach (
+                    xlvoVote::where([
+                        'voting_id' => $this->manager->getVoting()->getId(),
+                        'round_id' => $this->manager->getplayer()->getRoundId(),
+                        'free_input_category' => $_POST['category_id']
+                    ])->get() as $vote
+                ) {
+                    $vote->setFreeInputCategory(0);
+                    $vote->update();
+                }
+                xlvoFreeInputCategory::find($_POST['category_id'])->delete();
+                break;
+            case 'change_category':
+                /** @var $vote xlvoVote */
+                $vote = xlvoVote::find($_POST['vote_id']);
+
+                // also change category of all same inputs in the same category
+                foreach (
+                    xlvoVote::where([
+                        'voting_id' => $vote->getVotingId(),
+                        'round_id' => $vote->getRoundId(),
+                        'free_input' => $vote->getFreeInput(),
+                        'free_input_category' => $vote->getFreeInputCategory()
+                    ])->get() as $vote
+                ) {
+                    $vote->setFreeInputCategory($_POST['category_id']);
+                    $vote->update();
+                }
+
+                break;
+            case 'button':
+                /**
+                 * QuestionGUIs can add own button which have to call the player with 'call=button&button_id={cmd}&data=[some,data]
+                 */
+                $xlvoQuestionTypesGUI = xlvoQuestionTypesGUI::getInstance($this->manager);
+                $xlvoQuestionTypesGUI->handleButtonCall($_POST['button_id'], $_POST['button_data']);
+                $return_value = new stdClass();
+                $return_value->buttons_html = $this->getButtonsHTML();
+                break;
+        }
+
+        xlvoJsResponse::getInstance($return_value)->send();
     }
 }

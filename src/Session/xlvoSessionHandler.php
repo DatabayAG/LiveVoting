@@ -19,8 +19,8 @@ class xlvoSessionHandler
 {
     use DICTrait;
     use LiveVotingTrait;
-    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
     /**
      * @param string $save_path
@@ -33,7 +33,6 @@ class xlvoSessionHandler
         return true;
     }
 
-
     /**
      * @return bool
      */
@@ -41,7 +40,6 @@ class xlvoSessionHandler
     {
         return true;
     }
-
 
     /**
      * @param string $sessionid
@@ -52,7 +50,6 @@ class xlvoSessionHandler
     {
         return '';
     }
-
 
     /**
      * @param string $sessionid
@@ -65,7 +62,6 @@ class xlvoSessionHandler
         return true;
     }
 
-
     /**
      * @param int $sessionid
      *
@@ -75,7 +71,6 @@ class xlvoSessionHandler
     {
         return true;
     }
-
 
     /**
      * @param int $maxlifetime

@@ -48,68 +48,8 @@ class ilObjLiveVotingAccess extends ilObjectPluginAccess
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-
-
-    /**
-     * Checks wether a user may invoke a command or not
-     * (this method is called by ilAccessHandler::checkAccess)
-     *
-     * Please do not check any preconditions handled by
-     * ilConditionHandler here. Also don't do usual RBAC checks.
-     *
-     * @param string $a_cmd        command (not permission!)
-     * @param string $a_permission permission
-     * @param int    $a_ref_id     reference id
-     * @param int    $a_obj_id     object id
-     * @param string $a_user_id    user id (if not provided, current user is taken)
-     *
-     * @return    boolean        true, if everything is ok
-     */
-    public function _checkAccess(string $a_cmd, string $a_permission, int $a_ref_id, int $a_obj_id, $a_user_id = ""): bool
-    {
-        if ($a_user_id == "") {
-            $a_user_id = self::dic()->user()->getId();
-        }
-
-        switch ($a_permission) {
-            case "visible":
-            case "read":
-                if (!self::checkOnline($a_obj_id)
-                    && !self::dic()->access()->checkAccessOfUser($a_user_id, "write", "", $a_ref_id)
-                ) {
-                    return false;
-                }
-                break;
-        }
-
-        return true;
-    }
-
-
-    /**
-     * @param null $ref_id
-     * @param null $user_id
-     *
-     * @return bool
-     */
-    public static function hasReadAccess($ref_id = null, $user_id = null)
-    {
-        return self::hasAccess('read', $ref_id, $user_id);
-    }
-
-
-    /**
-     * @param null $ref_id
-     * @param null $user_id
-     *
-     * @return bool
-     */
-    public static function hasWriteAccess($ref_id = null, $user_id = null)
-    {
-        return self::hasAccess('write', $ref_id, $user_id);
-    }
-
 
     /**
      * @param $obj_id
@@ -130,51 +70,16 @@ class ilObjLiveVotingAccess extends ilObjectPluginAccess
         return false;
     }
 
-
-    /**
-     * @param $obj_id
-     * @param $user_id
-     *
-     * @return bool
-     */
-    public static function hasWriteAccessForObject($obj_id, $user_id)
-    {
-        $refs = ilObject2::_getAllReferences($obj_id);
-
-        foreach ($refs as $ref_id) {
-            if (self::hasWriteAccess($ref_id, $user_id)) {
-                return true;
-                break;
-            }
-        }
-
-        return false;
-    }
-
-
     /**
      * @param null $ref_id
      * @param null $user_id
      *
      * @return bool
      */
-    public static function hasDeleteAccess($ref_id = null, $user_id = null)
+    public static function hasReadAccess($ref_id = null, $user_id = null)
     {
-        return self::hasAccess('delete', $ref_id, $user_id);
+        return self::hasAccess('read', $ref_id, $user_id);
     }
-
-
-    /**
-     * @param null $ref_id
-     * @param null $user_id
-     *
-     * @return bool
-     */
-    public static function hasCreateAccess($ref_id = null, $user_id = null)
-    {
-        return self::hasAccess('create_xlvo', $ref_id, $user_id);
-    }
-
 
     /**
      * @param      $permission
@@ -205,6 +110,98 @@ class ilObjLiveVotingAccess extends ilObjectPluginAccess
         return self::dic()->access()->checkAccessOfUser($user_id, $permission, '', $ref_id);
     }
 
+    /**
+     * @param $obj_id
+     * @param $user_id
+     *
+     * @return bool
+     */
+    public static function hasWriteAccessForObject($obj_id, $user_id)
+    {
+        $refs = ilObject2::_getAllReferences($obj_id);
+
+        foreach ($refs as $ref_id) {
+            if (self::hasWriteAccess($ref_id, $user_id)) {
+                return true;
+                break;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param null $ref_id
+     * @param null $user_id
+     *
+     * @return bool
+     */
+    public static function hasWriteAccess($ref_id = null, $user_id = null)
+    {
+        return self::hasAccess('write', $ref_id, $user_id);
+    }
+
+    /**
+     * @param null $ref_id
+     * @param null $user_id
+     *
+     * @return bool
+     */
+    public static function hasDeleteAccess($ref_id = null, $user_id = null)
+    {
+        return self::hasAccess('delete', $ref_id, $user_id);
+    }
+
+    /**
+     * @param null $ref_id
+     * @param null $user_id
+     *
+     * @return bool
+     */
+    public static function hasCreateAccess($ref_id = null, $user_id = null)
+    {
+        return self::hasAccess('create_xlvo', $ref_id, $user_id);
+    }
+
+    /**
+     * Checks wether a user may invoke a command or not
+     * (this method is called by ilAccessHandler::checkAccess)
+     *
+     * Please do not check any preconditions handled by
+     * ilConditionHandler here. Also don't do usual RBAC checks.
+     *
+     * @param string $a_cmd command (not permission!)
+     * @param string $a_permission permission
+     * @param int    $a_ref_id reference id
+     * @param int    $a_obj_id object id
+     * @param string $a_user_id user id (if not provided, current user is taken)
+     *
+     * @return    bool        true, if everything is ok
+     */
+    public function _checkAccess(
+        string $a_cmd,
+        string $a_permission,
+        int $a_ref_id,
+        int $a_obj_id,
+        $a_user_id = ""
+    ): bool {
+        if ($a_user_id == "") {
+            $a_user_id = self::dic()->user()->getId();
+        }
+
+        switch ($a_permission) {
+            case "visible":
+            case "read":
+                if (!self::checkOnline($a_obj_id)
+                    && !self::dic()->access()->checkAccessOfUser($a_user_id, "write", "", $a_ref_id)
+                ) {
+                    return false;
+                }
+                break;
+        }
+
+        return true;
+    }
 
     /**
      * Check online status of example object

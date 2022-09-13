@@ -35,6 +35,7 @@ class xlvoVotingGUI
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     public const IDENTIFIER = 'xlvoVot';
     public const CMD_STANDARD = 'content';
@@ -77,7 +78,6 @@ class xlvoVotingGUI
      */
     protected $obj;
 
-
     /**
      *
      */
@@ -89,22 +89,6 @@ class xlvoVotingGUI
         $this->round = xlvoRound::getLatestRound($this->obj_id);
         $this->obj = new ilObjLiveVoting($ref_id);
     }
-
-
-    /**
-     *
-     */
-    public function executeCommand()
-    {
-        $nextClass = self::dic()->ctrl()->getNextClass();
-        switch ($nextClass) {
-            default:
-                $cmd = self::dic()->ctrl()->getCmd(self::CMD_STANDARD);
-                $this->{$cmd}();
-                break;
-        }
-    }
-
 
     /**
      *
@@ -121,7 +105,10 @@ class xlvoVotingGUI
             self::dic()->toolbar()->addButtonInstance($b);
 
             $collection = xlvoVoting::where(array('obj_id' => $this->getObjId()))
-                ->where(array('voting_type' => xlvoQuestionTypes::getActiveTypes()))->orderBy('position', 'ASC');
+                                    ->where(array('voting_type' => xlvoQuestionTypes::getActiveTypes()))->orderBy(
+                                        'position',
+                                        'ASC'
+                                    );
             if (xlvoConf::getConfig(xlvoConf::F_ACTIVATE_POWERPOINT_EXPORT) && $collection->count() > 0) {
                 $powerpoint_export = ilLinkButton::getInstance();
                 $powerpoint_export->setCaption($this->txt('powerpoint_export'), false);
@@ -134,7 +121,7 @@ class xlvoVotingGUI
             if (count($voting_ids) > 0) {
                 $has_votes = xlvoVote::where(array(
                     'voting_id' => $voting_ids,
-                    'round_id'  => $this->round->getId(),
+                    'round_id' => $this->round->getId(),
                 ))->hasSets();
             }
 
@@ -150,7 +137,10 @@ class xlvoVotingGUI
                 $b->setUrl(self::dic()->ctrl()->getLinkTarget($this, self::CMD_EXPORT));
                 self::dic()->toolbar()->addButtonInstance($b);
 
-                self::dic()->toolbar()->setFormAction(self::dic()->ctrl()->getLinkTarget($this, self::CMD_IMPORT), true);
+                self::dic()->toolbar()->setFormAction(
+                    self::dic()->ctrl()->getLinkTarget($this, self::CMD_IMPORT),
+                    true
+                );
                 $import = new ilFileInputGUI('xlvo_import', 'xlvo_import');
                 self::dic()->toolbar()->addInputItem($import);
                 $button = ilSubmitButton::getInstance();
@@ -169,16 +159,50 @@ class xlvoVotingGUI
             $power_point_enabled = xlvoConf::getConfig(xlvoConf::F_ACTIVATE_POWERPOINT_EXPORT);
 
             $powerpoint_export = ($power_point_enabled ? '<br><br><i>'
-                . htmlspecialchars(self::plugin()->translate("config_" . xlvoConf::F_ACTIVATE_POWERPOINT_EXPORT . "_info_manual")) . '</i><ol>'
-                . implode("", array_map(function ($step) {
-                    return '<li>' . htmlspecialchars(self::plugin()->translate("config_" . xlvoConf::F_ACTIVATE_POWERPOINT_EXPORT
-                            . "_info_manual_" . $step)) . '</li>';
-                }, range(1, 4))) . '</ol>' : ''); // TODO: default.css not loaded
+                . htmlspecialchars(
+                    self::plugin()->translate("config_" . xlvoConf::F_ACTIVATE_POWERPOINT_EXPORT . "_info_manual")
+                ) . '</i><ol>'
+                . implode(
+                    "",
+                    array_map(function ($step) {
+                        return '<li>' . htmlspecialchars(
+                            self::plugin()->translate(
+                                "config_" . xlvoConf::F_ACTIVATE_POWERPOINT_EXPORT
+                                . "_info_manual_" . $step
+                            )
+                        ) . '</li>';
+                    }, range(1, 4))
+                ) . '</ol>' : ''); // TODO: default.css not loaded
 
             self::dic()->ui()->mainTemplate()->setContent($xlvoVotingTableGUI->getHTML() . $powerpoint_export);
         }
     }
 
+    /**
+     * @param string $key
+     *
+     * @return string
+     */
+    public function txt($key)
+    {
+        return self::plugin()->translate($key, 'voting');
+    }
+
+    /**
+     * @return int
+     */
+    public function getObjId()
+    {
+        return $this->obj_id;
+    }
+
+    /**
+     * @param int $obj_id
+     */
+    public function setObjId($obj_id)
+    {
+        $this->obj_id = $obj_id;
+    }
 
     /**
      *
@@ -208,7 +232,6 @@ class xlvoVotingGUI
         }
     }
 
-
     /**
      *
      */
@@ -225,7 +248,6 @@ class xlvoVotingGUI
             self::dic()->ui()->mainTemplate()->setContent($xlvoVotingFormGUI->getHTML());
         }
     }
-
 
     /**
      *
@@ -248,7 +270,6 @@ class xlvoVotingGUI
         }
     }
 
-
     /**
      *
      */
@@ -264,9 +285,12 @@ class xlvoVotingGUI
             $xlvoVoting = xlvoVoting::find($_GET[self::IDENTIFIER]);
             // PREV
             $prev_id = xlvoVoting::where(array(
-                'obj_id'        => $xlvoVoting->getObjId(),
+                'obj_id' => $xlvoVoting->getObjId(),
                 'voting_status' => xlvoVoting::STAT_ACTIVE,
-            ))->orderBy('position', 'DESC')->where(array('position' => $xlvoVoting->getPosition()), '<')->limit(0, 1)->getArray('id', 'id');
+            ))->orderBy('position', 'DESC')->where(array('position' => $xlvoVoting->getPosition()), '<')->limit(
+                0,
+                1
+            )->getArray('id', 'id');
             $array1 = array_values($prev_id);
             $prev_id = array_shift($array1);
 
@@ -280,9 +304,12 @@ class xlvoVotingGUI
 
             // NEXT
             $next_id = xlvoVoting::where(array(
-                'obj_id'        => $xlvoVoting->getObjId(),
+                'obj_id' => $xlvoVoting->getObjId(),
                 'voting_status' => xlvoVoting::STAT_ACTIVE,
-            ))->orderBy('position', 'ASC')->where(array('position' => $xlvoVoting->getPosition()), '>')->limit(0, 1)->getArray('id', 'id');
+            ))->orderBy('position', 'ASC')->where(array('position' => $xlvoVoting->getPosition()), '>')->limit(
+                0,
+                1
+            )->getArray('id', 'id');
             $array = array_values($next_id);
             $next_id = array_shift($array);
 
@@ -311,10 +338,19 @@ class xlvoVotingGUI
             $presenter_link = new ilCustomInputGUI(self::plugin()->translate('config_presenter_link'));
 
             if ($config->isAnonymous()) {
-                $presenter_link->setHtml($config->getPresenterLink($xlvoVoting->getId(), $power_point_enabled, false, !$power_point_enabled)
-                    . ($power_point_enabled ? '<br><br><i>' . htmlspecialchars(self::plugin()->translate("config_ppt_link_info_manual")) . '</i><ol>' . implode("", array_map(function ($step) {
-                        return '<li>' . htmlspecialchars(self::plugin()->translate("config_ppt_link_info_manual_" . $step)) . '</li>';
-                    }, range(1, 6))) . '</ol>' : ''));
+                $presenter_link->setHtml(
+                    $config->getPresenterLink($xlvoVoting->getId(), $power_point_enabled, false, !$power_point_enabled)
+                    . ($power_point_enabled ? '<br><br><i>' . htmlspecialchars(
+                        self::plugin()->translate("config_ppt_link_info_manual")
+                    ) . '</i><ol>' . implode(
+                        "",
+                        array_map(function ($step) {
+                            return '<li>' . htmlspecialchars(
+                                self::plugin()->translate("config_ppt_link_info_manual_" . $step)
+                            ) . '</li>';
+                        }, range(1, 6))
+                    ) . '</ol>' : '')
+                );
             } else {
                 $presenter_link->setHtml(self::plugin()->translate("config_presenter_link_non_anonym"));
             }
@@ -324,39 +360,6 @@ class xlvoVotingGUI
             self::dic()->ui()->mainTemplate()->setContent($xlvoVotingFormGUI->getHTML());
         }
     }
-
-
-    /**
-     *
-     */
-    public function updateAndStay()
-    {
-        self::dic()->ctrl()->setParameter($this, self::IDENTIFIER, filter_input(INPUT_GET, self::IDENTIFIER));
-        $this->update(self::CMD_EDIT);
-    }
-
-
-    /**
-     * @param string $cmd
-     */
-    protected function update($cmd = self::CMD_STANDARD)
-    {
-        if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            ilUtil::sendFailure(self::plugin()->translate('permission_denied_write'), true);
-            self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
-        } else {
-            $xlvoVoting = xlvoVoting::find($_GET[self::IDENTIFIER]);
-            self::dic()->ctrl()->setParameter($this, self::IDENTIFIER, $xlvoVoting->getId());
-            $xlvoVotingFormGUI = xlvoVotingFormGUI::get($this, $xlvoVoting);
-            $xlvoVotingFormGUI->setValuesByPost();
-            if ($xlvoVotingFormGUI->saveObject()) {
-                ilUtil::sendSuccess(self::plugin()->translate('msg_success_voting_updated'), true);
-                self::dic()->ctrl()->redirect($this, $cmd);
-            }
-            self::dic()->ui()->mainTemplate()->setContent($xlvoVotingFormGUI->getHTML());
-        }
-    }
-
 
     /**
      *
@@ -387,7 +390,6 @@ class xlvoVotingGUI
             }
         }
     }
-
 
     /**
      *
@@ -427,6 +429,13 @@ class xlvoVotingGUI
         }
     }
 
+    /**
+     *
+     */
+    protected function cancel()
+    {
+        self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
+    }
 
     /**
      *
@@ -458,7 +467,6 @@ class xlvoVotingGUI
         }
     }
 
-
     /**
      *
      */
@@ -489,7 +497,6 @@ class xlvoVotingGUI
         }
     }
 
-
     /**
      *
      */
@@ -518,7 +525,6 @@ class xlvoVotingGUI
         }
     }
 
-
     /**
      *
      */
@@ -546,7 +552,6 @@ class xlvoVotingGUI
         }
     }
 
-
     /**
      *
      */
@@ -561,6 +566,15 @@ class xlvoVotingGUI
         $this->cancel();
     }
 
+    /**
+     *
+     */
+    protected function duplicateToAnotherObjectSelect()
+    {
+        $form = $this->getDuplicateToAnotherObjectSelectForm();
+
+        self::output()->output($form);
+    }
 
     /**
      * @return DuplicateToAnotherObjectSelectFormGUI
@@ -574,18 +588,6 @@ class xlvoVotingGUI
         return $form;
     }
 
-
-    /**
-     *
-     */
-    protected function duplicateToAnotherObjectSelect()
-    {
-        $form = $this->getDuplicateToAnotherObjectSelectForm();
-
-        self::output()->output($form);
-    }
-
-
     /**
      *
      */
@@ -595,7 +597,6 @@ class xlvoVotingGUI
 
         $form->getItemByPostVar("ref_id")->handleExplorerCommand();
     }
-
 
     /**
      *
@@ -621,16 +622,6 @@ class xlvoVotingGUI
         $this->cancel();
     }
 
-
-    /**
-     *
-     */
-    protected function cancel()
-    {
-        self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
-    }
-
-
     /**
      *
      */
@@ -654,7 +645,6 @@ class xlvoVotingGUI
         }
     }
 
-
     /**
      *
      */
@@ -664,7 +654,6 @@ class xlvoVotingGUI
         $xlvoVotingGUI->writeFilterToSession();
         self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
     }
-
 
     /**
      *
@@ -676,36 +665,6 @@ class xlvoVotingGUI
         $xlvoVotingTableGUI->resetOffset();
         self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
     }
-
-
-    /**
-     * @return int
-     */
-    public function getObjId()
-    {
-        return $this->obj_id;
-    }
-
-
-    /**
-     * @param int $obj_id
-     */
-    public function setObjId($obj_id)
-    {
-        $this->obj_id = $obj_id;
-    }
-
-
-    /**
-     * @param string $key
-     *
-     * @return string
-     */
-    public function txt($key)
-    {
-        return self::plugin()->translate($key, 'voting');
-    }
-
 
     /**
      *
@@ -730,32 +689,68 @@ class xlvoVotingGUI
          */
         foreach (xlvoVoting::where(array('obj_id' => $this->getObjId()))->get() as $xlvoVoting) {
             $xml_voting = $xml_votings->appendChild(new DOMElement('voting'));
-            $xml_voting->appendChild(new DOMElement('title'))->appendChild(new DOMCdataSection($xlvoVoting->getTitle()));
-            $xml_voting->appendChild(new DOMElement('description'))->appendChild(new DOMCdataSection($xlvoVoting->getDescription()));
-            $xml_voting->appendChild(new DOMElement('question'))->appendChild(new DOMCdataSection($xlvoVoting->getQuestion()));
-            $xml_voting->appendChild(new DOMElement('voting_type'))->appendChild(new DOMCdataSection($xlvoVoting->getVotingType()));
-            $xml_voting->appendChild(new DOMElement('multi_selection'))->appendChild(new DOMCdataSection($xlvoVoting->isMultiSelection()));
-            $xml_voting->appendChild(new DOMElement('colors'))->appendChild(new DOMCdataSection($xlvoVoting->isColors()));
-            $xml_voting->appendChild(new DOMElement('multi_free_input'))->appendChild(new DOMCdataSection($xlvoVoting->isMultiFreeInput()));
-            $xml_voting->appendChild(new DOMElement('voting_status'))->appendChild(new DOMCdataSection($xlvoVoting->getVotingStatus()));
-            $xml_voting->appendChild(new DOMElement('position'))->appendChild(new DOMCdataSection($xlvoVoting->getPosition()));
-            $xml_voting->appendChild(new DOMElement('columns'))->appendChild(new DOMCdataSection($xlvoVoting->getColumns()));
-            $xml_voting->appendChild(new DOMElement('percentage'))->appendChild(new DOMCdataSection($xlvoVoting->getPercentage()));
-            $xml_voting->appendChild(new DOMElement('start_range'))->appendChild(new DOMCdataSection($xlvoVoting->getStartRange()));
-            $xml_voting->appendChild(new DOMElement('end_range'))->appendChild(new DOMCdataSection($xlvoVoting->getEndRange()));
+            $xml_voting->appendChild(new DOMElement('title'))->appendChild(
+                new DOMCdataSection($xlvoVoting->getTitle())
+            );
+            $xml_voting->appendChild(new DOMElement('description'))->appendChild(
+                new DOMCdataSection($xlvoVoting->getDescription())
+            );
+            $xml_voting->appendChild(new DOMElement('question'))->appendChild(
+                new DOMCdataSection($xlvoVoting->getQuestion())
+            );
+            $xml_voting->appendChild(new DOMElement('voting_type'))->appendChild(
+                new DOMCdataSection($xlvoVoting->getVotingType())
+            );
+            $xml_voting->appendChild(new DOMElement('multi_selection'))->appendChild(
+                new DOMCdataSection($xlvoVoting->isMultiSelection())
+            );
+            $xml_voting->appendChild(new DOMElement('colors'))->appendChild(
+                new DOMCdataSection($xlvoVoting->isColors())
+            );
+            $xml_voting->appendChild(new DOMElement('multi_free_input'))->appendChild(
+                new DOMCdataSection($xlvoVoting->isMultiFreeInput())
+            );
+            $xml_voting->appendChild(new DOMElement('voting_status'))->appendChild(
+                new DOMCdataSection($xlvoVoting->getVotingStatus())
+            );
+            $xml_voting->appendChild(new DOMElement('position'))->appendChild(
+                new DOMCdataSection($xlvoVoting->getPosition())
+            );
+            $xml_voting->appendChild(new DOMElement('columns'))->appendChild(
+                new DOMCdataSection($xlvoVoting->getColumns())
+            );
+            $xml_voting->appendChild(new DOMElement('percentage'))->appendChild(
+                new DOMCdataSection($xlvoVoting->getPercentage())
+            );
+            $xml_voting->appendChild(new DOMElement('start_range'))->appendChild(
+                new DOMCdataSection($xlvoVoting->getStartRange())
+            );
+            $xml_voting->appendChild(new DOMElement('end_range'))->appendChild(
+                new DOMCdataSection($xlvoVoting->getEndRange())
+            );
             $xml_voting->appendChild(new DOMElement('alt_result_display_mode'))
-                ->appendChild(new DOMCdataSection($xlvoVoting->getAltResultDisplayMode()));
+                       ->appendChild(new DOMCdataSection($xlvoVoting->getAltResultDisplayMode()));
             $xml_voting->appendChild(new DOMElement('randomise_option_sequence'))
-                ->appendChild(new DOMCdataSection($xlvoVoting->getRandomiseOptionSequence()));
+                       ->appendChild(new DOMCdataSection($xlvoVoting->getRandomiseOptionSequence()));
 
             $xml_options = $xml_voting->appendChild(new DOMElement('options'));
             foreach ($xlvoVoting->getVotingOptions() as $xlvoOption) {
                 $xml_option = $xml_options->appendChild(new DOMElement('option'));
-                $xml_option->appendChild(new DOMElement('text'))->appendChild(new DOMCdataSection($xlvoOption->getText()));
-                $xml_option->appendChild(new DOMElement('type'))->appendChild(new DOMCdataSection($xlvoOption->getType()));
-                $xml_option->appendChild(new DOMElement('status'))->appendChild(new DOMCdataSection($xlvoOption->getStatus()));
-                $xml_option->appendChild(new DOMElement('position'))->appendChild(new DOMCdataSection($xlvoOption->getPosition()));
-                $xml_option->appendChild(new DOMElement('correct_position'))->appendChild(new DOMCdataSection($xlvoOption->getCorrectPosition()));
+                $xml_option->appendChild(new DOMElement('text'))->appendChild(
+                    new DOMCdataSection($xlvoOption->getText())
+                );
+                $xml_option->appendChild(new DOMElement('type'))->appendChild(
+                    new DOMCdataSection($xlvoOption->getType())
+                );
+                $xml_option->appendChild(new DOMElement('status'))->appendChild(
+                    new DOMCdataSection($xlvoOption->getStatus())
+                );
+                $xml_option->appendChild(new DOMElement('position'))->appendChild(
+                    new DOMCdataSection($xlvoOption->getPosition())
+                );
+                $xml_option->appendChild(new DOMElement('correct_position'))->appendChild(
+                    new DOMCdataSection($xlvoOption->getCorrectPosition())
+                );
             }
         }
 
@@ -764,7 +759,6 @@ class xlvoVotingGUI
         ilUtil::deliverFile('/tmp/votings.xml', 'votings.xml');
         unlink('/tmp/votings.xml');
     }
-
 
     /**
      *
@@ -844,7 +838,6 @@ class xlvoVotingGUI
         $this->cancel();
     }
 
-
     /**
      *
      */
@@ -852,5 +845,49 @@ class xlvoVotingGUI
     {
         $powerPointExport = new PowerPointExport($this->obj);
         $powerPointExport->run();
+    }
+
+    /**
+     *
+     */
+    public function executeCommand()
+    {
+        $nextClass = self::dic()->ctrl()->getNextClass();
+        switch ($nextClass) {
+            default:
+                $cmd = self::dic()->ctrl()->getCmd(self::CMD_STANDARD);
+                $this->{$cmd}();
+                break;
+        }
+    }
+
+    /**
+     *
+     */
+    public function updateAndStay()
+    {
+        self::dic()->ctrl()->setParameter($this, self::IDENTIFIER, filter_input(INPUT_GET, self::IDENTIFIER));
+        $this->update(self::CMD_EDIT);
+    }
+
+    /**
+     * @param string $cmd
+     */
+    protected function update($cmd = self::CMD_STANDARD)
+    {
+        if (!ilObjLiveVotingAccess::hasWriteAccess()) {
+            ilUtil::sendFailure(self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
+        } else {
+            $xlvoVoting = xlvoVoting::find($_GET[self::IDENTIFIER]);
+            self::dic()->ctrl()->setParameter($this, self::IDENTIFIER, $xlvoVoting->getId());
+            $xlvoVotingFormGUI = xlvoVotingFormGUI::get($this, $xlvoVoting);
+            $xlvoVotingFormGUI->setValuesByPost();
+            if ($xlvoVotingFormGUI->saveObject()) {
+                ilUtil::sendSuccess(self::plugin()->translate('msg_success_voting_updated'), true);
+                self::dic()->ctrl()->redirect($this, $cmd);
+            }
+            self::dic()->ui()->mainTemplate()->setContent($xlvoVotingFormGUI->getHTML());
+        }
     }
 }

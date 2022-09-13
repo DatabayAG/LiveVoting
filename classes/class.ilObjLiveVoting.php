@@ -49,8 +49,8 @@ class ilObjLiveVoting extends ilObjectPlugin
 {
     use DICTrait;
     use LiveVotingTrait;
-    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
     /**
      * @param int        $a_ref_id
@@ -64,16 +64,6 @@ class ilObjLiveVoting extends ilObjectPlugin
             $this->doRead();
         }*/
     }
-
-
-    /**
-     * Get type.
-     */
-    final public function initType(): void
-    {
-        $this->setType(ilLiveVotingPlugin::PLUGIN_ID);
-    }
-
 
     /**
      * Create object
@@ -89,6 +79,13 @@ class ilObjLiveVoting extends ilObjectPlugin
         $config->store();
     }
 
+    /**
+     * Get type.
+     */
+    final public function initType(): void
+    {
+        $this->setType(ilLiveVotingPlugin::PLUGIN_ID);
+    }
 
     /**
      * Read data from db
@@ -97,14 +94,12 @@ class ilObjLiveVoting extends ilObjectPlugin
     {
     }
 
-
     /**
      * Update data
      */
     public function doUpdate(): void
     {
     }
-
 
     public function doDelete(): void
     {
@@ -150,23 +145,6 @@ class ilObjLiveVoting extends ilObjectPlugin
             $config->delete();
         }
     }
-
-
-    public function renegerateVotingSorting(): void
-    {
-        $i = 1;
-        /**
-         * @var xlvoVoting[] $votings
-         */
-        $votings = xlvoVoting::where(array('obj_id' => $this->getId()))->orderBy('position', 'ASC')->get();
-
-        foreach ($votings as $voting) {
-            $voting->setPosition($i);
-            $voting->store();
-            $i++;
-        }
-    }
-
 
     /**
      * @param                 $a_target_id
@@ -258,6 +236,21 @@ class ilObjLiveVoting extends ilObjectPlugin
         $new_obj->renegerateVotingSorting();
         foreach ($media_object_ids as $media_object_id) {
             ilObjMediaObject::_saveUsage($media_object_id, 'dcl:html', $new_obj->getId());
+        }
+    }
+
+    public function renegerateVotingSorting(): void
+    {
+        $i = 1;
+        /**
+         * @var xlvoVoting[] $votings
+         */
+        $votings = xlvoVoting::where(array('obj_id' => $this->getId()))->orderBy('position', 'ASC')->get();
+
+        foreach ($votings as $voting) {
+            $voting->setPosition($i);
+            $voting->store();
+            $i++;
         }
     }
 }

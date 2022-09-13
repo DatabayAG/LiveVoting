@@ -19,6 +19,7 @@ class xlvoVoteOld
 {
     use DICTrait;
     use LiveVotingTrait;
+
     /**
      * @var string
      *

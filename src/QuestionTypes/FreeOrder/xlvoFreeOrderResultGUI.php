@@ -45,7 +45,6 @@ class xlvoFreeOrderResultGUI extends xlvoResultGUI
         return implode(", ", $strings);
     }
 
-
     /**
      * @param xlvoVote[] $votes
      *

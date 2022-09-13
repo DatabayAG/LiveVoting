@@ -20,8 +20,8 @@ class xlvoRbacReview
 {
     use DICTrait;
     use LiveVotingTrait;
-    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
     /**
      * @param $a_rol_id
@@ -33,7 +33,6 @@ class xlvoRbacReview
         return array();
     }
 
-
     /**
      * @param $user_id
      *
@@ -43,7 +42,6 @@ class xlvoRbacReview
     {
         return array();
     }
-
 
     /**
      * get all assigned roles to a given user

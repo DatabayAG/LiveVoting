@@ -24,37 +24,16 @@ class xlvoCorrectOrderGUI extends xlvoQuestionTypesGUI
     public const BUTTON_TOTTLE_DISPLAY_CORRECT_ORDER = 'display_correct_order';
     public const BUTTON_TOGGLE_PERCENTAGE = 'toggle_percentage';
 
-
-    /**
-     * @return string
-     */
-    public function getMobileHTML()
-    {
-        return $this->getFormContent() . xlvoJs::getInstance()->name(xlvoQuestionTypes::CORRECT_ORDER)->category('QuestionTypes')->getRunCode();
-    }
-
-
-    /**
-     * @param bool $current
-     */
-    public function initJS($current = false)
-    {
-        xlvoJs::getInstance()->api($this)->name(xlvoQuestionTypes::CORRECT_ORDER)->category('QuestionTypes')
-            ->addLibToHeader('jquery.ui.touch-punch.min.js')->init();
-    }
-
-
     /**
      *
      */
     protected function submit()
     {
         $this->manager->inputOne(array(
-            "input"   => json_encode($_POST['id']),
+            "input" => json_encode($_POST['id']),
             "vote_id" => $_POST['vote_id']
         ));
     }
-
 
     /**
      *
@@ -65,6 +44,15 @@ class xlvoCorrectOrderGUI extends xlvoQuestionTypesGUI
         $this->afterSubmit();
     }
 
+    /**
+     * @return string
+     */
+    public function getMobileHTML()
+    {
+        return $this->getFormContent() . xlvoJs::getInstance()->name(xlvoQuestionTypes::CORRECT_ORDER)->category(
+            'QuestionTypes'
+        )->getRunCode();
+    }
 
     /**
      * @return string
@@ -112,58 +100,6 @@ class xlvoCorrectOrderGUI extends xlvoQuestionTypesGUI
         return $tpl->get();
     }
 
-
-    /**
-     * @return array
-     */
-    public function getButtonInstances()
-    {
-        if (!$this->manager->getPlayer()->isShowResults()) {
-            return array();
-        }
-        $states = $this->getButtonsStates();
-        $b = ilLinkButton::getInstance();
-        $b->setId(self::BUTTON_TOTTLE_DISPLAY_CORRECT_ORDER);
-        if ($states[self::BUTTON_TOTTLE_DISPLAY_CORRECT_ORDER]) {
-            $b->setCaption(GlyphGUI::get('eye-close'), false);
-        } else {
-            $b->setCaption(GlyphGUI::get('eye-open'), false);
-        }
-
-        $t = ilLinkButton::getInstance();
-        $t->setId(self::BUTTON_TOGGLE_PERCENTAGE);
-        if ($states[self::BUTTON_TOGGLE_PERCENTAGE]) {
-            $t->setCaption(' %', false);
-        } else {
-            $t->setCaption(GlyphGUI::get('user'), false);
-        }
-
-        return array($b, $t);
-    }
-
-
-    /**
-     * @return mixed
-     */
-    protected function isShowCorrectOrder()
-    {
-        $states = $this->getButtonsStates();
-
-        return ((bool) $states[xlvoCorrectOrderGUI::BUTTON_TOTTLE_DISPLAY_CORRECT_ORDER] && $this->manager->getPlayer()->isShowResults());
-    }
-
-
-    /**
-     * @param $button_id
-     * @param $data
-     */
-    public function handleButtonCall($button_id, $data)
-    {
-        $states = $this->getButtonsStates();
-        $this->saveButtonState($button_id, !$states[$button_id]);
-    }
-
-
     /**
      * Checks whether the options displayed to the voter is randomized.
      *
@@ -173,22 +109,6 @@ class xlvoCorrectOrderGUI extends xlvoQuestionTypesGUI
     {
         return false;
     }
-
-
-    /**
-     * @return xlvoOption[]
-     */
-    protected function getCorrectOrder()
-    {
-        $correct_order = array();
-        foreach ($this->manager->getVoting()->getVotingOptions() as $xlvoOption) {
-            $correct_order[(int) $xlvoOption->getCorrectPosition()] = $xlvoOption;
-        };
-        ksort($correct_order);
-
-        return $correct_order;
-    }
-
 
     /**
      * Randomizes an array of xlvoOption.
@@ -233,7 +153,6 @@ class xlvoCorrectOrderGUI extends xlvoQuestionTypesGUI
         return $this->randomizeWithoutCorrectSequence($options);
     }
 
-
     /**
      * Shuffles the array given array the keys are preserved.
      * Please note that the array passed into this method get never modified.
@@ -256,7 +175,6 @@ class xlvoCorrectOrderGUI extends xlvoQuestionTypesGUI
         return $shuffledArray;
     }
 
-
     /**
      * Create a shallow copy of the given array.
      *
@@ -272,5 +190,77 @@ class xlvoCorrectOrderGUI extends xlvoQuestionTypesGUI
         }
 
         return $clone;
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function isShowCorrectOrder()
+    {
+        $states = $this->getButtonsStates();
+
+        return ((bool) $states[xlvoCorrectOrderGUI::BUTTON_TOTTLE_DISPLAY_CORRECT_ORDER] && $this->manager->getPlayer(
+        )->isShowResults());
+    }
+
+    /**
+     * @return xlvoOption[]
+     */
+    protected function getCorrectOrder()
+    {
+        $correct_order = array();
+        foreach ($this->manager->getVoting()->getVotingOptions() as $xlvoOption) {
+            $correct_order[(int) $xlvoOption->getCorrectPosition()] = $xlvoOption;
+        };
+        ksort($correct_order);
+
+        return $correct_order;
+    }
+
+    /**
+     * @param bool $current
+     */
+    public function initJS($current = false)
+    {
+        xlvoJs::getInstance()->api($this)->name(xlvoQuestionTypes::CORRECT_ORDER)->category('QuestionTypes')
+              ->addLibToHeader('jquery.ui.touch-punch.min.js')->init();
+    }
+
+    /**
+     * @return array
+     */
+    public function getButtonInstances()
+    {
+        if (!$this->manager->getPlayer()->isShowResults()) {
+            return array();
+        }
+        $states = $this->getButtonsStates();
+        $b = ilLinkButton::getInstance();
+        $b->setId(self::BUTTON_TOTTLE_DISPLAY_CORRECT_ORDER);
+        if ($states[self::BUTTON_TOTTLE_DISPLAY_CORRECT_ORDER]) {
+            $b->setCaption(GlyphGUI::get('eye-close'), false);
+        } else {
+            $b->setCaption(GlyphGUI::get('eye-open'), false);
+        }
+
+        $t = ilLinkButton::getInstance();
+        $t->setId(self::BUTTON_TOGGLE_PERCENTAGE);
+        if ($states[self::BUTTON_TOGGLE_PERCENTAGE]) {
+            $t->setCaption(' %', false);
+        } else {
+            $t->setCaption(GlyphGUI::get('user'), false);
+        }
+
+        return array($b, $t);
+    }
+
+    /**
+     * @param $button_id
+     * @param $data
+     */
+    public function handleButtonCall($button_id, $data)
+    {
+        $states = $this->getButtonsStates();
+        $this->saveButtonState($button_id, !$states[$button_id]);
     }
 }

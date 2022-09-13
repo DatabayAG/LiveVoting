@@ -18,6 +18,7 @@ class xlvoParticipant
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var int
@@ -36,7 +37,6 @@ class xlvoParticipant
      */
     protected $number;
 
-
     /**
      * @return int
      */
@@ -44,7 +44,6 @@ class xlvoParticipant
     {
         return $this->user_id;
     }
-
 
     /**
      * @param int $user_id
@@ -54,7 +53,6 @@ class xlvoParticipant
         $this->user_id = $user_id;
     }
 
-
     /**
      * @return string
      */
@@ -62,7 +60,6 @@ class xlvoParticipant
     {
         return $this->user_identifier;
     }
-
 
     /**
      * @param string $user_identifier
@@ -72,7 +69,6 @@ class xlvoParticipant
         $this->user_identifier = $user_identifier;
     }
 
-
     /**
      * @return int
      */
@@ -80,7 +76,6 @@ class xlvoParticipant
     {
         return $this->user_id_type;
     }
-
 
     /**
      * @param int $user_id_type
@@ -90,7 +85,6 @@ class xlvoParticipant
         $this->user_id_type = $user_id_type;
     }
 
-
     /**
      * @return int
      */
@@ -98,7 +92,6 @@ class xlvoParticipant
     {
         return $this->number;
     }
-
 
     /**
      * @param int $number

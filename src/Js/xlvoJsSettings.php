@@ -18,6 +18,7 @@ class xlvoJsSettings
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var array
@@ -28,14 +29,12 @@ class xlvoJsSettings
      */
     protected $translations = array();
 
-
     /**
      *
      */
     public function __construct()
     {
     }
-
 
     /**
      * @param string $name
@@ -46,7 +45,6 @@ class xlvoJsSettings
         $this->settings[$name] = $value;
     }
 
-
     /**
      * @param string $key
      */
@@ -54,7 +52,6 @@ class xlvoJsSettings
     {
         $this->translations[$key] = self::plugin()->translate($key);
     }
-
 
     /**
      * @return string

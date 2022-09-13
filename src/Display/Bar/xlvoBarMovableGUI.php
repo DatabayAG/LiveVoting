@@ -20,6 +20,7 @@ class xlvoBarMovableGUI implements xlvoGeneralBarGUI
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var ilTemplate
@@ -42,7 +43,6 @@ class xlvoBarMovableGUI implements xlvoGeneralBarGUI
      */
     protected $show_option_letter = false;
 
-
     /**
      * xlvoBarMovableGUI constructor.
      *
@@ -56,7 +56,6 @@ class xlvoBarMovableGUI implements xlvoGeneralBarGUI
         $this->vote_id = $vote_id;
         $this->tpl = self::plugin()->template('default/Display/Bar/tpl.bar_movable.html', false);
     }
-
 
     /**
      * @return string
@@ -97,7 +96,6 @@ class xlvoBarMovableGUI implements xlvoGeneralBarGUI
         return $this->tpl->get();
     }
 
-
     /**
      * @return string
      */
@@ -105,7 +103,6 @@ class xlvoBarMovableGUI implements xlvoGeneralBarGUI
     {
         return $this->show_option_letter;
     }
-
 
     /**
      * @param string $show_option_letter

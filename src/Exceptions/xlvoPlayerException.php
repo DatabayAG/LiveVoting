@@ -16,7 +16,6 @@ class xlvoPlayerException extends xlvoException
     public const NO_VOTINGS = 2;
     public const CATEGORY_NOT_FOUND = 3;
 
-
     /**
      * xlvoPlayerException constructor.
      *

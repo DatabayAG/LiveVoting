@@ -15,5 +15,6 @@ use srag\RemovePluginDataConfirm\LiveVoting\AbstractRemovePluginDataConfirm;
 class LiveVotingRemoveDataConfirm extends AbstractRemovePluginDataConfirm
 {
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 }

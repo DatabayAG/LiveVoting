@@ -16,27 +16,6 @@ use LiveVoting\Cache\CachingActiveRecord;
 class xlvoFreeInputCategory extends CachingActiveRecord
 {
     public const TABLE_NAME = 'rep_robj_xlvo_cat';
-
-
-    /**
-     * @return string
-     */
-    public function getConnectorContainerName()
-    {
-        return self::TABLE_NAME;
-    }
-
-
-    /**
-     * @return string
-     * @deprecated
-     */
-    public static function returnDbTableName()
-    {
-        return self::TABLE_NAME;
-    }
-
-
     /**
      * @var int
      *
@@ -72,6 +51,22 @@ class xlvoFreeInputCategory extends CachingActiveRecord
      */
     protected $round_id;
 
+    /**
+     * @return string
+     * @deprecated
+     */
+    public static function returnDbTableName()
+    {
+        return self::TABLE_NAME;
+    }
+
+    /**
+     * @return string
+     */
+    public function getConnectorContainerName()
+    {
+        return self::TABLE_NAME;
+    }
 
     /**
      * @return int
@@ -81,7 +76,6 @@ class xlvoFreeInputCategory extends CachingActiveRecord
         return $this->id;
     }
 
-
     /**
      * @param int $id
      */
@@ -89,7 +83,6 @@ class xlvoFreeInputCategory extends CachingActiveRecord
     {
         $this->id = $id;
     }
-
 
     /**
      * @return string
@@ -99,7 +92,6 @@ class xlvoFreeInputCategory extends CachingActiveRecord
         return $this->title;
     }
 
-
     /**
      * @param string $title
      */
@@ -107,7 +99,6 @@ class xlvoFreeInputCategory extends CachingActiveRecord
     {
         $this->title = $title;
     }
-
 
     /**
      * @return int
@@ -117,7 +108,6 @@ class xlvoFreeInputCategory extends CachingActiveRecord
         return $this->voting_id;
     }
 
-
     /**
      * @param int $voting_id
      */
@@ -126,7 +116,6 @@ class xlvoFreeInputCategory extends CachingActiveRecord
         $this->voting_id = $voting_id;
     }
 
-
     /**
      * @return int
      */
@@ -134,7 +123,6 @@ class xlvoFreeInputCategory extends CachingActiveRecord
     {
         return $this->round_id;
     }
-
 
     /**
      * @param int $round_id

@@ -20,9 +20,9 @@ use xlvoVotingGUI;
 class DuplicateToAnotherObjectSelectFormGUI extends PropertyFormGUI
 {
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     public const LANG_MODULE = "voting";
-
 
     /**
      * DuplicateToAnotherObjectSelectFormGUI constructor
@@ -33,7 +33,6 @@ class DuplicateToAnotherObjectSelectFormGUI extends PropertyFormGUI
     {
         parent::__construct($parent);
     }
-
 
     /**
      * @inheritDoc
@@ -46,7 +45,6 @@ class DuplicateToAnotherObjectSelectFormGUI extends PropertyFormGUI
         }
     }
 
-
     /**
      * @inheritDoc
      */
@@ -55,7 +53,6 @@ class DuplicateToAnotherObjectSelectFormGUI extends PropertyFormGUI
         $this->addCommandButton(xlvoVotingGUI::CMD_DUPLICATE_TO_ANOTHER_OBJECT, $this->txt("duplicate"));
     }
 
-
     /**
      * @inheritDoc
      */
@@ -63,7 +60,6 @@ class DuplicateToAnotherObjectSelectFormGUI extends PropertyFormGUI
     {
         $this->addItem($this->getRepositorySelector());
     }
-
 
     /**
      * @return ilRepositorySelector2InputGUI
@@ -79,14 +75,12 @@ class DuplicateToAnotherObjectSelectFormGUI extends PropertyFormGUI
         return $repository_selector;
     }
 
-
     /**
      * @inheritDoc
      */
     protected function initId(): void
     {
     }
-
 
     /**
      * @inheritDoc
@@ -95,7 +89,6 @@ class DuplicateToAnotherObjectSelectFormGUI extends PropertyFormGUI
     {
         $this->setTitle($this->txt(xlvoVotingGUI::CMD_DUPLICATE_TO_ANOTHER_OBJECT));
     }
-
 
     /**
      * @inheritDoc

@@ -75,7 +75,6 @@ class xlvoFreeOrderResultsGUI extends xlvoCorrectOrderResultsGUI
         return $bars->getHTML();
     }
 
-
     /**
      * @return string
      */

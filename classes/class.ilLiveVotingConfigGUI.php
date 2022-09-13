@@ -18,13 +18,12 @@ class ilLiveVotingConfigGUI extends ilPluginConfigGUI
 {
     use DICTrait;
     use LiveVotingTrait;
-    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
     public function __construct()
     {
     }
-
 
     public function executeCommand(): void
     {
@@ -35,17 +34,31 @@ class ilLiveVotingConfigGUI extends ilPluginConfigGUI
         self::dic()->ctrl()->setParameterByClass(ilObjComponentSettingsGUI::class, "plugin_id", $_GET["plugin_id"]);
         self::dic()->ctrl()->setParameterByClass(ilObjComponentSettingsGUI::class, "pname", $_GET["pname"]);
 
-        self::dic()->ui()->mainTemplate()->setTitle(self::dic()->language()->txt("cmps_plugin") . ": " . $_GET["pname"]);
+        self::dic()->ui()->mainTemplate()->setTitle(
+            self::dic()->language()->txt("cmps_plugin") . ": " . $_GET["pname"]
+        );
         self::dic()->ui()->mainTemplate()->setDescription("");
 
         self::dic()->tabs()->clearTargets();
 
         if ($_GET["plugin_id"]) {
-            self::dic()->tabs()->setBackTarget(self::dic()->language()->txt("cmps_plugin"), self::dic()->ctrl()
-                ->getLinkTargetByClass(ilObjComponentSettingsGUI::class, "showPlugin"));
+            self::dic()->tabs()->setBackTarget(
+                self::dic()->language()->txt("cmps_plugin"),
+                self::dic()->ctrl()
+                                                                 ->getLinkTargetByClass(
+                                                                     ilObjComponentSettingsGUI::class,
+                                                                     "showPlugin"
+                                                                 )
+            );
         } else {
-            self::dic()->tabs()->setBackTarget(self::dic()->language()->txt("cmps_plugins"), self::dic()->ctrl()
-                ->getLinkTargetByClass(ilObjComponentSettingsGUI::class, "listPlugins"));
+            self::dic()->tabs()->setBackTarget(
+                self::dic()->language()->txt("cmps_plugins"),
+                self::dic()->ctrl()
+                                                                  ->getLinkTargetByClass(
+                                                                      ilObjComponentSettingsGUI::class,
+                                                                      "listPlugins"
+                                                                  )
+            );
         }
 
         $nextClass = self::dic()->ctrl()->getNextClass();
@@ -60,7 +73,6 @@ class ilLiveVotingConfigGUI extends ilPluginConfigGUI
             ));
         }
     }
-
 
     public function performCommand($cmd): void
     {

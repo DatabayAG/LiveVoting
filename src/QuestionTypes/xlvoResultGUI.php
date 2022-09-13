@@ -28,6 +28,7 @@ abstract class xlvoResultGUI
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var xlvoVoting
@@ -37,7 +38,6 @@ abstract class xlvoResultGUI
      * @var xlvoOption[]
      */
     protected $options;
-
 
     /**
      * xlvoResultGUI constructor.
@@ -49,23 +49,6 @@ abstract class xlvoResultGUI
         $this->voting = $voting;
         $this->options = $voting->getVotingOptions();
     }
-
-
-    /**
-     * @param xlvoVote[] $votes
-     *
-     * @return string
-     */
-    abstract public function getTextRepresentation(array $votes);
-
-
-    /**
-     * @param xlvoVote[] $votes
-     *
-     * @return string
-     */
-    abstract public function getAPIRepresentation(array $votes);
-
 
     /**
      * Creates an instance of the result gui.
@@ -95,4 +78,18 @@ abstract class xlvoResultGUI
                 throw new ilException('Could not find the result gui for the given voting.');
         }
     }
+
+    /**
+     * @param xlvoVote[] $votes
+     *
+     * @return string
+     */
+    abstract public function getTextRepresentation(array $votes);
+
+    /**
+     * @param xlvoVote[] $votes
+     *
+     * @return string
+     */
+    abstract public function getAPIRepresentation(array $votes);
 }

@@ -21,6 +21,7 @@ class xlvoBarPercentageGUI implements xlvoGeneralBarGUI
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var int
@@ -51,14 +52,12 @@ class xlvoBarPercentageGUI implements xlvoGeneralBarGUI
      */
     protected $round = 2;
 
-
     /**
      *
      */
     public function __construct()
     {
     }
-
 
     /**
      * @return string
@@ -96,79 +95,6 @@ class xlvoBarPercentageGUI implements xlvoGeneralBarGUI
         return $tpl->get();
     }
 
-
-    /**
-     * @return int
-     */
-    public function getVotes()
-    {
-        return $this->votes;
-    }
-
-
-    /**
-     * @param int $votes
-     */
-    public function setVotes($votes)
-    {
-        $this->votes = $votes;
-    }
-
-
-    /**
-     * @return int
-     */
-    public function getMaxVotes()
-    {
-        return $this->max_votes;
-    }
-
-
-    /**
-     * @param int $max_votes
-     */
-    public function setMaxVotes($max_votes)
-    {
-        $this->max_votes = $max_votes;
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getOptionLetter()
-    {
-        return $this->option_letter;
-    }
-
-
-    /**
-     * @param string $option_letter
-     */
-    public function setOptionLetter($option_letter)
-    {
-        $this->option_letter = $option_letter;
-    }
-
-
-    /**
-     * @return ilTemplate
-     */
-    public function getTpl()
-    {
-        return $this->tpl;
-    }
-
-
-    /**
-     * @param ilTemplate $tpl
-     */
-    public function setTpl($tpl)
-    {
-        $this->tpl = $tpl;
-    }
-
-
     /**
      * @return string
      */
@@ -176,7 +102,6 @@ class xlvoBarPercentageGUI implements xlvoGeneralBarGUI
     {
         return $this->title;
     }
-
 
     /**
      * @param string $title
@@ -186,6 +111,53 @@ class xlvoBarPercentageGUI implements xlvoGeneralBarGUI
         $this->title = $title;
     }
 
+    /**
+     * @return string
+     */
+    public function getOptionLetter()
+    {
+        return $this->option_letter;
+    }
+
+    /**
+     * @param string $option_letter
+     */
+    public function setOptionLetter($option_letter)
+    {
+        $this->option_letter = $option_letter;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxVotes()
+    {
+        return $this->max_votes;
+    }
+
+    /**
+     * @param int $max_votes
+     */
+    public function setMaxVotes($max_votes)
+    {
+        $this->max_votes = $max_votes;
+    }
+
+    /**
+     * @return int
+     */
+    public function getVotes()
+    {
+        return $this->votes;
+    }
+
+    /**
+     * @param int $votes
+     */
+    public function setVotes($votes)
+    {
+        $this->votes = $votes;
+    }
 
     /**
      * @return boolean
@@ -195,7 +167,6 @@ class xlvoBarPercentageGUI implements xlvoGeneralBarGUI
         return $this->show_in_percent;
     }
 
-
     /**
      * @param boolean $show_in_percent
      */
@@ -203,7 +174,6 @@ class xlvoBarPercentageGUI implements xlvoGeneralBarGUI
     {
         $this->show_in_percent = $show_in_percent;
     }
-
 
     /**
      * @return int
@@ -213,12 +183,27 @@ class xlvoBarPercentageGUI implements xlvoGeneralBarGUI
         return $this->round;
     }
 
-
     /**
      * @param int $round
      */
     public function setRound($round)
     {
         $this->round = $round;
+    }
+
+    /**
+     * @return ilTemplate
+     */
+    public function getTpl()
+    {
+        return $this->tpl;
+    }
+
+    /**
+     * @param ilTemplate $tpl
+     */
+    public function setTpl($tpl)
+    {
+        $this->tpl = $tpl;
     }
 }

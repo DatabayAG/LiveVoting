@@ -20,7 +20,6 @@ use LiveVoting\QuestionTypes\SingleVote\xlvoSingleVoteSubFormGUI;
 use LiveVoting\Utils\LiveVotingTrait;
 use LiveVoting\Voting\xlvoVoting;
 use srag\DIC\LiveVoting\DICTrait;
-use ilTemplate;
 use ilGlobalPageTemplate;
 
 /**
@@ -33,12 +32,34 @@ abstract class xlvoSubFormGUI
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var xlvoSubFormGUI
      */
     protected static $instance;
+    /**
+     * @var xlvoVoting
+     */
+    protected $xlvoVoting;
+    /**
+     * @var ilTextInputGUI[]
+     */
+    protected $form_elements = array();
 
+    /**
+     * xlvoFreeInputSubFormGUI constructor.
+     */
+    public function __construct(xlvoVoting $xlvoVoting)
+    {
+        $this->xlvoVoting = $xlvoVoting;
+        $this->initFormElements();
+    }
+
+    /**
+     *
+     */
+    abstract protected function initFormElements();
 
     /**
      * @param xlvoVoting $xlvoVoting
@@ -78,33 +99,6 @@ abstract class xlvoSubFormGUI
         return self::$instance;
     }
 
-
-    /**
-     * @var xlvoVoting
-     */
-    protected $xlvoVoting;
-    /**
-     * @var ilTextInputGUI[]
-     */
-    protected $form_elements = array();
-
-
-    /**
-     * xlvoFreeInputSubFormGUI constructor.
-     */
-    public function __construct(xlvoVoting $xlvoVoting)
-    {
-        $this->xlvoVoting = $xlvoVoting;
-        $this->initFormElements();
-    }
-
-
-    /**
-     *
-     */
-    abstract protected function initFormElements();
-
-
     /**$
      * @param string $key
      *
@@ -115,7 +109,6 @@ abstract class xlvoSubFormGUI
         return self::plugin()->translate($this->getXlvoVoting()->getVotingType() . '_' . $key, 'qtype');
     }
 
-
     /**
      * @return xlvoVoting
      */
@@ -123,7 +116,6 @@ abstract class xlvoSubFormGUI
     {
         return $this->xlvoVoting;
     }
-
 
     /**
      * @param xlvoVoting $xlvoVoting
@@ -133,25 +125,6 @@ abstract class xlvoSubFormGUI
         $this->xlvoVoting = $xlvoVoting;
     }
 
-
-    /**
-     * @return ilTextInputGUI[]
-     */
-    public function getFormElements()
-    {
-        return $this->form_elements;
-    }
-
-
-    /**
-     * @param ilTextInputGUI[] $form_elements
-     */
-    public function setFormElements($form_elements)
-    {
-        $this->form_elements = $form_elements;
-    }
-
-
     /**
      * @param ilFormPropertyGUI $element
      */
@@ -159,7 +132,6 @@ abstract class xlvoSubFormGUI
     {
         $this->form_elements[] = $element;
     }
-
 
     /**
      * @param ilPropertyFormGUI $ilPropertyFormGUI
@@ -176,6 +148,21 @@ abstract class xlvoSubFormGUI
         }
     }
 
+    /**
+     * @return ilTextInputGUI[]
+     */
+    public function getFormElements()
+    {
+        return $this->form_elements;
+    }
+
+    /**
+     * @param ilTextInputGUI[] $form_elements
+     */
+    public function setFormElements($form_elements)
+    {
+        $this->form_elements = $form_elements;
+    }
 
     /**
      * @param ilPropertyFormGUI $ilPropertyFormGUI
@@ -192,6 +179,22 @@ abstract class xlvoSubFormGUI
         $this->validateForm();
     }
 
+    /**
+     * @param ilFormPropertyGUI $element
+     * @param string|array      $value
+     *
+     * @throws xlvoSubFormGUIHandleFieldException|ilException
+     */
+    abstract protected function handleField(ilFormPropertyGUI $element, $value);
+
+    /**
+     * @return void
+     * @throws ilException
+     */
+    protected function validateForm()
+    {
+        //virtual
+    }
 
     /**
      * @param xlvoVoting $xlvoVoting
@@ -200,26 +203,6 @@ abstract class xlvoSubFormGUI
     {
         $this->setXlvoVoting($xlvoVoting);
         $this->handleOptions();
-    }
-
-
-    /**
-     * @param array $existing
-     *
-     * @return array
-     * @throws ilException
-     */
-    public function appendValues(array $existing)
-    {
-        foreach ($this->getFormElements() as $formElement) {
-            $existing[$formElement->getPostVar()] = $this->getFieldValue($formElement);
-        }
-
-        return $existing;
-    }
-
-    public function addJsAndCss(ilGlobalPageTemplate $ilTemplate)
-    {
     }
 
     /**
@@ -237,15 +220,20 @@ abstract class xlvoSubFormGUI
         $xlvoOption->store();
     }
 
-
     /**
-     * @param ilFormPropertyGUI $element
-     * @param string|array      $value
+     * @param array $existing
      *
-     * @throws xlvoSubFormGUIHandleFieldException|ilException
+     * @return array
+     * @throws ilException
      */
-    abstract protected function handleField(ilFormPropertyGUI $element, $value);
+    public function appendValues(array $existing)
+    {
+        foreach ($this->getFormElements() as $formElement) {
+            $existing[$formElement->getPostVar()] = $this->getFieldValue($formElement);
+        }
 
+        return $existing;
+    }
 
     /**
      * @param ilFormPropertyGUI $element
@@ -255,13 +243,7 @@ abstract class xlvoSubFormGUI
      */
     abstract protected function getFieldValue(ilFormPropertyGUI $element);
 
-
-    /**
-     * @return void
-     * @throws ilException
-     */
-    protected function validateForm()
+    public function addJsAndCss(ilGlobalPageTemplate $ilTemplate)
     {
-        //virtual
     }
 }

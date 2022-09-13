@@ -32,27 +32,6 @@ class xlvoVoting extends CachingActiveRecord
     public const STAT_INCOMPLETE = 2;
     public const ROWS_DEFAULT = 1;
     public const TABLE_NAME = 'rep_robj_xlvo_voting_n';
-
-
-    /**
-     * @return string
-     */
-    public function getConnectorContainerName()
-    {
-        return self::TABLE_NAME;
-    }
-
-
-    /**
-     * @return string
-     * @deprecated
-     */
-    public static function returnDbTableName()
-    {
-        return self::TABLE_NAME;
-    }
-
-
     /**
      * @var int
      *
@@ -220,6 +199,14 @@ class xlvoVoting extends CachingActiveRecord
      */
     protected $answer_field = xlvoFreeInputSubFormGUI::ANSWER_FIELD_SINGLE_LINE;
 
+    /**
+     * @return string
+     * @deprecated
+     */
+    public static function returnDbTableName()
+    {
+        return self::TABLE_NAME;
+    }
 
     /**
      * @param       $primary_key
@@ -232,6 +219,13 @@ class xlvoVoting extends CachingActiveRecord
         return parent::findOrGetInstance($primary_key, $add_constructor_args);
     }
 
+    /**
+     * @return string
+     */
+    public function getConnectorContainerName()
+    {
+        return self::TABLE_NAME;
+    }
 
     /**
      * @return int
@@ -246,23 +240,24 @@ class xlvoVoting extends CachingActiveRecord
             )) ? $this->getColumns() : self::ROWS_DEFAULT));
     }
 
-
     /**
-     *
+     * @return int
      */
-    public function regenerateOptionSorting()
+    public function getColumns()
     {
-        $i = 1;
-        foreach ($this->getVotingOptions() as $votingOption) {
-            $votingOption->setPosition($i);
-            $votingOption->store();
-            $i++;
-        }
+        return $this->columns;
     }
 
+    /**
+     * @param int $columns
+     */
+    public function setColumns($columns)
+    {
+        $this->columns = $columns;
+    }
 
     /**
-     * @param bool     $change_name
+     * @param bool $change_name
      * @param int|null $new_obj_id
      *
      * @return xlvoVoting
@@ -281,8 +276,10 @@ class xlvoVoting extends CachingActiveRecord
         }
         if ($change_name) {
             $count = 1;
-            while (xlvoVoting::where(array('title' => $newObj->getTitle() . ' (' . $count . ')'))->where(array('obj_id' => $newObj->getObjId()))
-                ->count()) {
+            while (xlvoVoting::where(array('title' => $newObj->getTitle() . ' (' . $count . ')'))->where(
+                array('obj_id' => $newObj->getObjId())
+            )
+                             ->count()) {
                 $count++;
             }
 
@@ -301,29 +298,99 @@ class xlvoVoting extends CachingActiveRecord
         return $newObj;
     }
 
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    /**
+     * @return int
+     */
+    public function getObjId()
+    {
+        return $this->obj_id;
+    }
+
+    /**
+     * @param int $obj_id
+     */
+    public function setObjId($obj_id)
+    {
+        $this->obj_id = $obj_id;
+    }
+
+    /**
+     * @return xlvoOption[]
+     */
+    public function getVotingOptions()
+    {
+        return $this->voting_options;
+    }
+
+    /**
+     * @param xlvoOption[] $voting_options
+     */
+    public function setVotingOptions($voting_options)
+    {
+        $this->voting_options = $voting_options;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     *
+     */
+    public function regenerateOptionSorting()
+    {
+        $i = 1;
+        foreach ($this->getVotingOptions() as $votingOption) {
+            $votingOption->setPosition($i);
+            $votingOption->store();
+            $i++;
+        }
+    }
 
     /**
      *
      */
     public function create()
     {
-        $res = self::dic()->database()->query('SELECT MAX(position) AS max FROM ' . self::TABLE_NAME . ' WHERE obj_id = ' . self::dic()->database()
-                ->quote($this->getObjId(), 'integer'));
+        $res = self::dic()->database()->query(
+            'SELECT MAX(position) AS max FROM ' . self::TABLE_NAME . ' WHERE obj_id = ' . self::dic()->database()
+                                                                                              ->quote(
+                                                                                                  $this->getObjId(),
+                                                                                                  'integer'
+                                                                                              )
+        );
         $data = self::dic()->database()->fetchObject($res);
         $this->setPosition($data->max + 1);
         parent::create();
     }
-
-
-    /**
-     * @return ActiveRecordList
-     */
-    protected function getFirstLastList($order)
-    {
-        return self::where(array('obj_id' => $this->getObjId()))->orderBy('position', $order)
-            ->where(array('voting_type' => xlvoQuestionTypes::getActiveTypes()));
-    }
-
 
     /**
      * @return bool
@@ -341,6 +408,14 @@ class xlvoVoting extends CachingActiveRecord
         return $first->getId() == $this->getId();
     }
 
+    /**
+     * @return ActiveRecordList
+     */
+    protected function getFirstLastList($order)
+    {
+        return self::where(array('obj_id' => $this->getObjId()))->orderBy('position', $order)
+                   ->where(array('voting_type' => xlvoQuestionTypes::getActiveTypes()));
+    }
 
     /**
      * @return bool
@@ -359,7 +434,6 @@ class xlvoVoting extends CachingActiveRecord
         return $first->getId() == $this->getId();
     }
 
-
     /**
      * @return boolean
      */
@@ -367,7 +441,6 @@ class xlvoVoting extends CachingActiveRecord
     {
         return $this->multi_selection;
     }
-
 
     /**
      * @param boolean $multi_selection
@@ -377,7 +450,6 @@ class xlvoVoting extends CachingActiveRecord
         $this->multi_selection = $multi_selection;
     }
 
-
     /**
      * @return boolean
      */
@@ -385,7 +457,6 @@ class xlvoVoting extends CachingActiveRecord
     {
         return $this->colors;
     }
-
 
     /**
      * @param boolean $colors
@@ -395,7 +466,6 @@ class xlvoVoting extends CachingActiveRecord
         $this->colors = $colors;
     }
 
-
     /**
      * @return boolean
      */
@@ -404,7 +474,6 @@ class xlvoVoting extends CachingActiveRecord
         return $this->multi_free_input;
     }
 
-
     /**
      * @param boolean $multi_free_input
      */
@@ -412,7 +481,6 @@ class xlvoVoting extends CachingActiveRecord
     {
         $this->multi_free_input = $multi_free_input;
     }
-
 
     /**
      * @throws arException
@@ -429,61 +497,6 @@ class xlvoVoting extends CachingActiveRecord
         $this->setFirstVotingOption($first_voting_option);
     }
 
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-
-    /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-
-    /**
-     * @return int
-     */
-    public function getObjId()
-    {
-        return $this->obj_id;
-    }
-
-
-    /**
-     * @param int $obj_id
-     */
-    public function setObjId($obj_id)
-    {
-        $this->obj_id = $obj_id;
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-
-    /**
-     * @param string $title
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-
     /**
      * @return string
      */
@@ -491,7 +504,6 @@ class xlvoVoting extends CachingActiveRecord
     {
         return $this->description;
     }
-
 
     /**
      * @param string $description
@@ -501,7 +513,6 @@ class xlvoVoting extends CachingActiveRecord
         $this->description = $description;
     }
 
-
     /**
      * @return string
      */
@@ -510,6 +521,13 @@ class xlvoVoting extends CachingActiveRecord
         return $this->question;
     }
 
+    /**
+     * @param string $question
+     */
+    public function setQuestion($question)
+    {
+        $this->question = $question;
+    }
 
     /**
      * @return string
@@ -518,16 +536,6 @@ class xlvoVoting extends CachingActiveRecord
     {
         return ilUtil::prepareTextareaOutput($this->getQuestionForEditor(), true);
     }
-
-
-    /**
-     * @return string
-     */
-    public function getRawQuestion()
-    {
-        return trim(preg_replace('/\s+/', ' ', strip_tags($this->question)));
-    }
-
 
     /**
      * @return string
@@ -543,34 +551,6 @@ class xlvoVoting extends CachingActiveRecord
         return $prepared;
     }
 
-
-    /**
-     * @param string $question
-     */
-    public function setQuestion($question)
-    {
-        $this->question = $question;
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getVotingType()
-    {
-        return $this->voting_type;
-    }
-
-
-    /**
-     * @param string $voting_type
-     */
-    public function setVotingType($voting_type)
-    {
-        $this->voting_type = $voting_type;
-    }
-
-
     /**
      * @return int
      */
@@ -578,7 +558,6 @@ class xlvoVoting extends CachingActiveRecord
     {
         return $this->voting_status;
     }
-
 
     /**
      * @param int $voting_status
@@ -588,43 +567,6 @@ class xlvoVoting extends CachingActiveRecord
         $this->voting_status = $voting_status;
     }
 
-
-    /**
-     * @return int
-     */
-    public function getPosition()
-    {
-        return $this->position;
-    }
-
-
-    /**
-     * @param int $position
-     */
-    public function setPosition($position)
-    {
-        $this->position = $position;
-    }
-
-
-    /**
-     * @return xlvoOption[]
-     */
-    public function getVotingOptions()
-    {
-        return $this->voting_options;
-    }
-
-
-    /**
-     * @param xlvoOption[] $voting_options
-     */
-    public function setVotingOptions($voting_options)
-    {
-        $this->voting_options = $voting_options;
-    }
-
-
     /**
      * @return xlvoOption
      */
@@ -632,7 +574,6 @@ class xlvoVoting extends CachingActiveRecord
     {
         return $this->first_voting_option;
     }
-
 
     /**
      * @param xlvoOption $first_voting_option
@@ -642,25 +583,6 @@ class xlvoVoting extends CachingActiveRecord
         $this->first_voting_option = $first_voting_option;
     }
 
-
-    /**
-     * @return int
-     */
-    public function getColumns()
-    {
-        return $this->columns;
-    }
-
-
-    /**
-     * @param int $columns
-     */
-    public function setColumns($columns)
-    {
-        $this->columns = $columns;
-    }
-
-
     /**
      * @return int
      */
@@ -668,7 +590,6 @@ class xlvoVoting extends CachingActiveRecord
     {
         return $this->percentage;
     }
-
 
     /**
      * @param int $percentage
@@ -682,7 +603,6 @@ class xlvoVoting extends CachingActiveRecord
         return $this;
     }
 
-
     /**
      * @return int
      */
@@ -690,7 +610,6 @@ class xlvoVoting extends CachingActiveRecord
     {
         return $this->start_range;
     }
-
 
     /**
      * @param int $start_range
@@ -704,7 +623,6 @@ class xlvoVoting extends CachingActiveRecord
         return $this;
     }
 
-
     /**
      * @return int
      */
@@ -712,7 +630,6 @@ class xlvoVoting extends CachingActiveRecord
     {
         return $this->end_range;
     }
-
 
     /**
      * @param int $end_range
@@ -726,7 +643,6 @@ class xlvoVoting extends CachingActiveRecord
         return $this;
     }
 
-
     /**
      * @return int
      */
@@ -734,7 +650,6 @@ class xlvoVoting extends CachingActiveRecord
     {
         return $this->step_range;
     }
-
 
     /**
      * @param int $end_range
@@ -748,7 +663,6 @@ class xlvoVoting extends CachingActiveRecord
         return $this;
     }
 
-
     /**
      * @return int
      */
@@ -756,7 +670,6 @@ class xlvoVoting extends CachingActiveRecord
     {
         return $this->alt_result_display_mode;
     }
-
 
     /**
      * @param int $alt_result_display_mode
@@ -770,7 +683,6 @@ class xlvoVoting extends CachingActiveRecord
         return $this;
     }
 
-
     /**
      * @return bool
      */
@@ -778,7 +690,6 @@ class xlvoVoting extends CachingActiveRecord
     {
         return boolval($this->randomise_option_sequence);
     }
-
 
     /**
      * @param bool $randomise_option_sequence
@@ -791,7 +702,6 @@ class xlvoVoting extends CachingActiveRecord
 
         return $this;
     }
-
 
     /**
      * @return stdClass
@@ -812,6 +722,45 @@ class xlvoVoting extends CachingActiveRecord
         return $class;
     }
 
+    /**
+     * @return string
+     */
+    public function getVotingType()
+    {
+        return $this->voting_type;
+    }
+
+    /**
+     * @param string $voting_type
+     */
+    public function setVotingType($voting_type)
+    {
+        $this->voting_type = $voting_type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRawQuestion()
+    {
+        return trim(preg_replace('/\s+/', ' ', strip_tags($this->question)));
+    }
+
+    /**
+     * @return int
+     */
+    public function getPosition()
+    {
+        return $this->position;
+    }
+
+    /**
+     * @param int $position
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
+    }
 
     /**
      * @return int
@@ -820,7 +769,6 @@ class xlvoVoting extends CachingActiveRecord
     {
         return $this->answer_field;
     }
-
 
     /**
      * @param int $answer_field

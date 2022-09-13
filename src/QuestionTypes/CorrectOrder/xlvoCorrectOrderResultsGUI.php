@@ -74,7 +74,8 @@ class xlvoCorrectOrderResultsGUI extends xlvoSingleVoteResultsGUI
              * @var xlvoOption $item
              */
             foreach ($correct_order as $item) {
-                $solution_html .= ' <p><div class="xlvo-option"><span class="label label-primary xlvo-option_letter">' . $item->getCipher()
+                $solution_html .= ' <p><div class="xlvo-option"><span class="label label-primary xlvo-option_letter">' . $item->getCipher(
+                )
                     . '</span> <span class="option_text">' . $item->getTextForPresentation() . '</span></div></p>';
             }
             $bars->addSolution($solution_html);
@@ -83,6 +84,16 @@ class xlvoCorrectOrderResultsGUI extends xlvoSingleVoteResultsGUI
         return $bars->getHTML();
     }
 
+    /**
+     * @return bool
+     */
+    protected function isShowAbsolute()
+    {
+        $states = $this->getButtonsStates();
+
+        return ($this->manager->getPlayer()->isShowResults(
+        ) && (bool) $states[xlvoCorrectOrderGUI::BUTTON_TOGGLE_PERCENTAGE]);
+    }
 
     /**
      * @return bool
@@ -91,17 +102,7 @@ class xlvoCorrectOrderResultsGUI extends xlvoSingleVoteResultsGUI
     {
         $states = $this->getButtonsStates();
 
-        return ((bool) $states[xlvoCorrectOrderGUI::BUTTON_TOTTLE_DISPLAY_CORRECT_ORDER] && $this->manager->getPlayer()->isShowResults());
-    }
-
-
-    /**
-     * @return bool
-     */
-    protected function isShowAbsolute()
-    {
-        $states = $this->getButtonsStates();
-
-        return ($this->manager->getPlayer()->isShowResults() && (bool) $states[xlvoCorrectOrderGUI::BUTTON_TOGGLE_PERCENTAGE]);
+        return ((bool) $states[xlvoCorrectOrderGUI::BUTTON_TOTTLE_DISPLAY_CORRECT_ORDER] && $this->manager->getPlayer(
+        )->isShowResults());
     }
 }

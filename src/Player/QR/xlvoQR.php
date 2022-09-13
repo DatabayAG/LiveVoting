@@ -17,8 +17,8 @@ use srag\DIC\LiveVoting\DICTrait;
 class xlvoQR
 {
     use DICTrait;
-    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
     /**
      * @param $content

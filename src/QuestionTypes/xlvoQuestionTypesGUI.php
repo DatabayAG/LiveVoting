@@ -39,18 +39,6 @@ abstract class xlvoQuestionTypesGUI extends xlvoGUI
      */
     protected $has_solution = false;
 
-
-    /**
-     * @param string $key
-     *
-     * @return string
-     */
-    protected function txt($key)
-    {
-        return self::plugin()->translate($this->manager->getVoting()->getVotingType() . '_' . $key, 'qtype');
-    }
-
-
     /**
      * @param xlvoVotingManager2 $manager
      * @param null               $override_type
@@ -60,7 +48,9 @@ abstract class xlvoQuestionTypesGUI extends xlvoGUI
      */
     public static function getInstance(xlvoVotingManager2 $manager, $override_type = null)
     {
-        $class = xlvoQuestionTypes::getClassName($override_type ? $override_type : $manager->getVoting()->getVotingType());
+        $class = xlvoQuestionTypes::getClassName(
+            $override_type ? $override_type : $manager->getVoting()->getVotingType()
+        );
 
         $gui = null;
         switch ($class) {
@@ -88,6 +78,30 @@ abstract class xlvoQuestionTypesGUI extends xlvoGUI
         return $gui;
     }
 
+    /**
+     * @param string $key
+     *
+     * @return string
+     */
+    protected function txt($key)
+    {
+        return self::plugin()->translate($this->manager->getVoting()->getVotingType() . '_' . $key, 'qtype');
+    }
+
+    /**
+     *
+     */
+    abstract protected function submit();
+
+    /**
+     * @return array
+     */
+    protected function getButtonsStates()
+    {
+        $xlvoPlayer = $this->getManager()->getPlayer();
+
+        return $xlvoPlayer->getButtonStates();
+    }
 
     /**
      *
@@ -111,24 +125,13 @@ abstract class xlvoQuestionTypesGUI extends xlvoGUI
         }
     }
 
-
     /**
-     * @return xlvoVotingManager2
+     *
      */
-    public function getManager()
+    protected function afterSubmit()
     {
-        return $this->manager;
+        self::dic()->ctrl()->redirect(new xlvoVoter2GUI(), xlvoVoter2GUI::CMD_START_VOTER_PLAYER);
     }
-
-
-    /**
-     * @param xlvoVotingManager2 $manager
-     */
-    public function setManager($manager)
-    {
-        $this->manager = $manager;
-    }
-
 
     /**
      * @return boolean
@@ -138,7 +141,6 @@ abstract class xlvoQuestionTypesGUI extends xlvoGUI
         return $this->show_question;
     }
 
-
     /**
      * @param boolean $show_question
      */
@@ -147,37 +149,15 @@ abstract class xlvoQuestionTypesGUI extends xlvoGUI
         $this->show_question = $show_question;
     }
 
-
     /**
      * @param bool $current
      */
     abstract public function initJS($current = false);
 
-
-    /**
-     *
-     */
-    abstract protected function submit();
-
-
-    /**
-     *
-     */
-    protected function afterSubmit()
-    {
-        self::dic()->ctrl()->redirect(new xlvoVoter2GUI(), xlvoVoter2GUI::CMD_START_VOTER_PLAYER);
-    }
-
-
     /**
      * @return string
      */
     abstract public function getMobileHTML();
-
-
-    //
-    // Custom Buttons
-    //
 
     /**
      * @param $button_id
@@ -189,34 +169,9 @@ abstract class xlvoQuestionTypesGUI extends xlvoGUI
     }
 
 
-    /**
-     * @return array
-     */
-    protected function getButtonsStates()
-    {
-        $xlvoPlayer = $this->getManager()->getPlayer();
-
-        return $xlvoPlayer->getButtonStates();
-    }
-
-
-    /**
-     * @return ilButtonBase[]
-     */
-    public function getButtonInstances()
-    {
-        return array();
-    }
-
-
-    /**
-     * @return bool
-     */
-    public function hasButtons()
-    {
-        return (count($this->getButtonInstances()) > 0);
-    }
-
+    //
+    // Custom Buttons
+    //
 
     /**
      * @param $button_id
@@ -229,5 +184,37 @@ abstract class xlvoQuestionTypesGUI extends xlvoGUI
         $states[$button_id] = $state;
         $xlvoPlayer->setButtonStates($states);
         $xlvoPlayer->store();
+    }
+
+    /**
+     * @return xlvoVotingManager2
+     */
+    public function getManager()
+    {
+        return $this->manager;
+    }
+
+    /**
+     * @param xlvoVotingManager2 $manager
+     */
+    public function setManager($manager)
+    {
+        $this->manager = $manager;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasButtons()
+    {
+        return (count($this->getButtonInstances()) > 0);
+    }
+
+    /**
+     * @return ilButtonBase[]
+     */
+    public function getButtonInstances()
+    {
+        return array();
     }
 }

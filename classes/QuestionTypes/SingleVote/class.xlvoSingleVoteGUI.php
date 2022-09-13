@@ -20,17 +20,6 @@ class xlvoSingleVoteGUI extends xlvoQuestionTypesGUI
 {
     public const BUTTON_TOGGLE_PERCENTAGE = 'toggle_percentage';
 
-
-    /**
-     * @param bool $current
-     */
-    public function initJS($current = false)
-    {
-        xlvoJs::getInstance()->api($this)->name(xlvoQuestionTypes::SINGLE_VOTE)->category('QuestionTypes')
-            ->addLibToHeader('jquery.ui.touch-punch.min.js')->init();
-    }
-
-
     /**
      *
      */
@@ -39,6 +28,14 @@ class xlvoSingleVoteGUI extends xlvoQuestionTypesGUI
         $this->manager->vote($_GET['option_id']);
     }
 
+    /**
+     * @param bool $current
+     */
+    public function initJS($current = false)
+    {
+        xlvoJs::getInstance()->api($this)->name(xlvoQuestionTypes::SINGLE_VOTE)->category('QuestionTypes')
+              ->addLibToHeader('jquery.ui.touch-punch.min.js')->init();
+    }
 
     /**
      * @return array
@@ -60,7 +57,6 @@ class xlvoSingleVoteGUI extends xlvoQuestionTypesGUI
         return array($t);
     }
 
-
     /**
      * @param $button_id
      * @param $data
@@ -70,7 +66,6 @@ class xlvoSingleVoteGUI extends xlvoQuestionTypesGUI
         $states = $this->getButtonsStates();
         $this->saveButtonState($button_id, !$states[$button_id]);
     }
-
 
     /**
      * @return string
@@ -96,6 +91,8 @@ class xlvoSingleVoteGUI extends xlvoQuestionTypesGUI
             $tpl->parseCurrentBlock();
         }
 
-        return $tpl->get() . xlvoJs::getInstance()->name(xlvoQuestionTypes::SINGLE_VOTE)->category('QuestionTypes')->getRunCode();
+        return $tpl->get() . xlvoJs::getInstance()->name(xlvoQuestionTypes::SINGLE_VOTE)->category(
+            'QuestionTypes'
+        )->getRunCode();
     }
 }

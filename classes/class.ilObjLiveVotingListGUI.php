@@ -43,12 +43,12 @@ class ilObjLiveVotingListGUI extends ilObjectPluginListGUI
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var array
      */
     protected array $commands = array();
-
 
     /**
      * Init type
@@ -57,16 +57,6 @@ class ilObjLiveVotingListGUI extends ilObjectPluginListGUI
     {
         $this->setType(ilLiveVotingPlugin::PLUGIN_ID);
     }
-
-
-    /**
-     * Get name of gui class handling the commands
-     */
-    public function getGuiClass(): string
-    {
-        return ilObjLiveVotingGUI::class;
-    }
-
 
     /**
      * Get commands
@@ -89,20 +79,27 @@ class ilObjLiveVotingListGUI extends ilObjectPluginListGUI
         $this->commands = array(
             array(
                 "permission" => "read",
-                "cmd"        => ilObjLiveVotingGUI::CMD_SHOW_CONTENT,
-                "default"    => true
+                "cmd" => ilObjLiveVotingGUI::CMD_SHOW_CONTENT,
+                "default" => true
             ),
             array(
                 "permission" => "write",
-                "cmd"        => ilObjLiveVotingGUI::CMD_EDIT,
-                "txt"        => $this->txt("xlvo_edit"),
-                "default"    => false
+                "cmd" => ilObjLiveVotingGUI::CMD_EDIT,
+                "txt" => $this->txt("xlvo_edit"),
+                "default" => false
             ),
         );
 
         return $this->commands;
     }
 
+    /**
+     * Get name of gui class handling the commands
+     */
+    public function getGuiClass(): string
+    {
+        return ilObjLiveVotingGUI::class;
+    }
 
     /**
      * @param string $a_cmd
@@ -118,7 +115,6 @@ class ilObjLiveVotingListGUI extends ilObjectPluginListGUI
         return parent::getCommandFrame($a_cmd);
     }
 
-
     /**
      * Get item properties
      *
@@ -132,16 +128,16 @@ class ilObjLiveVotingListGUI extends ilObjectPluginListGUI
         $props = array();
 
         $props[] = array(
-            "alert"    => false,
+            "alert" => false,
             "property" => $this->txt("voter_pin_input"),
-            "value"    => xlvoPin::formatPin(xlvoPin::lookupPin($this->obj_id)) // TODO: default.css not loaded
+            "value" => xlvoPin::formatPin(xlvoPin::lookupPin($this->obj_id)) // TODO: default.css not loaded
         );
 
         if (!ilObjLiveVotingAccess::checkOnline($this->obj_id)) {
             $props[] = array(
-                "alert"    => true,
+                "alert" => true,
                 "property" => $this->txt("obj_status"),
-                "value"    => $this->txt("obj_offline")
+                "value" => $this->txt("obj_offline")
             );
         }
 

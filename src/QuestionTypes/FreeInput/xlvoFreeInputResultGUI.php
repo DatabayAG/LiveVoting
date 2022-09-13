@@ -20,6 +20,16 @@ class xlvoFreeInputResultGUI extends xlvoResultGUI
      *
      * @return string
      */
+    public function getAPIRepresentation(array $votes)
+    {
+        return $this->getTextRepresentation($votes);
+    }
+
+    /**
+     * @param xlvoVote[] $votes
+     *
+     * @return string
+     */
     public function getTextRepresentation(array $votes)
     {
         $strings = array();
@@ -28,16 +38,5 @@ class xlvoFreeInputResultGUI extends xlvoResultGUI
         }
 
         return implode(', ', $strings);
-    }
-
-
-    /**
-     * @param xlvoVote[] $votes
-     *
-     * @return string
-     */
-    public function getAPIRepresentation(array $votes)
-    {
-        return $this->getTextRepresentation($votes);
     }
 }

@@ -21,7 +21,6 @@ class xlvoBarInfoGUI extends xlvoAbstractBarGUI implements xlvoGeneralBarGUI
      */
     protected $label;
 
-
     /**
      * xlvoBarInfoGUI constructor.
      *
@@ -35,17 +34,6 @@ class xlvoBarInfoGUI extends xlvoAbstractBarGUI implements xlvoGeneralBarGUI
         $this->value = $value;
     }
 
-
-    /**
-     *
-     */
-    protected function render()
-    {
-        parent::render();
-        $this->tpl->setVariable('FREE_INPUT', $this->label . ": " . $this->value);
-    }
-
-
     /**
      * @return string
      */
@@ -54,5 +42,14 @@ class xlvoBarInfoGUI extends xlvoAbstractBarGUI implements xlvoGeneralBarGUI
         $this->render();
 
         return $this->tpl->get();
+    }
+
+    /**
+     *
+     */
+    protected function render()
+    {
+        parent::render();
+        $this->tpl->setVariable('FREE_INPUT', $this->label . ": " . $this->value);
     }
 }

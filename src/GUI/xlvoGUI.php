@@ -22,6 +22,7 @@ abstract class xlvoGUI
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     public const CMD_STANDARD = 'index';
     public const CMD_ADD = 'add';
@@ -42,7 +43,6 @@ abstract class xlvoGUI
      */
     protected $param_manager;
 
-
     /**
      *
      */
@@ -55,6 +55,13 @@ abstract class xlvoGUI
         self::dic()->ctrl()->saveParameter($this, "lang");
     }
 
+    /**
+     *
+     */
+    protected function cancel()
+    {
+        self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
+    }
 
     /**
      *
@@ -79,14 +86,5 @@ abstract class xlvoGUI
                 self::dic()->ui()->mainTemplate()->show(false);
             }
         }
-    }
-
-
-    /**
-     *
-     */
-    protected function cancel()
-    {
-        self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
     }
 }

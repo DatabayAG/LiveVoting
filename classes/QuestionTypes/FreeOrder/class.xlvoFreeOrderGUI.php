@@ -25,7 +25,6 @@ class xlvoFreeOrderGUI extends xlvoCorrectOrderGUI
         parent::__construct();
     }
 
-
     /**
      * @return bool
      */
@@ -34,15 +33,23 @@ class xlvoFreeOrderGUI extends xlvoCorrectOrderGUI
         return false;
     }
 
+    /**
+     * @return bool
+     */
+    protected function isShowCorrectOrder()
+    {
+        return false;
+    }
 
     /**
      * @return string
      */
     public function getMobileHTML()
     {
-        return $this->getFormContent() . xlvoJs::getInstance()->name(xlvoQuestionTypes::FREE_ORDER)->category('QuestionTypes')->getRunCode();
+        return $this->getFormContent() . xlvoJs::getInstance()->name(xlvoQuestionTypes::FREE_ORDER)->category(
+            'QuestionTypes'
+        )->getRunCode();
     }
-
 
     /**
      * @param bool $current
@@ -50,9 +57,8 @@ class xlvoFreeOrderGUI extends xlvoCorrectOrderGUI
     public function initJS($current = false)
     {
         xlvoJs::getInstance()->api($this)->name(xlvoQuestionTypes::FREE_ORDER)->category('QuestionTypes')
-            ->addLibToHeader('jquery.ui.touch-punch.min.js')->init();
+              ->addLibToHeader('jquery.ui.touch-punch.min.js')->init();
     }
-
 
     /**
      * @return array
@@ -80,14 +86,5 @@ class xlvoFreeOrderGUI extends xlvoCorrectOrderGUI
         //		}
 
         return array($b);
-    }
-
-
-    /**
-     * @return bool
-     */
-    protected function isShowCorrectOrder()
-    {
-        return false;
     }
 }

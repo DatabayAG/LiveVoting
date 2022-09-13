@@ -31,6 +31,7 @@ class xlvoVotingTableGUI extends ilTable2GUI
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     public const TBL_ID = 'tbl_xlvo';
     public const LENGTH = 100;
@@ -46,7 +47,6 @@ class xlvoVotingTableGUI extends ilTable2GUI
      * @var ilObjLiveVotingAccess
      */
     protected $access;
-
 
     public function __construct(xlvoVotingGUI $a_parent_obj, $a_parent_cmd)
     {
@@ -73,6 +73,15 @@ class xlvoVotingTableGUI extends ilTable2GUI
         $this->addCommandButton('saveSorting', $this->txt('save_sorting'));
     }
 
+    protected function initColums()
+    {
+        $this->addColumn('', 'position', '20px');
+        $this->addColumn($this->txt('title'));
+        $this->addColumn($this->txt('question'));
+        $this->addColumn($this->txt('type'));
+        //		$this->addColumn($this->txt('status'));
+        $this->addColumn($this->txt('actions'), '', '150px');
+    }
 
     /**
      * @param string $key
@@ -84,7 +93,6 @@ class xlvoVotingTableGUI extends ilTable2GUI
         return $this->voting_gui->txt($key);
     }
 
-
     protected function addFilterItems()
     {
         $title = new TextInputGUI($this->txt('title'), 'title');
@@ -95,9 +103,9 @@ class xlvoVotingTableGUI extends ilTable2GUI
 
         $status = new ilSelectInputGUI($this->txt('status'), 'voting_status');
         $status_options = array(
-            -1                          => '',
-            xlvoVoting::STAT_INACTIVE   => $this->txt('status_' . xlvoVoting::STAT_INACTIVE),
-            xlvoVoting::STAT_ACTIVE     => $this->txt('status_' . xlvoVoting::STAT_ACTIVE),
+            -1 => '',
+            xlvoVoting::STAT_INACTIVE => $this->txt('status_' . xlvoVoting::STAT_INACTIVE),
+            xlvoVoting::STAT_ACTIVE => $this->txt('status_' . xlvoVoting::STAT_ACTIVE),
             xlvoVoting::STAT_INCOMPLETE => $this->txt('status_' . xlvoVoting::STAT_INCOMPLETE),
         );
         $status->setOptions($status_options);
@@ -116,7 +124,6 @@ class xlvoVotingTableGUI extends ilTable2GUI
         $this->addAndReadFilterItem($type);
     }
 
-
     /**
      * @param ilFormPropertyGUI $item
      */
@@ -131,73 +138,6 @@ class xlvoVotingTableGUI extends ilTable2GUI
         }
     }
 
-
-    /**
-     * @param array $a_set
-     */
-    public function fillRow($a_set)
-    {
-        /**
-         * @var xlvoVoting $xlvoVoting
-         */
-        $xlvoVoting = xlvoVoting::find($a_set['id']);
-        $this->tpl->setVariable('TITLE', $this->shorten($xlvoVoting->getTitle()));
-        $this->tpl->setVariable('DESCRIPTION', $this->shorten($xlvoVoting->getDescription()));
-
-        $question = strip_tags($xlvoVoting->getQuestion());
-
-        $question = $this->shorten($question);
-        $this->tpl->setVariable('QUESTION', ilUtil::prepareTextareaOutput($question, true));
-        $this->tpl->setVariable('TYPE', $this->txt('type_' . $xlvoVoting->getVotingType()));
-
-        $voting_status = $this->getVotingStatus($xlvoVoting->getVotingStatus());
-        //		$this->tpl->setVariable('STATUS', $voting_status); // deactivated at the moment
-
-        $this->tpl->setVariable('ID', $xlvoVoting->getId());
-
-        $this->addActionMenu($xlvoVoting);
-    }
-
-
-    protected function initColums()
-    {
-        $this->addColumn('', 'position', '20px');
-        $this->addColumn($this->txt('title'));
-        $this->addColumn($this->txt('question'));
-        $this->addColumn($this->txt('type'));
-        //		$this->addColumn($this->txt('status'));
-        $this->addColumn($this->txt('actions'), '', '150px');
-    }
-
-
-    /**
-     * @param xlvoVoting $xlvoVoting
-     */
-    protected function addActionMenu(xlvoVoting $xlvoVoting)
-    {
-        $current_selection_list = new ilAdvancedSelectionListGUI();
-        $current_selection_list->setListTitle($this->txt('actions'));
-        $current_selection_list->setId('xlvo_actions_' . $xlvoVoting->getId());
-        $current_selection_list->setUseImages(false);
-
-        self::dic()->ctrl()->setParameter($this->voting_gui, xlvoVotingGUI::IDENTIFIER, $xlvoVoting->getId());
-        if ($this->access->hasWriteAccess()) {
-            $current_selection_list->addItem($this->txt('edit'), xlvoVotingGUI::CMD_EDIT, self::dic()->ctrl()
-                ->getLinkTarget($this->voting_gui, xlvoVotingGUI::CMD_EDIT));
-            $current_selection_list->addItem($this->txt('reset'), xlvoVotingGUI::CMD_CONFIRM_RESET, self::dic()->ctrl()
-                ->getLinkTarget($this->voting_gui, xlvoVotingGUI::CMD_CONFIRM_RESET));
-            $current_selection_list->addItem($this->txt(xlvoVotingGUI::CMD_DUPLICATE), xlvoVotingGUI::CMD_DUPLICATE, self::dic()->ctrl()
-                ->getLinkTarget($this->voting_gui, xlvoVotingGUI::CMD_DUPLICATE));
-            $current_selection_list->addItem($this->txt(xlvoVotingGUI::CMD_DUPLICATE_TO_ANOTHER_OBJECT), xlvoVotingGUI::CMD_DUPLICATE_TO_ANOTHER_OBJECT_SELECT, self::dic()->ctrl()
-                ->getLinkTarget($this->voting_gui, xlvoVotingGUI::CMD_DUPLICATE_TO_ANOTHER_OBJECT_SELECT));
-            $current_selection_list->addItem($this->txt('delete'), xlvoVotingGUI::CMD_CONFIRM_DELETE, self::dic()->ctrl()
-                ->getLinkTarget($this->voting_gui, xlvoVotingGUI::CMD_CONFIRM_DELETE));
-        }
-        $current_selection_list->getHTML();
-        $this->tpl->setVariable('ACTIONS', $current_selection_list->getHTML());
-    }
-
-
     protected function parseData()
     {
         // Filtern
@@ -205,7 +145,10 @@ class xlvoVotingTableGUI extends ilTable2GUI
         $this->determineLimit();
 
         $collection = xlvoVoting::where(array('obj_id' => $this->voting_gui->getObjId()))
-            ->where(array('voting_type' => xlvoQuestionTypes::getActiveTypes()))->orderBy('position', 'ASC');
+                                ->where(array('voting_type' => xlvoQuestionTypes::getActiveTypes()))->orderBy(
+                                    'position',
+                                    'ASC'
+                                );
         $this->setMaxCount($collection->count());
         $sorting_column = $this->getOrderField() ? $this->getOrderField() : 'position';
         $offset = $this->getOffset() ? $this->getOffset() : 0;
@@ -236,6 +179,41 @@ class xlvoVotingTableGUI extends ilTable2GUI
         $this->setData($collection->getArray());
     }
 
+    /**
+     * @param array $a_set
+     */
+    public function fillRow($a_set)
+    {
+        /**
+         * @var xlvoVoting $xlvoVoting
+         */
+        $xlvoVoting = xlvoVoting::find($a_set['id']);
+        $this->tpl->setVariable('TITLE', $this->shorten($xlvoVoting->getTitle()));
+        $this->tpl->setVariable('DESCRIPTION', $this->shorten($xlvoVoting->getDescription()));
+
+        $question = strip_tags($xlvoVoting->getQuestion());
+
+        $question = $this->shorten($question);
+        $this->tpl->setVariable('QUESTION', ilUtil::prepareTextareaOutput($question, true));
+        $this->tpl->setVariable('TYPE', $this->txt('type_' . $xlvoVoting->getVotingType()));
+
+        $voting_status = $this->getVotingStatus($xlvoVoting->getVotingStatus());
+        //		$this->tpl->setVariable('STATUS', $voting_status); // deactivated at the moment
+
+        $this->tpl->setVariable('ID', $xlvoVoting->getId());
+
+        $this->addActionMenu($xlvoVoting);
+    }
+
+    /**
+     * @param string $question
+     *
+     * @return string
+     */
+    protected function shorten($question)
+    {
+        return strlen($question) > self::LENGTH ? substr($question, 0, self::LENGTH) . "..." : $question;
+    }
 
     /**
      * @param $voting_status
@@ -247,14 +225,65 @@ class xlvoVotingTableGUI extends ilTable2GUI
         return $this->txt('status_' . $voting_status);
     }
 
-
     /**
-     * @param string $question
-     *
-     * @return string
+     * @param xlvoVoting $xlvoVoting
      */
-    protected function shorten($question)
+    protected function addActionMenu(xlvoVoting $xlvoVoting)
     {
-        return strlen($question) > self::LENGTH ? substr($question, 0, self::LENGTH) . "..." : $question;
+        $current_selection_list = new ilAdvancedSelectionListGUI();
+        $current_selection_list->setListTitle($this->txt('actions'));
+        $current_selection_list->setId('xlvo_actions_' . $xlvoVoting->getId());
+        $current_selection_list->setUseImages(false);
+
+        self::dic()->ctrl()->setParameter($this->voting_gui, xlvoVotingGUI::IDENTIFIER, $xlvoVoting->getId());
+        if ($this->access->hasWriteAccess()) {
+            $current_selection_list->addItem(
+                $this->txt('edit'),
+                xlvoVotingGUI::CMD_EDIT,
+                self::dic()->ctrl()
+                                                                 ->getLinkTarget(
+                                                                     $this->voting_gui,
+                                                                     xlvoVotingGUI::CMD_EDIT
+                                                                 )
+            );
+            $current_selection_list->addItem(
+                $this->txt('reset'),
+                xlvoVotingGUI::CMD_CONFIRM_RESET,
+                self::dic()->ctrl()
+                                                                           ->getLinkTarget(
+                                                                               $this->voting_gui,
+                                                                               xlvoVotingGUI::CMD_CONFIRM_RESET
+                                                                           )
+            );
+            $current_selection_list->addItem(
+                $this->txt(xlvoVotingGUI::CMD_DUPLICATE),
+                xlvoVotingGUI::CMD_DUPLICATE,
+                self::dic()->ctrl()
+                                                                                            ->getLinkTarget(
+                                                                                                $this->voting_gui,
+                                                                                                xlvoVotingGUI::CMD_DUPLICATE
+                                                                                            )
+            );
+            $current_selection_list->addItem(
+                $this->txt(xlvoVotingGUI::CMD_DUPLICATE_TO_ANOTHER_OBJECT),
+                xlvoVotingGUI::CMD_DUPLICATE_TO_ANOTHER_OBJECT_SELECT,
+                self::dic()->ctrl()
+                                                                           ->getLinkTarget(
+                                                                               $this->voting_gui,
+                                                                               xlvoVotingGUI::CMD_DUPLICATE_TO_ANOTHER_OBJECT_SELECT
+                                                                           )
+            );
+            $current_selection_list->addItem(
+                $this->txt('delete'),
+                xlvoVotingGUI::CMD_CONFIRM_DELETE,
+                self::dic()->ctrl()
+                                                                             ->getLinkTarget(
+                                                                                 $this->voting_gui,
+                                                                                 xlvoVotingGUI::CMD_CONFIRM_DELETE
+                                                                             )
+            );
+        }
+        $current_selection_list->getHTML();
+        $this->tpl->setVariable('ACTIONS', $current_selection_list->getHTML());
     }
 }

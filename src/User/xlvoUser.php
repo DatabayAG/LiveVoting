@@ -18,13 +18,14 @@ class xlvoUser
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const TYPE_ILIAS = 1;
+    public const TYPE_PIN = 2;
     /**
      * @var xlvoUser
      */
     protected static $instance;
-    public const TYPE_ILIAS = 1;
-    public const TYPE_PIN = 2;
     /**
      * @var int
      */
@@ -34,14 +35,12 @@ class xlvoUser
      */
     protected $identifier = '';
 
-
     /**
      * xlvoUser constructor.
      */
     protected function __construct()
     {
     }
-
 
     /**
      * @return xlvoUser
@@ -55,16 +54,6 @@ class xlvoUser
         return self::$instance;
     }
 
-
-    /**
-     * @return int
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-
     /**
      * @return bool
      */
@@ -73,15 +62,13 @@ class xlvoUser
         return ($this->getType() == self::TYPE_ILIAS);
     }
 
-
-    /**$
-     * @return bool
+    /**
+     * @return int
      */
-    public function isPINUser()
+    public function getType()
     {
-        return ($this->getType() == self::TYPE_PIN);
+        return $this->type;
     }
-
 
     /**
      * @param $type
@@ -95,6 +82,13 @@ class xlvoUser
         return $this;
     }
 
+    /**$
+     * @return bool
+     */
+    public function isPINUser()
+    {
+        return ($this->getType() == self::TYPE_PIN);
+    }
 
     /**
      * @return string
@@ -103,7 +97,6 @@ class xlvoUser
     {
         return $this->identifier;
     }
-
 
     /**
      * @param $identifier

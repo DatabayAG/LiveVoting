@@ -23,6 +23,7 @@ use srag\DIC\LiveVoting\DICTrait;
 class xlvoBarOptionGUI implements xlvoGeneralBarGUI
 {
     use DICTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var xlvoVoting
@@ -45,7 +46,6 @@ class xlvoBarOptionGUI implements xlvoGeneralBarGUI
      */
     protected $voting_manager;
 
-
     /**
      * @param xlvoVoting $voting
      * @param xlvoOption $option
@@ -60,6 +60,15 @@ class xlvoBarOptionGUI implements xlvoGeneralBarGUI
         $this->tpl = self::plugin()->template('default/Display/Bar/tpl.bar_option.html');
     }
 
+    /**
+     * @return string
+     */
+    public function getHTML()
+    {
+        $this->render();
+
+        return $this->tpl->get();
+    }
 
     /**
      *
@@ -73,18 +82,6 @@ class xlvoBarOptionGUI implements xlvoGeneralBarGUI
         $this->tpl->setVariable('VOTE_ID', $this->getVoteId());
     }
 
-
-    /**
-     * @return string
-     */
-    public function getHTML()
-    {
-        $this->render();
-
-        return $this->tpl->get();
-    }
-
-
     /**
      * @return string
      */
@@ -93,7 +90,8 @@ class xlvoBarOptionGUI implements xlvoGeneralBarGUI
         /**
          * @var xlvoVote $vote
          */
-        $vote = $this->voting_manager->getVotesOfUserOfOption($this->voting->getId(), $this->option->getId())->first(); // TODO: Invalid method call?
+        $vote = $this->voting_manager->getVotesOfUserOfOption($this->voting->getId(), $this->option->getId())->first(
+        ); // TODO: Invalid method call?
         if ($vote instanceof xlvoVote) {
             if ($vote->getStatus() == 1) {
                 return "active";
@@ -105,7 +103,6 @@ class xlvoBarOptionGUI implements xlvoGeneralBarGUI
         }
     }
 
-
     /**
      * @return int|string
      */
@@ -114,7 +111,8 @@ class xlvoBarOptionGUI implements xlvoGeneralBarGUI
         /**
          * @var xlvoVote $vote
          */
-        $vote = $this->voting_manager->getVotesOfUserOfOption($this->voting->getId(), $this->option->getId())->first(); // TODO: Invalid method call?
+        $vote = $this->voting_manager->getVotesOfUserOfOption($this->voting->getId(), $this->option->getId())->first(
+        ); // TODO: Invalid method call?
         if ($vote instanceof xlvoVote) {
             return $vote->getId();
         } else {

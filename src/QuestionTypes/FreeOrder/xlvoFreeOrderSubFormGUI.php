@@ -31,7 +31,6 @@ class xlvoFreeOrderSubFormGUI extends xlvoSubFormGUI
      */
     protected $options = array();
 
-
     /**
      *
      */
@@ -50,7 +49,6 @@ class xlvoFreeOrderSubFormGUI extends xlvoSubFormGUI
 
         $this->addFormElement($xlvoMultiLineInputGUI);
     }
-
 
     /**
      * @param ilFormPropertyGUI $element
@@ -83,7 +81,6 @@ class xlvoFreeOrderSubFormGUI extends xlvoSubFormGUI
         }
     }
 
-
     /**
      * @param ilFormPropertyGUI $element
      *
@@ -101,10 +98,10 @@ class xlvoFreeOrderSubFormGUI extends xlvoSubFormGUI
                 $options = $this->getXlvoVoting()->getVotingOptions();
                 foreach ($options as $option) {
                     $array[] = array(
-                        self::F_ID       => $option->getId(),
-                        self::F_TEXT     => $option->getTextForEditor(),
+                        self::F_ID => $option->getId(),
+                        self::F_TEXT => $option->getTextForEditor(),
                         self::F_POSITION => $option->getPosition(),
-                        self::F_WEIGHT   => $option->getCorrectPosition(),
+                        self::F_WEIGHT => $option->getCorrectPosition(),
                     );
                 }
 
@@ -114,7 +111,6 @@ class xlvoFreeOrderSubFormGUI extends xlvoSubFormGUI
                 break;
         }
     }
-
 
     /**
      *

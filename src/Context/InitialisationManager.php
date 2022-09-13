@@ -8,7 +8,6 @@ require_once 'include/inc.ilias_version.php';
 
 use Exception;
 use ilLiveVotingPlugin;
-use ilObjUser;
 use LiveVoting\User\xlvoUser;
 use LiveVoting\Utils\LiveVotingTrait;
 use srag\DIC\LiveVoting\DICTrait;
@@ -28,8 +27,12 @@ final class InitialisationManager
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
+    private function __construct()
+    {
+    }
 
     /**
      * Starts ILIAS without user and rbag management.
@@ -54,7 +57,6 @@ final class InitialisationManager
         xlvoUser::getInstance()->setIdentifier(session_id())->setType(xlvoUser::TYPE_PIN);
     }
 
-
     /**
      * Optimised ILIAS start with user management.
      *
@@ -71,10 +73,5 @@ final class InitialisationManager
         }
 
         throw new Exception("ILIAS light start failed because the user management returned an invalid user object.");
-    }
-
-
-    private function __construct()
-    {
     }
 }

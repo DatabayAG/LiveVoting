@@ -29,6 +29,7 @@ class xlvoApi
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     public const TYPE_JSON = 1;
     public const TYPE_XML = 2;
@@ -48,7 +49,6 @@ class xlvoApi
      * @var stdClass
      */
     protected $data;
-
 
     /**
      * xlvoApi constructor.
@@ -96,6 +96,11 @@ class xlvoApi
         $this->data = $data;
     }
 
+    protected function initType()
+    {
+        $type = xlvoConf::getConfig(xlvoConf::F_API_TYPE);
+        $this->setType($type ? $type : self::TYPE_JSON);
+    }
 
     protected function check()
     {
@@ -109,6 +114,56 @@ class xlvoApi
         }
     }
 
+    /**
+     * @return xlvoPin
+     */
+    public function getPin()
+    {
+        return $this->pin;
+    }
+
+    /**
+     * @param xlvoPin $pin
+     */
+    public function setPin($pin)
+    {
+        $this->pin = $pin;
+    }
+
+    /**
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * @param string $token
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+    }
+
+    public function send()
+    {
+        switch ($this->type) {
+            case self::TYPE_JSON:
+                header('Content-Type: application/json');
+                echo json_encode($this->data);
+                break;
+            case self::TYPE_XML:
+                $domxml = new DOMDocument('1.0', 'UTF-8');
+                $domxml->preserveWhiteSpace = false;
+                $domxml->formatOutput = true;
+                $this->appendXMLElement($domxml, 'LiveVotingResults', $this->data);
+
+                header('Content-Type: application/xml');
+                echo $domxml->saveXML();
+                break;
+        }
+    }
 
     /**
      * @param DOMElement|\DOMNode  $dom
@@ -128,11 +183,11 @@ class xlvoApi
                 }
                 break;
             case (is_array($data)):
-            $newdom = $dom->appendChild(new DOMElement($key));
-            foreach ($data as $k => $v) {
-                $this->appendXMLElement($newdom, rtrim($key, "s"), $v);
-            }
-            break;
+                $newdom = $dom->appendChild(new DOMElement($key));
+                foreach ($data as $k => $v) {
+                    $this->appendXMLElement($newdom, rtrim($key, "s"), $v);
+                }
+                break;
             default:
                 $dom->appendChild(new DOMElement($key))->appendChild(new DOMCdataSection($data));
                 break;
@@ -140,63 +195,6 @@ class xlvoApi
 
         return $return;
     }
-
-
-    public function send()
-    {
-        switch ($this->type) {
-            case self::TYPE_JSON:
-                header('Content-Type: application/json');
-                echo json_encode($this->data);
-                break;
-            case self::TYPE_XML:
-            $domxml = new DOMDocument('1.0', 'UTF-8');
-            $domxml->preserveWhiteSpace = false;
-            $domxml->formatOutput = true;
-            $this->appendXMLElement($domxml, 'LiveVotingResults', $this->data);
-
-            header('Content-Type: application/xml');
-            echo $domxml->saveXML();
-            break;
-        }
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getToken()
-    {
-        return $this->token;
-    }
-
-
-    /**
-     * @param string $token
-     */
-    public function setToken($token)
-    {
-        $this->token = $token;
-    }
-
-
-    /**
-     * @return xlvoPin
-     */
-    public function getPin()
-    {
-        return $this->pin;
-    }
-
-
-    /**
-     * @param xlvoPin $pin
-     */
-    public function setPin($pin)
-    {
-        $this->pin = $pin;
-    }
-
 
     /**
      * @return int
@@ -206,7 +204,6 @@ class xlvoApi
         return $this->type;
     }
 
-
     /**
      * @param int $type
      */
@@ -214,7 +211,6 @@ class xlvoApi
     {
         $this->type = $type;
     }
-
 
     /**
      * @return stdClass
@@ -224,19 +220,11 @@ class xlvoApi
         return $this->data;
     }
 
-
     /**
      * @param stdClass $data
      */
     public function setData($data)
     {
         $this->data = $data;
-    }
-
-
-    protected function initType()
-    {
-        $type = xlvoConf::getConfig(xlvoConf::F_API_TYPE);
-        $this->setType($type ? $type : self::TYPE_JSON);
     }
 }

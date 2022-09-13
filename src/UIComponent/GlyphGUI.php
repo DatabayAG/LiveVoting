@@ -36,7 +36,6 @@ class GlyphGUI extends ilGlyphGUI
         return parent::get($a_glyph, $a_text) . ' ';
     }
 
-
     /**
      * @param $a_glyph
      *

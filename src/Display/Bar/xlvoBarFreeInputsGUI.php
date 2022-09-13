@@ -16,14 +16,6 @@ use LiveVoting\Voting\xlvoVoting;
 class xlvoBarFreeInputsGUI extends xlvoAbstractBarGUI implements xlvoGeneralBarGUI
 {
     /**
-     * @var xlvoVoting
-     */
-    protected $voting;
-    /**
-     * @var xlvoVote
-     */
-    protected $vote;
-    /**
      * @var int
      */
     private $occurrences;
@@ -43,7 +35,14 @@ class xlvoBarFreeInputsGUI extends xlvoAbstractBarGUI implements xlvoGeneralBarG
      * @var bool
      */
     private $big = false;
-
+    /**
+     * @var xlvoVoting
+     */
+    protected $voting;
+    /**
+     * @var xlvoVote
+     */
+    protected $vote;
 
     /**
      * @param xlvoVoting $voting
@@ -58,6 +57,15 @@ class xlvoBarFreeInputsGUI extends xlvoAbstractBarGUI implements xlvoGeneralBarG
         $this->occurrences = 0;
     }
 
+    /**
+     * @return string
+     */
+    public function getHTML()
+    {
+        $this->render();
+
+        return $this->tpl->get();
+    }
 
     /**
      *
@@ -86,17 +94,69 @@ class xlvoBarFreeInputsGUI extends xlvoAbstractBarGUI implements xlvoGeneralBarG
         }
     }
 
-
     /**
-     * @return string
+     * @return bool
      */
-    public function getHTML()
+    public function isRemovable()
     {
-        $this->render();
-
-        return $this->tpl->get();
+        return $this->removable;
     }
 
+    /**
+     * @param bool $removable
+     */
+    public function setRemovable($removable)
+    {
+        $this->removable = $removable;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCenter()
+    {
+        return $this->center;
+    }
+
+    /**
+     * @param bool $center
+     */
+    public function setCenter($center)
+    {
+        $this->center = $center;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBig()
+    {
+        return $this->big;
+    }
+
+    /**
+     * @param bool $big
+     */
+    public function setBig($big)
+    {
+        $this->big = $big;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStrong()
+    {
+        return $this->strong;
+    }
+
+    /**
+     * @param bool $strong
+     */
+    public function setStrong($strong)
+    {
+        $this->strong = $strong;
+    }
 
     /**
      * @return int
@@ -106,6 +166,13 @@ class xlvoBarFreeInputsGUI extends xlvoAbstractBarGUI implements xlvoGeneralBarG
         return $this->occurrences;
     }
 
+    /**
+     * @param int $occurrences
+     */
+    public function setOccurrences($occurrences)
+    {
+        $this->occurrences = $occurrences;
+    }
 
     /**
      * Compares the freetext of the current with the given object.
@@ -119,86 +186,5 @@ class xlvoBarFreeInputsGUI extends xlvoAbstractBarGUI implements xlvoGeneralBarG
     public function equals(xlvoGeneralBarGUI $bar)
     {
         return strcasecmp(nl2br($this->vote->getFreeInput(), false), nl2br($bar->vote->getFreeInput(), false)) === 0;
-    }
-
-
-    /**
-     * @param int $occurrences
-     */
-    public function setOccurrences($occurrences)
-    {
-        $this->occurrences = $occurrences;
-    }
-
-
-    /**
-     * @return bool
-     */
-    public function isStrong()
-    {
-        return $this->strong;
-    }
-
-
-    /**
-     * @param bool $strong
-     */
-    public function setStrong($strong)
-    {
-        $this->strong = $strong;
-    }
-
-
-    /**
-     * @return bool
-     */
-    public function isCenter()
-    {
-        return $this->center;
-    }
-
-
-    /**
-     * @param bool $center
-     */
-    public function setCenter($center)
-    {
-        $this->center = $center;
-    }
-
-
-    /**
-     * @return bool
-     */
-    public function isBig()
-    {
-        return $this->big;
-    }
-
-
-    /**
-     * @param bool $big
-     */
-    public function setBig($big)
-    {
-        $this->big = $big;
-    }
-
-
-    /**
-     * @return bool
-     */
-    public function isRemovable()
-    {
-        return $this->removable;
-    }
-
-
-    /**
-     * @param bool $removable
-     */
-    public function setRemovable($removable)
-    {
-        $this->removable = $removable;
     }
 }

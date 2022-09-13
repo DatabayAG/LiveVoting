@@ -34,7 +34,7 @@ class xlvoCorrectOrderResultGUI extends xlvoResultGUI
         $return = ($correct_order_json == $vote->getFreeInput())
             ? self::plugin()->translate("common_correct_order")
             : self::plugin()
-                ->translate("common_incorrect_order");
+                  ->translate("common_incorrect_order");
         $return .= ": ";
         foreach (json_decode($vote->getFreeInput()) as $option_id) {
             $xlvoOption = $this->options[$option_id];
@@ -48,6 +48,20 @@ class xlvoCorrectOrderResultGUI extends xlvoResultGUI
         return $return . implode(", ", $strings);
     }
 
+    /**
+     * @return string
+     */
+    protected function getCorrectOrderJSON()
+    {
+        $correct_order_ids = array();
+        foreach ($this->options as $option) {
+            $correct_order_ids[(int) $option->getCorrectPosition()] = $option->getId();
+        };
+        ksort($correct_order_ids);
+        $correct_order_json = json_encode(array_values($correct_order_ids));
+
+        return $correct_order_json;
+    }
 
     /**
      * @param xlvoVote[] $votes
@@ -66,28 +80,12 @@ class xlvoCorrectOrderResultGUI extends xlvoResultGUI
         $return = ($correct_order_json == $vote->getFreeInput())
             ? self::plugin()->translate("common_correct_order")
             : self::plugin()
-                ->translate("common_incorrect_order");
+                  ->translate("common_incorrect_order");
         $return .= ": ";
         foreach (json_decode($vote->getFreeInput()) as $option_id) {
             $strings[] = $this->options[$option_id]->getText();
         }
 
         return $return . implode(", ", $strings);
-    }
-
-
-    /**
-     * @return string
-     */
-    protected function getCorrectOrderJSON()
-    {
-        $correct_order_ids = array();
-        foreach ($this->options as $option) {
-            $correct_order_ids[(int) $option->getCorrectPosition()] = $option->getId();
-        };
-        ksort($correct_order_ids);
-        $correct_order_json = json_encode(array_values($correct_order_ids));
-
-        return $correct_order_json;
     }
 }

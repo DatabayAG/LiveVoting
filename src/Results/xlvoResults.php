@@ -24,6 +24,7 @@ class xlvoResults
 {
     use DICTrait;
     use LiveVotingTrait;
+
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var int
@@ -33,7 +34,6 @@ class xlvoResults
      * @var int
      */
     protected $round_id = 0;
-
 
     /**
      * xlvoResults constructor.
@@ -47,7 +47,6 @@ class xlvoResults
         $this->round_id = $round_id;
     }
 
-
     /**
      * @param array|null    $filter
      * @param callable|null $formatParticipantCallable
@@ -57,8 +56,11 @@ class xlvoResults
      * @return array
      * @throws \Exception
      */
-    public function getData(array $filter = null, callable $formatParticipantCallable = null, callable $concatVotesCallable = null)
-    {
+    public function getData(
+        array $filter = null,
+        callable $formatParticipantCallable = null,
+        callable $concatVotesCallable = null
+    ) {
         if (!$formatParticipantCallable) {
             $formatParticipantCallable = $this->getFormatParticipantCallable();
         }
@@ -82,31 +84,34 @@ class xlvoResults
          */
         $votings = $votingRecords->get();
         $round_id = $this->getRoundId();
-        $participants = xlvoParticipants::getInstance($obj_id)->getParticipantsForRound($round_id, $filter['participant']);
+        $participants = xlvoParticipants::getInstance($obj_id)->getParticipantsForRound(
+            $round_id,
+            $filter['participant']
+        );
         $data = array();
         foreach ($participants as $participant) {
             foreach ($votings as $voting) {
                 $votes = xlvoVote::where(array(
-                    "round_id"        => $round_id,
-                    "voting_id"       => $voting->getId(),
-                    "user_id"         => $participant->getUserId(),
+                    "round_id" => $round_id,
+                    "voting_id" => $voting->getId(),
+                    "user_id" => $participant->getUserId(),
                     "user_identifier" => $participant->getUserIdentifier(),
-                    "status"          => xlvoVote::STAT_ACTIVE,
+                    "status" => xlvoVote::STAT_ACTIVE,
                 ))->get();
                 $vote = array_shift(array_values($votes));
                 $vote_ids = array_keys($votes);
                 $data[] = array(
-                    "position"        => (int) $voting->getPosition(),
-                    "participant"     => $formatParticipantCallable($participant),
-                    "user_id"         => $participant->getUserId(),
+                    "position" => (int) $voting->getPosition(),
+                    "participant" => $formatParticipantCallable($participant),
+                    "user_id" => $participant->getUserId(),
                     "user_identifier" => $participant->getUserIdentifier(),
-                    "title"           => $voting->getTitle(),
-                    "question"        => $voting->getRawQuestion(),
-                    "answer"          => $concatVotesCallable($voting, $votes),
-                    "answer_ids"      => $vote_ids,
-                    "voting_id"       => $voting->getId(),
-                    "round_id"        => $round_id,
-                    "id"              => ($vote instanceof xlvoVote ? $vote->getId() : ''),
+                    "title" => $voting->getTitle(),
+                    "question" => $voting->getRawQuestion(),
+                    "answer" => $concatVotesCallable($voting, $votes),
+                    "answer_ids" => $vote_ids,
+                    "voting_id" => $voting->getId(),
+                    "round_id" => $round_id,
+                    "id" => ($vote instanceof xlvoVote ? $vote->getId() : ''),
                 );
             }
         }
@@ -114,6 +119,15 @@ class xlvoResults
         return $data;
     }
 
+    /**
+     * @return Closure
+     */
+    protected function getFormatParticipantCallable()
+    {
+        return function (xlvoParticipant $participant) {
+            return $participant->getUserIdentifier();
+        };
+    }
 
     /**
      * @return Closure
@@ -127,18 +141,6 @@ class xlvoResults
         };
     }
 
-
-    /**
-     * @return Closure
-     */
-    protected function getFormatParticipantCallable()
-    {
-        return function (xlvoParticipant $participant) {
-            return $participant->getUserIdentifier();
-        };
-    }
-
-
     /**
      * @return int
      */
@@ -146,7 +148,6 @@ class xlvoResults
     {
         return $this->obj_id;
     }
-
 
     /**
      * @param int $obj_id
@@ -156,7 +157,6 @@ class xlvoResults
         $this->obj_id = $obj_id;
     }
 
-
     /**
      * @return int
      */
@@ -164,7 +164,6 @@ class xlvoResults
     {
         return $this->round_id;
     }
-
 
     /**
      * @param int $round_id

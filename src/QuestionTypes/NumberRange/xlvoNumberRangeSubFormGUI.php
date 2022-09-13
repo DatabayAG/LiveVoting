@@ -22,27 +22,26 @@ use LiveVoting\QuestionTypes\xlvoSubFormGUI;
  */
 class xlvoNumberRangeSubFormGUI extends xlvoSubFormGUI
 {
-
-    const OPTION_PERCENTAGE = 'option_percentage';
-    const OPTION_PERCENTAGE_INFO = 'option_percentage_info';
-    const OPTION_ALTERNATIVE_RESULT_DISPLAY_MODE = 'option_alternative_result_display_mode';
-    const OPTION_ALTERNATIVE_RESULT_DISPLAY_MODE_INFO = 'option_alternative_result_display_mode_info';
-    const OPTION_RANGE_START = 'option_range_start';
-    const OPTION_RANGE_START_INFO = 'option_range_start_info';
-    const OPTION_RANGE_END = 'option_range_end';
-    const OPTION_RANGE_END_INFO = 'option_range_end_info';
-    const OPTION_RANGE_STEP = 'option_range_step';
-    const OPTION_RANGE_STEP_INFO = 'option_range_step_info';
-    const START_RANGE_INVALID_INFO = 'qtype_6_invalid_start_range';
-    const END_RANGE_INVALID_INFO = 'qtype_6_invalid_end_range';
-    const START_RANGE_MIN = -1000000;
-    const START_RANGE_MAX = 1000000;
-    const END_RANGE_MIN = -1000000;
-    const END_RANGE_MAX = 1000000;
-    const STEP_RANGE_MIN = 1;
+    public const OPTION_PERCENTAGE = 'option_percentage';
+    public const OPTION_PERCENTAGE_INFO = 'option_percentage_info';
+    public const OPTION_ALTERNATIVE_RESULT_DISPLAY_MODE = 'option_alternative_result_display_mode';
+    public const OPTION_ALTERNATIVE_RESULT_DISPLAY_MODE_INFO = 'option_alternative_result_display_mode_info';
+    public const OPTION_RANGE_START = 'option_range_start';
+    public const OPTION_RANGE_START_INFO = 'option_range_start_info';
+    public const OPTION_RANGE_END = 'option_range_end';
+    public const OPTION_RANGE_END_INFO = 'option_range_end_info';
+    public const OPTION_RANGE_STEP = 'option_range_step';
+    public const OPTION_RANGE_STEP_INFO = 'option_range_step_info';
+    public const START_RANGE_INVALID_INFO = 'qtype_6_invalid_start_range';
+    public const END_RANGE_INVALID_INFO = 'qtype_6_invalid_end_range';
+    public const START_RANGE_MIN = -1000000;
+    public const START_RANGE_MAX = 1000000;
+    public const END_RANGE_MIN = -1000000;
+    public const END_RANGE_MAX = 1000000;
+    public const STEP_RANGE_MIN = 1;
     //const STEP_RANGE_MAX = 1000000;
-    const STEP_RANGE_DEFAULT_VALUE = 1;
-    const STEP_RANGE_INVALID_INFO = 'qtype_6_invalid_step_range';
+    public const STEP_RANGE_DEFAULT_VALUE = 1;
+    public const STEP_RANGE_INVALID_INFO = 'qtype_6_invalid_step_range';
 
 
     /**
@@ -50,7 +49,6 @@ class xlvoNumberRangeSubFormGUI extends xlvoSubFormGUI
      */
     protected function initFormElements()
     {
-
         //create percentage check box
         $percentageCheckBox = new ilCheckboxInputGUI($this->txt(self::OPTION_PERCENTAGE), self::OPTION_PERCENTAGE);
         $percentageCheckBox->setInfo($this->txt(self::OPTION_PERCENTAGE_INFO));

@@ -17,15 +17,14 @@ use LiveVoting\Voting\xlvoVotingConfig;
  */
 class xlvoResultsGUI extends xlvoGUI
 {
-
-    const LENGTH = 40;
-    const CMD_SHOW = 'showResults';
-    const CMD_NEW_ROUND = 'newRound';
-    const CMD_CHANGE_ROUND = 'changeRound';
-    const CMD_APPLY_FILTER = "applyFilter";
-    const CMD_SHOW_HISTORY = "showHistory";
-    const CMD_RESET_FILTER = 'resetFilter';
-    const CMD_CONFIRM_NEW_ROUND = 'confirmNewRound';
+    public const LENGTH = 40;
+    public const CMD_SHOW = 'showResults';
+    public const CMD_NEW_ROUND = 'newRound';
+    public const CMD_CHANGE_ROUND = 'changeRound';
+    public const CMD_APPLY_FILTER = "applyFilter";
+    public const CMD_SHOW_HISTORY = "showHistory";
+    public const CMD_RESET_FILTER = 'resetFilter';
+    public const CMD_CONFIRM_NEW_ROUND = 'confirmNewRound';
     /**
      * @var xlvoRound
      */

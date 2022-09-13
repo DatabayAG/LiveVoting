@@ -15,13 +15,12 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 class xlvoContext extends ilContext
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    const XLVO_CONTEXT = 'xlvo_context';
-    const CONTEXT_PIN = 1;
-    const CONTEXT_ILIAS = 2;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const XLVO_CONTEXT = 'xlvo_context';
+    public const CONTEXT_PIN = 1;
+    public const CONTEXT_ILIAS = 2;
 
 
     public function __construct()

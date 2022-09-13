@@ -14,16 +14,15 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 class xlvoUser
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var xlvoUser
      */
     protected static $instance;
-    const TYPE_ILIAS = 1;
-    const TYPE_PIN = 2;
+    public const TYPE_ILIAS = 1;
+    public const TYPE_PIN = 2;
     /**
      * @var int
      */
@@ -37,7 +36,9 @@ class xlvoUser
     /**
      * xlvoUser constructor.
      */
-    protected function __construct() { }
+    protected function __construct()
+    {
+    }
 
 
     /**

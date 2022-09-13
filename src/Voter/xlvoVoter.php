@@ -15,12 +15,11 @@ use LiveVoting\User\xlvoUser;
  */
 class xlvoVoter extends CachingActiveRecord
 {
-
     /**
      * Default client update delay in seconds
      */
-    const DEFAULT_CLIENT_UPDATE_DELAY = 1;
-    const TABLE_NAME = 'xlvo_voter';
+    public const DEFAULT_CLIENT_UPDATE_DELAY = 1;
+    public const TABLE_NAME = 'xlvo_voter';
 
 
     /**

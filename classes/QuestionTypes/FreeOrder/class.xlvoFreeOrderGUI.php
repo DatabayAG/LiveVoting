@@ -15,7 +15,6 @@ use LiveVoting\UIComponent\GlyphGUI;
  */
 class xlvoFreeOrderGUI extends xlvoCorrectOrderGUI
 {
-
     /**
      * xlvoFreeOrderGUI constructor.
      */

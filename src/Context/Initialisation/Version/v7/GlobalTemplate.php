@@ -11,9 +11,8 @@ use ilGlobalTemplate;
  */
 class GlobalTemplate extends ilGlobalTemplate
 {
-    public function renderPage($part, $a_fill_tabs, $a_skip_main_menu, \ILIAS\DI\Container $DIC) : string
+    public function renderPage($part, $a_fill_tabs, $a_skip_main_menu, \ILIAS\DI\Container $DIC): string
     {
         return parent::renderPage($part, $a_fill_tabs, $a_skip_main_menu, $DIC);
     }
-
 }

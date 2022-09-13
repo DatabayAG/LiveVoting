@@ -19,17 +19,16 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 final class ParamManager
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    const PARAM_BASE_CLASS_NAME = ilUIPluginRouterGUI::class;
-    const PARAM_REF_ID = 'ref_id';
-    const PARAM_PIN = 'xlvo_pin';
-    const PARAM_PUK = 'xlvo_puk';
-    const PARAM_VOTING = 'xlvo_voting';
-    const PARAM_PPT = 'xlvo_ppt';
-    const PPT_START = 'ppt_start';
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PARAM_BASE_CLASS_NAME = ilUIPluginRouterGUI::class;
+    public const PARAM_REF_ID = 'ref_id';
+    public const PARAM_PIN = 'xlvo_pin';
+    public const PARAM_PUK = 'xlvo_puk';
+    public const PARAM_VOTING = 'xlvo_voting';
+    public const PARAM_PPT = 'xlvo_ppt';
+    public const PPT_START = 'ppt_start';
     /**
      * @var ParamManager
      */

@@ -16,33 +16,28 @@ use LiveVoting\Context\xlvoContext;
 use LiveVoting\Pin\xlvoPin;
 
 try {
+    $pin = trim(filter_input(INPUT_GET, "pin"), "/");
+    $puk = trim(filter_input(INPUT_GET, "puk"), "/");
 
-	$pin = trim(filter_input(INPUT_GET, "pin"), "/");
-	$puk = trim(filter_input(INPUT_GET, "puk"), "/");
+    if (!empty($pin)) {
+        InitialisationManager::startMinimal();
 
-	if (!empty($pin)) {
+        if (xlvoPin::checkPinAndGetObjId($pin)) {
+            $param_manager = ParamManager::getInstance();
+            xlvoContext::setContext(xlvoContext::CONTEXT_PIN);
 
-		InitialisationManager::startMinimal();
+            $token = trim(filter_input(INPUT_GET, "token"), "/");
+            if (!empty($token)) {
+                $api = new xlvoApi(new xlvoPin($pin), $token);
 
-		if (xlvoPin::checkPinAndGetObjId($pin)) {
+                $type = trim(filter_input(INPUT_GET, "type"), "/");
+                if (!empty($type)) {
+                    $api->setType($type);
+                }
 
-			$param_manager = ParamManager::getInstance();
-			xlvoContext::setContext(xlvoContext::CONTEXT_PIN);
-
-			$token = trim(filter_input(INPUT_GET, "token"), "/");
-			if (!empty($token)) {
-
-				$api = new xlvoApi(new xlvoPin($pin), $token);
-
-				$type = trim(filter_input(INPUT_GET, "type"), "/");
-				if (!empty($type)) {
-					$api->setType($type);
-				}
-
-				$api->send();
-			}
-		}
-	}
+                $api->send();
+            }
+        }
+    }
 } catch (Throwable $ex) {
-
 }

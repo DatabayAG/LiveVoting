@@ -17,10 +17,9 @@ use xlvoVotingGUI;
  */
 class DuplicateToAnotherObjectSelectFormGUI extends PropertyFormGUI
 {
-
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    const LANG_MODULE = "voting";
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const LANG_MODULE = "voting";
 
 
     /**
@@ -84,7 +83,6 @@ class DuplicateToAnotherObjectSelectFormGUI extends PropertyFormGUI
      */
     protected function initId(): void
     {
-
     }
 
 

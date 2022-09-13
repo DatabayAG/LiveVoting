@@ -14,10 +14,9 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 class xlvoStyleDefinition
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var xlvoSkin
      */
@@ -58,7 +57,6 @@ class xlvoStyleDefinition
  */
 class xlvoSkin
 {
-
     use DICTrait;
 
 

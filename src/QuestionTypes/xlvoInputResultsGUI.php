@@ -23,10 +23,9 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 abstract class xlvoInputResultsGUI
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var xlvoVoting
      */
@@ -115,7 +114,7 @@ abstract class xlvoInputResultsGUI
     /**
      * @return string
      */
-    public abstract function getHTML();
+    abstract public function getHTML();
 
 
     /**
@@ -125,5 +124,5 @@ abstract class xlvoInputResultsGUI
      *
      * TODO: Usage?
      */
-    public abstract function getTextRepresentationForVotes(array $votes);
+    abstract public function getTextRepresentationForVotes(array $votes);
 }

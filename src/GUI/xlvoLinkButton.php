@@ -16,11 +16,10 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 class xlvoLinkButton extends ilLinkButton
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    const TYPE_XLVO_LINK = 'xlvo_link';
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const TYPE_XLVO_LINK = 'xlvo_link';
 
 
     public function clearClasses()

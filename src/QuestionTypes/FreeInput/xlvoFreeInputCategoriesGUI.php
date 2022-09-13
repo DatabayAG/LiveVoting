@@ -18,11 +18,10 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 class xlvoFreeInputCategoriesGUI
 {
-
     use DICTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    const TITLE = 'title';
-    const VOTES = 'votes';
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const TITLE = 'title';
+    public const VOTES = 'votes';
     /**
      * @var bool
      */

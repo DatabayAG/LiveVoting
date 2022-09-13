@@ -16,7 +16,6 @@ use xlvoCorrectOrderGUI;
  */
 class xlvoCorrectOrderResultsGUI extends xlvoSingleVoteResultsGUI
 {
-
     /**
      * @return string
      */

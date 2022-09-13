@@ -10,7 +10,6 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 class GlyphGUI extends ilGlyphGUI
 {
-
     use DICTrait;
 
     /**
@@ -23,7 +22,7 @@ class GlyphGUI extends ilGlyphGUI
      *
      * @return string html
      */
-    static function get(/*string*/ $a_glyph, /*string*/ $a_text = "") : string
+    public static function get(/*string*/ $a_glyph, /*string*/ $a_text = ""): string
     {
         if ($a_glyph == 'remove') {
             self::$map[$a_glyph]['class'] = 'glyphicon glyphicon-' . $a_glyph;
@@ -41,7 +40,7 @@ class GlyphGUI extends ilGlyphGUI
      *
      * @return string
      */
-    static function gets(string $a_glyph) : string
+    public static function gets(string $a_glyph): string
     {
         self::$map[$a_glyph]['class'] = 'glyphicons glyphicons-' . $a_glyph;
 

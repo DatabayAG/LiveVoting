@@ -25,12 +25,11 @@ use stdClass;
  */
 class xlvoApi
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    const TYPE_JSON = 1;
-    const TYPE_XML = 2;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const TYPE_JSON = 1;
+    public const TYPE_XML = 2;
     /**
      * @var int
      */
@@ -126,12 +125,12 @@ class xlvoApi
                     $this->appendXMLElement($newdom, $k, $v);
                 }
                 break;
-            case (is_array($data));
-                $newdom = $dom->appendChild(new DOMElement($key));
-                foreach ($data as $k => $v) {
-                    $this->appendXMLElement($newdom, rtrim($key, "s"), $v);
-                }
-                break;
+            case (is_array($data)):
+            $newdom = $dom->appendChild(new DOMElement($key));
+            foreach ($data as $k => $v) {
+                $this->appendXMLElement($newdom, rtrim($key, "s"), $v);
+            }
+            break;
             default:
                 $dom->appendChild(new DOMElement($key))->appendChild(new DOMCdataSection($data));
                 break;
@@ -148,15 +147,15 @@ class xlvoApi
                 header('Content-Type: application/json');
                 echo json_encode($this->data);
                 break;
-            case self::TYPE_XML;
-                $domxml = new DOMDocument('1.0', 'UTF-8');
-                $domxml->preserveWhiteSpace = false;
-                $domxml->formatOutput = true;
-                $this->appendXMLElement($domxml, 'LiveVotingResults', $this->data);
+            case self::TYPE_XML:
+            $domxml = new DOMDocument('1.0', 'UTF-8');
+            $domxml->preserveWhiteSpace = false;
+            $domxml->formatOutput = true;
+            $this->appendXMLElement($domxml, 'LiveVotingResults', $this->data);
 
-                header('Content-Type: application/xml');
-                echo $domxml->saveXML();
-                break;
+            header('Content-Type: application/xml');
+            echo $domxml->saveXML();
+            break;
         }
     }
 

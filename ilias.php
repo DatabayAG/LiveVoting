@@ -1,4 +1,5 @@
 <?php
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -19,15 +20,15 @@ use srag\DIC\LiveVoting\DICStatic;
 
 $context = xlvoContext::getContext();
 switch ($context) {
-	case xlvoContext::CONTEXT_PIN:
-		InitialisationManager::startMinimal();
-		break;
+    case xlvoContext::CONTEXT_PIN:
+        InitialisationManager::startMinimal();
+        break;
 
-	case xlvoContext::CONTEXT_ILIAS:
-	default:
-		InitialisationManager::startLight();
-		//TODO: catch error if user used the go to link but has no ilias authentication. Atm the error handling page is shown.
-		break;
+    case xlvoContext::CONTEXT_ILIAS:
+    default:
+        InitialisationManager::startLight();
+        //TODO: catch error if user used the go to link but has no ilias authentication. Atm the error handling page is shown.
+        break;
 }
 
 xlvoConf::load();

@@ -18,11 +18,10 @@ use LiveVoting\Vote\xlvoVote;
  */
 class xlvoNumberRangeResultsGUI extends xlvoInputResultsGUI
 {
-
-    const BAR_COUNT = 5;
-    const DISPLAY_MODE_GROUPED_TEXT = 0;
-    const DISPLAY_MODE_BARS = 1;
-    const DISPLAY_MODE_GROUPED_TEXT_EXTENDED = 2;
+    public const BAR_COUNT = 5;
+    public const DISPLAY_MODE_GROUPED_TEXT = 0;
+    public const DISPLAY_MODE_BARS = 1;
+    public const DISPLAY_MODE_GROUPED_TEXT_EXTENDED = 2;
 
 
     /**

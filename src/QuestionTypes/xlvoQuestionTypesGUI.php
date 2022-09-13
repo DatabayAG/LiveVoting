@@ -23,8 +23,7 @@ use xlvoVoter2GUI;
  */
 abstract class xlvoQuestionTypesGUI extends xlvoGUI
 {
-
-    const CMD_SUBMIT = 'submit';
+    public const CMD_SUBMIT = 'submit';
     /**
      * @var xlvoVotingManager2
      */
@@ -150,13 +149,13 @@ abstract class xlvoQuestionTypesGUI extends xlvoGUI
     /**
      * @param bool $current
      */
-    public abstract function initJS($current = false);
+    abstract public function initJS($current = false);
 
 
     /**
      *
      */
-    protected abstract function submit();
+    abstract protected function submit();
 
 
     /**
@@ -171,7 +170,7 @@ abstract class xlvoQuestionTypesGUI extends xlvoGUI
     /**
      * @return string
      */
-    public abstract function getMobileHTML();
+    abstract public function getMobileHTML();
 
 
     //

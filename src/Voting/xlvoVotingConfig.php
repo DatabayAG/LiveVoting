@@ -22,23 +22,22 @@ use LiveVoting\Puk\Puk;
  */
 class xlvoVotingConfig extends CachingActiveRecord
 {
-
-    const B_FROZEN_ALWAY_OFF = 0;
-    const B_FROZEN_ALWAY_ON = 1;
-    const B_FROZEN_REUSE = 2;
-    const B_RESULTS_ALWAY_OFF = 0;
-    const B_RESULTS_ALWAY_ON = 1;
-    const B_RESULTS_REUSE = 2;
-    const F_ANONYMOUS = 'anonymous';
-    const F_FROZEN_BEHAVIOUR = 'frozen_behaviour';
-    const F_RESULTS_BEHAVIOUR = 'results_behaviour';
-    const F_ONLINE = 'online';
-    const F_REUSE_STATUS = 'reuse_status';
-    const F_TERMINABLE = 'terminable';
-    const F_TERMINABLE_SELECT = "terminable_select";
-    const F_VOTING_HISTORY = "voting_history";
-    const F_SHOW_ATTENDEES = "show_attendees";
-    const TABLE_NAME = 'rep_robj_xlvo_config_n';
+    public const B_FROZEN_ALWAY_OFF = 0;
+    public const B_FROZEN_ALWAY_ON = 1;
+    public const B_FROZEN_REUSE = 2;
+    public const B_RESULTS_ALWAY_OFF = 0;
+    public const B_RESULTS_ALWAY_ON = 1;
+    public const B_RESULTS_REUSE = 2;
+    public const F_ANONYMOUS = 'anonymous';
+    public const F_FROZEN_BEHAVIOUR = 'frozen_behaviour';
+    public const F_RESULTS_BEHAVIOUR = 'results_behaviour';
+    public const F_ONLINE = 'online';
+    public const F_REUSE_STATUS = 'reuse_status';
+    public const F_TERMINABLE = 'terminable';
+    public const F_TERMINABLE_SELECT = "terminable_select";
+    public const F_VOTING_HISTORY = "voting_history";
+    public const F_SHOW_ATTENDEES = "show_attendees";
+    public const TABLE_NAME = 'rep_robj_xlvo_config_n';
 
 
     /**

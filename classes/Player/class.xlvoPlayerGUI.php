@@ -39,22 +39,21 @@ use LiveVoting\UIComponent\GlyphGUI;
  */
 class xlvoPlayerGUI extends xlvoGUI
 {
-
-    const IDENTIFIER = 'xvi';
-    const CMD_START_PLAYER = 'startPlayer';
-    const CMD_START_PLAYER_AND_UNFREEZE = 'startPlayerAnUnfreeze';
-    const CMD_START_PRESENTER = 'startPresenter';
-    const CMD_SHOW_PPT_QUESTION_OVERVIEW = 'showPptQuestionOverview';
-    const CMD_NEXT = 'next';
-    const CMD_PREVIOUS = 'previous';
-    const CMD_FREEZE = 'freeze';
-    const CMD_UNFREEZE = 'unfreeze';
-    const CMD_RESET = 'reset';
-    const CMD_TERMINATE = 'terminate';
-    const CMD_END = 'end';
-    const CMD_GET_PLAYER_DATA = 'getPlayerData';
-    const CMD_API_CALL = 'apiCall';
-    const DEBUG = false;
+    public const IDENTIFIER = 'xvi';
+    public const CMD_START_PLAYER = 'startPlayer';
+    public const CMD_START_PLAYER_AND_UNFREEZE = 'startPlayerAnUnfreeze';
+    public const CMD_START_PRESENTER = 'startPresenter';
+    public const CMD_SHOW_PPT_QUESTION_OVERVIEW = 'showPptQuestionOverview';
+    public const CMD_NEXT = 'next';
+    public const CMD_PREVIOUS = 'previous';
+    public const CMD_FREEZE = 'freeze';
+    public const CMD_UNFREEZE = 'unfreeze';
+    public const CMD_RESET = 'reset';
+    public const CMD_TERMINATE = 'terminate';
+    public const CMD_END = 'end';
+    public const CMD_GET_PLAYER_DATA = 'getPlayerData';
+    public const CMD_API_CALL = 'apiCall';
+    public const DEBUG = false;
     /**
      * @var xlvoVotingManager2
      */
@@ -236,7 +235,6 @@ class xlvoPlayerGUI extends xlvoGUI
      */
     protected function getPlayerData()
     {
-
         $this->manager->attend();
 
         //Set Active Voting of Presenter via URL - bot don't save it - PLLV-272
@@ -324,7 +322,6 @@ class xlvoPlayerGUI extends xlvoGUI
      */
     protected function apiCall()
     {
-
         /*if ($_POST['xvi'] > 0) {
             $this->manager->getPlayer()->setActiveVoting($_POST['xvi']);
         }*/
@@ -545,7 +542,6 @@ class xlvoPlayerGUI extends xlvoGUI
         $suspendButton->setId('btn-terminate');
         self::dic()->toolbar()->addButtonInstance($suspendButton);
         if (self::DEBUG) {
-
             // PAUSE PULL
             $suspendButton = ilLinkButton::getInstance();
             $suspendButton->setCaption('Toogle Pulling', false);
@@ -673,7 +669,8 @@ class xlvoPlayerGUI extends xlvoGUI
     /**
      * @param string $content
      */
-    protected function setContent(string $content)/* : void*/ {
+    protected function setContent(string $content)/* : void*/
+    {
         if (self::dic()->ui()->mainTemplate()->blockExists("xlvo_player_content")) {
             self::dic()->ui()->mainTemplate()->setVariable('PLAYER_CONTENT', self::dic()->toolbar()->getHTML() . $content);
         } else {

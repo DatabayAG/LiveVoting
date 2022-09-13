@@ -15,145 +15,144 @@ use LiveVoting\Cache\CachingActiveRecord;
  */
 class xlvoConf extends CachingActiveRecord
 {
-
     /**
      * @var int
      *
      * @deprecated
      */
-    const CONFIG_VERSION = 2;
+    public const CONFIG_VERSION = 2;
     /**
      * @var string
      *
      * @deprecated
      */
-    const F_CONFIG_VERSION = 'config_version';
+    public const F_CONFIG_VERSION = 'config_version';
     /**
      * @var string
      *
      * @deprecated
      */
-    const F_ALLOW_FREEZE = 'allow_freeze';
+    public const F_ALLOW_FREEZE = 'allow_freeze';
     /**
      * @var string
      *
      * @deprecated
      */
-    const F_ALLOW_FULLSCREEN = 'allow_fullscreen';
+    public const F_ALLOW_FULLSCREEN = 'allow_fullscreen';
     /**
      * @var string
      *
      * @deprecated
      */
-    const F_ALLOW_SHORTLINK_VOTE = 'allow_shortlink';
+    public const F_ALLOW_SHORTLINK_VOTE = 'allow_shortlink';
     /**
      * @var string
      *
      * @deprecated
      */
-    const F_ALLOW_SHORTLINK_VOTE_LINK = 'allow_shortlink_link';
+    public const F_ALLOW_SHORTLINK_VOTE_LINK = 'allow_shortlink_link';
     /**
      * @var string
      *
      * @deprecated
      */
-    const F_BASE_URL_VOTE = 'base_url';
+    public const F_BASE_URL_VOTE = 'base_url';
     /**
      * @var string
      *
      * @deprecated
      */
-    const F_ALLOW_GLOBAL_ANONYMOUS = 'global_anonymous';
+    public const F_ALLOW_GLOBAL_ANONYMOUS = 'global_anonymous';
     /**
      * @var string
      *
      * @deprecated
      */
-    const F_REGENERATE_TOKEN = 'regenerate_token';
+    public const F_REGENERATE_TOKEN = 'regenerate_token';
     /**
      * @var string
      *
      * @deprecated
      */
-    const F_USE_QR = 'use_qr';
+    public const F_USE_QR = 'use_qr';
     /**
      * @var string
      *
      * @deprecated
      */
-    const REWRITE_RULE_VOTE = "RewriteRule ^/?vote(/\\w*)? /Customizing/global/plugins/Services/Repository/RepositoryObject/LiveVoting/pin.php?xlvo_pin=$1 [L]";
+    public const REWRITE_RULE_VOTE = "RewriteRule ^/?vote(/\\w*)? /Customizing/global/plugins/Services/Repository/RepositoryObject/LiveVoting/pin.php?xlvo_pin=$1 [L]";
     /**
      * @var string
      *
      * @deprecated
      */
-    const API_URL = './Customizing/global/plugins/Services/Repository/RepositoryObject/LiveVoting/ilias.php';
+    public const API_URL = './Customizing/global/plugins/Services/Repository/RepositoryObject/LiveVoting/ilias.php';
     /**
      * @var string
      *
      * @deprecated
      */
-    const RESULT_API_URL = './Customizing/global/plugins/Services/Repository/RepositoryObject/LiveVoting/api.php';
+    public const RESULT_API_URL = './Customizing/global/plugins/Services/Repository/RepositoryObject/LiveVoting/api.php';
     /**
      * @var string
      *
      * @deprecated
      */
-    const F_REQUEST_FREQUENCY = 'request_frequency';
+    public const F_REQUEST_FREQUENCY = 'request_frequency';
     /**
      * @var string
      *
      * @deprecated
      */
-    const F_RESULT_API = 'result_api';
+    public const F_RESULT_API = 'result_api';
     /**
      * @var string
      *
      * @deprecated
      */
-    const F_USE_SERIF_FONT_FOR_PINS = 'use_serif_font_for_pins';
+    public const F_USE_SERIF_FONT_FOR_PINS = 'use_serif_font_for_pins';
     /**
      * @var string
      *
      * @deprecated
      */
-    const F_API_TYPE = 'api_type';
+    public const F_API_TYPE = 'api_type';
     /**
      * @var string
      *
      * @deprecated
      */
-    const F_API_TOKEN = 'api_token';
+    public const F_API_TOKEN = 'api_token';
     /**
      * @var string
      *
      * @deprecated
      */
-    const F_USE_GLOBAL_CACHE = 'use_global_cache';
+    public const F_USE_GLOBAL_CACHE = 'use_global_cache';
     /**
      * @var string
      *
      * @deprecated
      */
-    const F_ACTIVATE_POWERPOINT_EXPORT = 'ppt_export';
+    public const F_ACTIVATE_POWERPOINT_EXPORT = 'ppt_export';
     /**
      * @var string
      *
      * @deprecated
      */
-    const F_ALLOW_SHORTLINK_PRESENTER = 'allow_shortlink_presenter';
+    public const F_ALLOW_SHORTLINK_PRESENTER = 'allow_shortlink_presenter';
     /**
      * @var string
      *
      * @deprecated
      */
-    const F_ALLOW_SHORTLINK_PRESENTER_LINK = 'allow_shortlink_link_presenter';
+    public const F_ALLOW_SHORTLINK_PRESENTER_LINK = 'allow_shortlink_link_presenter';
     /**
      * @var string
      *
      * @deprecated
      */
-    const REWRITE_RULE_PRESENTER = "RewriteRule ^/?presenter(/\\w*)(/\\w*)(/\\w*)?(/\\w*)? /Customizing/global/plugins/Services/Repository/RepositoryObject/LiveVoting/presenter.php?xlvo_pin=$1&xlvo_puk=$2&xlvo_voting=$3&xlvo_ppt=$4 [L]";
+    public const REWRITE_RULE_PRESENTER = "RewriteRule ^/?presenter(/\\w*)(/\\w*)(/\\w*)?(/\\w*)? /Customizing/global/plugins/Services/Repository/RepositoryObject/LiveVoting/presenter.php?xlvo_pin=$1&xlvo_puk=$2&xlvo_voting=$3&xlvo_ppt=$4 [L]";
     /**
      * Min client update frequency in seconds.
      * This value should never be set bellow 1 second.
@@ -162,7 +161,7 @@ class xlvoConf extends CachingActiveRecord
      *
      * @deprecated
      */
-    const MIN_CLIENT_UPDATE_FREQUENCY = 1;
+    public const MIN_CLIENT_UPDATE_FREQUENCY = 1;
     /**
      * Max client update frequency in seconds.
      *
@@ -170,13 +169,13 @@ class xlvoConf extends CachingActiveRecord
      *
      * @deprecated
      */
-    const MAX_CLIENT_UPDATE_FREQUENCY = 60;
+    public const MAX_CLIENT_UPDATE_FREQUENCY = 60;
     /**
      * @var string
      *
      * @deprecated
      */
-    const TABLE_NAME = 'xlvo_config';
+    public const TABLE_NAME = 'xlvo_config';
 
 
     /**

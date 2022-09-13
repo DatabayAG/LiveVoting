@@ -66,10 +66,9 @@ use LiveVoting\Context\xlvoDummyUser6;
  */
 class xlvoBasicInitialisation
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var ilIniFile
      */
@@ -806,7 +805,8 @@ class xlvoBasicInitialisation
     /**
      *
      */
-    private function initMail() {
+    private function initMail()
+    {
         $this->makeGlobal("mail.mime.transport.factory", new ilMailMimeTransportFactory(self::dic()->settings(), self::dic()->appEventHandler()));
 
         $this->makeGlobal("mail.mime.sender.factory", new ilMailMimeSenderFactory(self::dic()->settings()));
@@ -816,8 +816,9 @@ class xlvoBasicInitialisation
     /**
      *
      */
-    private function initGlobalScreen() {
-        Closure::bind(function(Container $dic) {
+    private function initGlobalScreen()
+    {
+        Closure::bind(function (Container $dic) {
             self::initGlobalScreen($dic);
         }, null, ilInitialisation::class)(self::dic()->dic());
     }
@@ -826,8 +827,9 @@ class xlvoBasicInitialisation
     /**
      *
      */
-    private function initFilesystem() {
-        Closure::bind(function() {
+    private function initFilesystem()
+    {
+        Closure::bind(function () {
             self::bootstrapFilesystems();
         }, null, ilInitialisation::class)();
     }

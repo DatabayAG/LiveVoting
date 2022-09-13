@@ -14,7 +14,6 @@ use LiveVoting\Vote\xlvoVote;
  */
 class xlvoCorrectOrderResultGUI extends xlvoResultGUI
 {
-
     /**
      * @param xlvoVote[] $votes
      *

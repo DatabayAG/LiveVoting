@@ -28,12 +28,11 @@ use srag\CustomInputGUIs\LiveVoting\TextInputGUI\TextInputGUI;
  */
 class xlvoVoter2GUI extends xlvoGUI
 {
-
-    const CMD_CHECK_PIN = 'checkPin';
-    const F_PIN_INPUT = 'pin_input';
-    const CMD_START_VOTER_PLAYER = 'startVoterPlayer';
-    const CMD_GET_VOTING_DATA = 'loadVotingData';
-    const DEBUG = false;
+    public const CMD_CHECK_PIN = 'checkPin';
+    public const F_PIN_INPUT = 'pin_input';
+    public const CMD_START_VOTER_PLAYER = 'startVoterPlayer';
+    public const CMD_GET_VOTING_DATA = 'loadVotingData';
+    public const DEBUG = false;
     /**
      * @var string
      */
@@ -61,7 +60,6 @@ class xlvoVoter2GUI extends xlvoGUI
      */
     public function executeCommand()
     {
-
         $param_manager = ParamManager::getInstance();
 
         $this->pin = $param_manager->getPin();
@@ -285,7 +283,8 @@ class xlvoVoter2GUI extends xlvoGUI
                 break;
             case xlvoPlayer::STAT_END_VOTING:
                 $tpl->setVariable('TITLE', $this->txt('header_end'));
-                $tpl->setVariable('DESCRIPTION', $this->txt('info_end'));;
+                $tpl->setVariable('DESCRIPTION', $this->txt('info_end'));
+                ;
                 $tpl->setVariable('GLYPH', GlyphGUI::get('stop'));
                 break;
             case xlvoPlayer::STAT_FROZEN:

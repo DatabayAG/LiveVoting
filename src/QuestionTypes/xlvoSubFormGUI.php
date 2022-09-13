@@ -29,10 +29,9 @@ use ilGlobalPageTemplate;
  */
 abstract class xlvoSubFormGUI
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var xlvoSubFormGUI
      */
@@ -48,7 +47,6 @@ abstract class xlvoSubFormGUI
     public static function getInstance(xlvoVoting $xlvoVoting)
     {
         if (!self::$instance instanceof self) {
-
             $class = xlvoQuestionTypes::getClassName($xlvoVoting->getVotingType());
 
             $gui = null;
@@ -102,7 +100,7 @@ abstract class xlvoSubFormGUI
     /**
      *
      */
-    protected abstract function initFormElements();
+    abstract protected function initFormElements();
 
 
     /**$
@@ -244,7 +242,7 @@ abstract class xlvoSubFormGUI
      *
      * @throws xlvoSubFormGUIHandleFieldException|ilException
      */
-    protected abstract function handleField(ilFormPropertyGUI $element, $value);
+    abstract protected function handleField(ilFormPropertyGUI $element, $value);
 
 
     /**
@@ -253,7 +251,7 @@ abstract class xlvoSubFormGUI
      * @return string|int|float|array
      * @throws ilException
      */
-    protected abstract function getFieldValue(ilFormPropertyGUI $element);
+    abstract protected function getFieldValue(ilFormPropertyGUI $element);
 
 
     /**

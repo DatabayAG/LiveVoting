@@ -14,11 +14,10 @@ use LiveVoting\GUI\xlvoGUI;
  */
 class xlvoMainGUI extends xlvoGUI
 {
-
-    const TAB_SETTINGS = 'settings';
-    const TAB_SYSTEM_ACCOUNTS = 'system_accounts';
-    const TAB_PUBLICATION_USAGE = 'publication_usage';
-    const TAB_EXPORT = 'export';
+    public const TAB_SETTINGS = 'settings';
+    public const TAB_SYSTEM_ACCOUNTS = 'system_accounts';
+    public const TAB_PUBLICATION_USAGE = 'publication_usage';
+    public const TAB_EXPORT = 'export';
 
 
     /**

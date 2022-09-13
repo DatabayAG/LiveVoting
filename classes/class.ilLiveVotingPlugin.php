@@ -27,13 +27,12 @@ use srag\RemovePluginDataConfirm\LiveVoting\RepositoryObjectPluginUninstallTrait
  */
 class ilLiveVotingPlugin extends ilRepositoryObjectPlugin
 {
-
     use RepositoryObjectPluginUninstallTrait;
     use LiveVotingTrait;
-    const PLUGIN_ID = 'xlvo';
-    const PLUGIN_NAME = 'LiveVoting';
-    const PLUGIN_CLASS_NAME = self::class;
-    const REMOVE_PLUGIN_DATA_CONFIRM_CLASS_NAME = LiveVotingRemoveDataConfirm::class;
+    public const PLUGIN_ID = 'xlvo';
+    public const PLUGIN_NAME = 'LiveVoting';
+    public const PLUGIN_CLASS_NAME = self::class;
+    public const REMOVE_PLUGIN_DATA_CONFIRM_CLASS_NAME = LiveVotingRemoveDataConfirm::class;
     /**
      * @var ilLiveVotingPlugin
      */
@@ -100,7 +99,7 @@ class ilLiveVotingPlugin extends ilRepositoryObjectPlugin
         self::dic()->database()->dropTable(xlvoVoter::TABLE_NAME, false);
     }
 
-    protected function shouldUseOneUpdateStepOnly() : bool
+    protected function shouldUseOneUpdateStepOnly(): bool
     {
         return false;
     }

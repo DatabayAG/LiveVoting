@@ -16,10 +16,9 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 class xlvoRbacReview
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
 
     /**
@@ -58,7 +57,8 @@ class xlvoRbacReview
         return [];
     }
 
-    public function isAssignedToAtLeastOneGivenRole($a_usr_id, $a_role_ids) {
+    public function isAssignedToAtLeastOneGivenRole($a_usr_id, $a_role_ids)
+    {
         return false;
     }
 }

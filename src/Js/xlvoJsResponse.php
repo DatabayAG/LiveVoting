@@ -14,10 +14,9 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 class xlvoJsResponse
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var mixed
      */
@@ -29,7 +28,10 @@ class xlvoJsResponse
      *
      * @param mixed $data
      */
-    protected function __construct($data) { $this->data = $data; }
+    protected function __construct($data)
+    {
+        $this->data = $data;
+    }
 
 
     /**

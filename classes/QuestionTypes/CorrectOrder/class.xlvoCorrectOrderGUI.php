@@ -19,9 +19,8 @@ use LiveVoting\UIComponent\GlyphGUI;
  */
 class xlvoCorrectOrderGUI extends xlvoQuestionTypesGUI
 {
-
-    const BUTTON_TOTTLE_DISPLAY_CORRECT_ORDER = 'display_correct_order';
-    const BUTTON_TOGGLE_PERCENTAGE = 'toggle_percentage';
+    public const BUTTON_TOTTLE_DISPLAY_CORRECT_ORDER = 'display_correct_order';
+    public const BUTTON_TOGGLE_PERCENTAGE = 'toggle_percentage';
 
 
     /**

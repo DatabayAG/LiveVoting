@@ -12,7 +12,6 @@ namespace LiveVoting\Display\Bar;
  */
 interface xlvoBarGUI
 {
-
     /**
      * @return string
      */

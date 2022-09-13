@@ -13,8 +13,7 @@ use xlvoVotingGUI;
  */
 class xlvoFreeInputVotingFormGUI extends xlvoVotingFormGUI
 {
-
-    const USE_F_COLUMNS = false;
+    public const USE_F_COLUMNS = false;
 
 
     /**

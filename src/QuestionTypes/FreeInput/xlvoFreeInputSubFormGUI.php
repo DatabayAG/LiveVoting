@@ -18,11 +18,10 @@ use LiveVoting\QuestionTypes\xlvoSubFormGUI;
  */
 class xlvoFreeInputSubFormGUI extends xlvoSubFormGUI
 {
-
-    const F_MULTI_FREE_INPUT = 'multi_free_input';
-    const F_ANSWER_FIELD = 'answer_field';
-    const ANSWER_FIELD_SINGLE_LINE = 1;
-    const ANSWER_FIELD_MULTI_LINE = 2;
+    public const F_MULTI_FREE_INPUT = 'multi_free_input';
+    public const F_ANSWER_FIELD = 'answer_field';
+    public const ANSWER_FIELD_SINGLE_LINE = 1;
+    public const ANSWER_FIELD_MULTI_LINE = 2;
 
 
     /**

@@ -18,20 +18,19 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 abstract class xlvoGUI
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    const CMD_STANDARD = 'index';
-    const CMD_ADD = 'add';
-    const CMD_SAVE = 'save';
-    const CMD_CREATE = 'create';
-    const CMD_EDIT = 'edit';
-    const CMD_UPDATE = 'update';
-    const CMD_CONFIRM = 'confirmDelete';
-    const CMD_DELETE = 'delete';
-    const CMD_CANCEL = 'cancel';
-    const CMD_VIEW = 'view';
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const CMD_STANDARD = 'index';
+    public const CMD_ADD = 'add';
+    public const CMD_SAVE = 'save';
+    public const CMD_CREATE = 'create';
+    public const CMD_EDIT = 'edit';
+    public const CMD_UPDATE = 'update';
+    public const CMD_CONFIRM = 'confirmDelete';
+    public const CMD_DELETE = 'delete';
+    public const CMD_CANCEL = 'cancel';
+    public const CMD_VIEW = 'view';
     /**
      * @var bool $is_api_call
      */

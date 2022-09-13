@@ -17,10 +17,9 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 class xlvoBarCollectionGUI
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var ilTemplate
      */

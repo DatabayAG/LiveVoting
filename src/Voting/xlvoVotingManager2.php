@@ -28,10 +28,9 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 class xlvoVotingManager2
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var xlvoVotingManager2[]
      */
@@ -73,7 +72,6 @@ class xlvoVotingManager2
 
     private function initVoting($pin)
     {
-
         $this->setObjId(xlvoPin::checkPinAndGetObjId($pin));
         if ($this->getObjId() == 0) {
             throw new ilException("xlvoVotingManager2: Wrong PIN! - 2");

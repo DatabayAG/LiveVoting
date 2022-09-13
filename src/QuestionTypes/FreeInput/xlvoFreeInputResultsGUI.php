@@ -22,7 +22,6 @@ use xlvoPlayerGUI;
  */
 class xlvoFreeInputResultsGUI extends xlvoInputResultsGUI
 {
-
     /**
      * @var bool
      */

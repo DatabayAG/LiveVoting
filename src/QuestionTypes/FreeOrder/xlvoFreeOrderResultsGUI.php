@@ -14,7 +14,6 @@ use LiveVoting\QuestionTypes\CorrectOrder\xlvoCorrectOrderResultsGUI;
  */
 class xlvoFreeOrderResultsGUI extends xlvoCorrectOrderResultsGUI
 {
-
     /**
      * @return string
      */

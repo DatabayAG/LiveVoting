@@ -16,7 +16,6 @@ use xlvoSingleVoteGUI;
  */
 class xlvoSingleVoteResultsGUI extends xlvoInputResultsGUI
 {
-
     /**
      * @return string
      */

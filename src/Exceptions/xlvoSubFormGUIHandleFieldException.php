@@ -9,7 +9,6 @@ namespace LiveVoting\Exceptions;
  */
 class xlvoSubFormGUIHandleFieldException extends xlvoException
 {
-
     /**
      * @param string $message
      */

@@ -21,12 +21,11 @@ use srag\CustomInputGUIs\LiveVoting\HiddenInputGUI\HiddenInputGUI;
  */
 class xlvoSingleVoteSubFormGUI extends xlvoSubFormGUI
 {
-
-    const F_MULTI_SELECTION = 'multi_selection';
-    const F_OPTIONS = 'options';
-    const F_TEXT = 'text';
-    const F_COLORS = 'colors';
-    const F_ID = 'id';
+    public const F_MULTI_SELECTION = 'multi_selection';
+    public const F_OPTIONS = 'options';
+    public const F_TEXT = 'text';
+    public const F_COLORS = 'colors';
+    public const F_ID = 'id';
     /**
      * @var xlvoOption[]
      */

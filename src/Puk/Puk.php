@@ -13,7 +13,6 @@ use LiveVoting\Pin\xlvoPin;
  */
 class Puk extends xlvoPin
 {
-
     /**
      * @param string $puk
      */

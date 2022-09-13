@@ -15,8 +15,7 @@ use LiveVoting\Cache\CachingActiveRecord;
  */
 class xlvoRound extends CachingActiveRecord
 {
-
-    const TABLE_NAME = 'rep_robj_xlvo_round_n';
+    public const TABLE_NAME = 'rep_robj_xlvo_round_n';
 
 
     /**

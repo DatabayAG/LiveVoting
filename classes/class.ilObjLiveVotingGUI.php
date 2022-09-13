@@ -30,24 +30,23 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 class ilObjLiveVotingGUI extends ilObjectPluginGUI implements ilDesktopItemHandling
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    const CMD_STANDARD = self::CMD_SHOW_CONTENT;
-    const CMD_AFTER_CREATION = 'showContentAfterCreation';
-    const CMD_SHOW_CONTENT = 'showContent';
-    const CMD_EDIT = 'editProperties';
-    const CMD_UPDATE = 'updateProperties';
-    const TAB_EDIT = 'tab_edit';
-    const SUBTAB_SHOW = 'subtab_show';
-    const SUBTAB_EDIT = 'subtab_edit';
-    const TAB_CONTENT = 'tab_content';
-    const TAB_RESULTS = 'tab_results';
-    const TAB_PERMISSIONS = 'perm_settings';
-    const TAB_LEARNING_PROGRESS = 'learning_progress';
-    const F_TITLE = 'title';
-    const F_DESCRIPTION = 'description';
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const CMD_STANDARD = self::CMD_SHOW_CONTENT;
+    public const CMD_AFTER_CREATION = 'showContentAfterCreation';
+    public const CMD_SHOW_CONTENT = 'showContent';
+    public const CMD_EDIT = 'editProperties';
+    public const CMD_UPDATE = 'updateProperties';
+    public const TAB_EDIT = 'tab_edit';
+    public const SUBTAB_SHOW = 'subtab_show';
+    public const SUBTAB_EDIT = 'subtab_edit';
+    public const TAB_CONTENT = 'tab_content';
+    public const TAB_RESULTS = 'tab_results';
+    public const TAB_PERMISSIONS = 'perm_settings';
+    public const TAB_LEARNING_PROGRESS = 'learning_progress';
+    public const F_TITLE = 'title';
+    public const F_DESCRIPTION = 'description';
     /**
      * @var ilPropertyFormGUI
      */
@@ -59,14 +58,13 @@ class ilObjLiveVotingGUI extends ilObjectPluginGUI implements ilDesktopItemHandl
      */
     protected function afterConstructor()
     {
-
     }
 
 
     /**
      * @return string
      */
-    public final function getType()
+    final public function getType()
     {
         return ilLiveVotingPlugin::PLUGIN_ID;
     }
@@ -367,7 +365,6 @@ class ilObjLiveVotingGUI extends ilObjectPluginGUI implements ilDesktopItemHandl
      */
     protected function initPropertiesForm()
     {
-
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
             ilUtil::sendFailure(self::plugin()->translate('obj_permission_denied'), true);
         } else {

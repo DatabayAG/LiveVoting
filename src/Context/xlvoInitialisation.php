@@ -32,13 +32,12 @@ use ilGlobalTemplate;
  */
 class xlvoInitialisation extends ilInitialisation
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    const USE_OWN_GLOBAL_TPL = true;
-    const CONTEXT_PIN = 1;
-    const CONTEXT_ILIAS = 2;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const USE_OWN_GLOBAL_TPL = true;
+    public const CONTEXT_PIN = 1;
+    public const CONTEXT_ILIAS = 2;
     /**
      * @var ilTree
      */
@@ -327,7 +326,7 @@ class xlvoInitialisation extends ilInitialisation
                 $_GET['offset'] = (int) $_GET['offset'];		// old code
             }
 
-            // leads to error in live voting
+        // leads to error in live voting
 //            self::initGlobal("lti", "ilLTIViewGUI", "./Services/LTI/classes/class.ilLTIViewGUI.php");
 //            $GLOBALS["DIC"]["lti"]->init();
 //            self::initKioskMode($GLOBALS["DIC"]);

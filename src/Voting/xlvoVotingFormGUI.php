@@ -33,12 +33,11 @@ use ILIAS\DI\Container;
  */
 class xlvoVotingFormGUI extends ilPropertyFormGUI
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    const F_COLUMNS = 'columns';
-    const USE_F_COLUMNS = true;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const F_COLUMNS = 'columns';
+    public const USE_F_COLUMNS = true;
     /**
      * @var xlvoVoting
      */

@@ -20,9 +20,8 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 class xlvoBarOptionGUI implements xlvoGeneralBarGUI
 {
-
     use DICTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var xlvoVoting
      */

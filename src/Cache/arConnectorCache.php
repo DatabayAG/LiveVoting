@@ -19,13 +19,12 @@ use stdClass;
  */
 class arConnectorCache extends arConnector
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     private $arConnectorDB;
     private $cache;
-    const CACHE_TTL_SECONDS = 1800;
+    public const CACHE_TTL_SECONDS = 1800;
 
 
     /**

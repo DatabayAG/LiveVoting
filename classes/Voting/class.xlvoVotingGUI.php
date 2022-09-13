@@ -31,34 +31,33 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 class xlvoVotingGUI
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    const IDENTIFIER = 'xlvoVot';
-    const CMD_STANDARD = 'content';
-    const CMD_CONTENT = 'content';
-    const CMD_ADD = 'add';
-    const CMD_SELECT_TYPE = 'selectType';
-    const CMD_CREATE = 'create';
-    const CMD_EDIT = 'edit';
-    const CMD_UPDATE = 'update';
-    const CMD_UPDATE_AND_STAY = 'updateAndStay';
-    const CMD_CONFIRM_DELETE = 'confirmDelete';
-    const CMD_DELETE = 'delete';
-    const CMD_CONFIRM_RESET = 'confirmReset';
-    const CMD_DUPLICATE = 'duplicate';
-    const CMD_DUPLICATE_TO_ANOTHER_OBJECT = 'duplicateToAnotherObject';
-    const CMD_DUPLICATE_TO_ANOTHER_OBJECT_SELECT = 'duplicateToAnotherObjectSelect';
-    const CMD_RESET = 'reset';
-    const CMD_CONFIRM_RESET_ALL = 'confirmResetAll';
-    const CMD_RESET_ALL = 'resetAll';
-    const CMD_CANCEL = 'cancel';
-    const CMD_BACK = 'back';
-    const CMD_EXPORT = 'export';
-    const CMD_IMPORT = 'import';
-    const CMD_POWERPOINT_EXPORT = 'powerPointExport';
-    const F_TYPE = 'type';
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const IDENTIFIER = 'xlvoVot';
+    public const CMD_STANDARD = 'content';
+    public const CMD_CONTENT = 'content';
+    public const CMD_ADD = 'add';
+    public const CMD_SELECT_TYPE = 'selectType';
+    public const CMD_CREATE = 'create';
+    public const CMD_EDIT = 'edit';
+    public const CMD_UPDATE = 'update';
+    public const CMD_UPDATE_AND_STAY = 'updateAndStay';
+    public const CMD_CONFIRM_DELETE = 'confirmDelete';
+    public const CMD_DELETE = 'delete';
+    public const CMD_CONFIRM_RESET = 'confirmReset';
+    public const CMD_DUPLICATE = 'duplicate';
+    public const CMD_DUPLICATE_TO_ANOTHER_OBJECT = 'duplicateToAnotherObject';
+    public const CMD_DUPLICATE_TO_ANOTHER_OBJECT_SELECT = 'duplicateToAnotherObjectSelect';
+    public const CMD_RESET = 'reset';
+    public const CMD_CONFIRM_RESET_ALL = 'confirmResetAll';
+    public const CMD_RESET_ALL = 'resetAll';
+    public const CMD_CANCEL = 'cancel';
+    public const CMD_BACK = 'back';
+    public const CMD_EXPORT = 'export';
+    public const CMD_IMPORT = 'import';
+    public const CMD_POWERPOINT_EXPORT = 'powerPointExport';
+    public const F_TYPE = 'type';
     /**
      * @var ilObjLiveVotingAccess
      */
@@ -312,8 +311,8 @@ class xlvoVotingGUI
             if ($config->isAnonymous()) {
                 $presenter_link->setHtml($config->getPresenterLink($xlvoVoting->getId(), $power_point_enabled, false, !$power_point_enabled)
                     . ($power_point_enabled ? '<br><br><i>' . htmlspecialchars(self::plugin()->translate("config_ppt_link_info_manual")) . '</i><ol>' . implode("", array_map(function ($step) {
-                            return '<li>' . htmlspecialchars(self::plugin()->translate("config_ppt_link_info_manual_" . $step)) . '</li>';
-                        }, range(1, 6))) . '</ol>' : ''));
+                        return '<li>' . htmlspecialchars(self::plugin()->translate("config_ppt_link_info_manual_" . $step)) . '</li>';
+                    }, range(1, 6))) . '</ol>' : ''));
             } else {
                 $presenter_link->setHtml(self::plugin()->translate("config_presenter_link_non_anonym"));
             }
@@ -366,7 +365,6 @@ class xlvoVotingGUI
             ilUtil::sendFailure(self::plugin()->translate('permission_denied_write'), true);
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
-
             /**
              * @var xlvoVoting $xlvoVoting
              */
@@ -398,7 +396,6 @@ class xlvoVotingGUI
             ilUtil::sendFailure(self::plugin()->translate('permission_denied_write'), true);
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
-
             /**
              * @var xlvoVoting $xlvoVoting
              */
@@ -438,7 +435,6 @@ class xlvoVotingGUI
             ilUtil::sendFailure(self::plugin()->translate('permission_denied_write'), true);
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
-
             /**
              * @var xlvoVoting $xlvoVoting
              */
@@ -476,7 +472,6 @@ class xlvoVotingGUI
             $xlvoVoting = xlvoVoting::find($_POST[self::IDENTIFIER]);
 
             if ($xlvoVoting->getObjId() == $this->getObjId()) {
-
                 /**
                  * @var xlvoVote[] $votes
                  */

@@ -17,10 +17,9 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 class xlvoBarPercentageGUI implements xlvoGeneralBarGUI
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var int
      */
@@ -56,7 +55,6 @@ class xlvoBarPercentageGUI implements xlvoGeneralBarGUI
      */
     public function __construct()
     {
-
     }
 
 

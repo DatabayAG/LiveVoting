@@ -19,12 +19,11 @@ use srag\CustomInputGUIs\LiveVoting\HiddenInputGUI\HiddenInputGUI;
  */
 class xlvoFreeOrderSubFormGUI extends xlvoSubFormGUI
 {
-
-    const F_OPTIONS = 'options';
-    const F_TEXT = 'text';
-    const F_ID = 'id';
-    const F_POSITION = 'position';
-    const F_WEIGHT = 'weight';
+    public const F_OPTIONS = 'options';
+    public const F_TEXT = 'text';
+    public const F_ID = 'id';
+    public const F_POSITION = 'position';
+    public const F_WEIGHT = 'weight';
     /**
      * @var xlvoOption[]
      */

@@ -19,14 +19,13 @@ use ilMathJax;
  */
 class xlvoJs
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    const DEVELOP = false;
-    const API_URL = xlvoConf::API_URL;
-    const BASE_URL_SETTING = 'base_url';
-    const BASE_PATH = './Customizing/global/plugins/Services/Repository/RepositoryObject/LiveVoting/js/';
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const DEVELOP = false;
+    public const API_URL = xlvoConf::API_URL;
+    public const BASE_URL_SETTING = 'base_url';
+    public const BASE_PATH = './Customizing/global/plugins/Services/Repository/RepositoryObject/LiveVoting/js/';
     /**
      * @var string
      */

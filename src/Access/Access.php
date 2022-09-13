@@ -15,10 +15,9 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 final class Access
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var self
      */
@@ -43,6 +42,5 @@ final class Access
      */
     private function __construct()
     {
-
     }
 }

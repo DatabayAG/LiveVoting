@@ -18,21 +18,20 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 class xlvoQuestionTypes
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    const TYPE_SINGLE_VOTE = 1;
-    const TYPE_FREE_INPUT = 2;
-    const TYPE_RANGE = 3;
-    const TYPE_CORRECT_ORDER = 4;
-    const TYPE_FREE_ORDER = 5;
-    const TYPE_NUMBER_RANGE = 6;
-    const SINGLE_VOTE = 'SingleVote';
-    const FREE_INPUT = 'FreeInput';
-    const CORRECT_ORDER = 'CorrectOrder';
-    const FREE_ORDER = 'FreeOrder';
-    const NUMBER_RANGE = 'NumberRange';
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const TYPE_SINGLE_VOTE = 1;
+    public const TYPE_FREE_INPUT = 2;
+    public const TYPE_RANGE = 3;
+    public const TYPE_CORRECT_ORDER = 4;
+    public const TYPE_FREE_ORDER = 5;
+    public const TYPE_NUMBER_RANGE = 6;
+    public const SINGLE_VOTE = 'SingleVote';
+    public const FREE_INPUT = 'FreeInput';
+    public const CORRECT_ORDER = 'CorrectOrder';
+    public const FREE_ORDER = 'FreeOrder';
+    public const NUMBER_RANGE = 'NumberRange';
     /**
      * @var array
      */

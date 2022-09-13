@@ -13,7 +13,6 @@ use LiveVoting\Vote\xlvoVote;
  */
 class xlvoFreeInputResultGUI extends xlvoResultGUI
 {
-
     /**
      * @param xlvoVote[] $votes
      *

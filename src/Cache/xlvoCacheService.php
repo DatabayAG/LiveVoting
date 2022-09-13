@@ -15,7 +15,6 @@ namespace LiveVoting\Cache;
  */
 interface xlvoCacheService
 {
-
     /**
      * Removes the data which is stored under the key given key.
      * If the key is not found or the cache is not active, the method simply returns.

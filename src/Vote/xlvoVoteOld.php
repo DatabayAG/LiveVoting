@@ -15,7 +15,6 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 class xlvoVoteOld
 {
-
     use DICTrait;
     use LiveVotingTrait;
     /**
@@ -23,11 +22,11 @@ class xlvoVoteOld
      *
      * @deprecated
      */
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var string
      *
      * @deprecated
      */
-    const TABLE_NAME = 'rep_robj_xlvo_vote';
+    public const TABLE_NAME = 'rep_robj_xlvo_vote';
 }

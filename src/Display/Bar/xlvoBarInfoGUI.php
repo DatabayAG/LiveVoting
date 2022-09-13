@@ -10,7 +10,6 @@ namespace LiveVoting\Display\Bar;
  */
 class xlvoBarInfoGUI extends xlvoAbstractBarGUI implements xlvoGeneralBarGUI
 {
-
     /**
      * @var string
      */

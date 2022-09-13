@@ -23,10 +23,9 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 class PowerPointExport
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var ilObjLiveVoting
      */
@@ -334,7 +333,6 @@ class PowerPointExport
      */
     protected function zip()
     {
-
         ilUtil::zip($this->temp_folder, $this->temp_file, true);
 
         ilUtil::delDir($this->temp_folder);
@@ -355,7 +353,6 @@ class PowerPointExport
      */
     protected function getTempFolder()
     {
-
         $temp_directory = CLIENT_DATA_DIR . "/temp";
         //create it, if this plugin is the first one who uses it.
         self::dic()->filesystem()->storage()->createDir($temp_directory);
@@ -385,8 +382,17 @@ class PowerPointExport
         }
 
         return "{"
-            . sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535),
-                mt_rand(0, 65535), mt_rand(0, 65535))
+            . sprintf(
+                '%04X%04X-%04X-%04X-%04X-%04X%04X%04X',
+                mt_rand(0, 65535),
+                mt_rand(0, 65535),
+                mt_rand(0, 65535),
+                mt_rand(16384, 20479),
+                mt_rand(32768, 49151),
+                mt_rand(0, 65535),
+                mt_rand(0, 65535),
+                mt_rand(0, 65535)
+            )
             . "}";
     }
 }

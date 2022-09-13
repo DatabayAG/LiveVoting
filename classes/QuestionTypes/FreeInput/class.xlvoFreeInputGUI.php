@@ -23,14 +23,13 @@ use srag\CustomInputGUIs\LiveVoting\HiddenInputGUI\HiddenInputGUI;
  */
 class xlvoFreeInputGUI extends xlvoQuestionTypesGUI
 {
+    public const CMD_UNVOTE_ALL = 'unvoteAll';
+    public const CMD_SUBMIT = 'submit';
+    public const F_VOTE_MULTI_LINE_INPUT = 'vote_multi_line_input';
+    public const F_FREE_INPUT = 'free_input';
+    public const F_VOTE_ID = 'vote_id';
 
-    const CMD_UNVOTE_ALL = 'unvoteAll';
-    const CMD_SUBMIT = 'submit';
-    const F_VOTE_MULTI_LINE_INPUT = 'vote_multi_line_input';
-    const F_FREE_INPUT = 'free_input';
-    const F_VOTE_ID = 'vote_id';
-
-    const BUTTON_CATEGORIZE = 'btn_categorize';
+    public const BUTTON_CATEGORIZE = 'btn_categorize';
     /**
      * @var ilTemplate
      */

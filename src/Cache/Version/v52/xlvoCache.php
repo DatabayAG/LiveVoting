@@ -26,9 +26,8 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 class xlvoCache extends ilGlobalCache implements xlvoCacheService, Initialisable
 {
-
     use DICTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var bool
      */
@@ -106,8 +105,7 @@ class xlvoCache extends ilGlobalCache implements xlvoCacheService, Initialisable
     {
         try {
             return (int) xlvoConf::getConfig(xlvoConf::F_USE_GLOBAL_CACHE) === 1;
-        } catch (Exception $exceptione) //catch exception while dbupdate is running. (xlvoConf is not ready at that time).
-        {
+        } catch (Exception $exceptione) { //catch exception while dbupdate is running. (xlvoConf is not ready at that time).
             return false;
         }
     }

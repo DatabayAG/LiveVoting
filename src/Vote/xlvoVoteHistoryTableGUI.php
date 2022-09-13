@@ -16,10 +16,9 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 class xlvoVoteHistoryTableGUI extends ilTable2GUI
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
 
     public function __construct($a_parent_obj, $a_parent_cmd)

@@ -73,11 +73,10 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 class xlvoBasicInitialisation
 {
-
     use DICTrait;
     use LiveVotingTrait;
 
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var ilIniFile
      */
@@ -188,8 +187,14 @@ class xlvoBasicInitialisation
         $ilias = new xlvoILIAS();
         $this->makeGlobal("ilias", $ilias);
 
-        $tpl = new ilGlobalTemplate("tpl.main.html", true, true,
-            'Customizing/global/plugins/Services/Repository/RepositoryObject/LiveVoting', "DEFAULT", true);
+        $tpl = new ilGlobalTemplate(
+            "tpl.main.html",
+            true,
+            true,
+            'Customizing/global/plugins/Services/Repository/RepositoryObject/LiveVoting',
+            "DEFAULT",
+            true
+        );
 
         $param_manager = ParamManager::getInstance();
         //$tpl = self::plugin()->template("default/tpl.main.html");
@@ -200,8 +205,12 @@ class xlvoBasicInitialisation
         $tpl->addCss('./templates/default/delos.css');
         $tpl->addCss(self::plugin()->directory() . '/templates/default/default.css');
 
-        $tpl->addBlockFile("CONTENT", "content", "tpl.main_voter.html",
-            'Customizing/global/plugins/Services/Repository/RepositoryObject/LiveVoting');
+        $tpl->addBlockFile(
+            "CONTENT",
+            "content",
+            "tpl.main_voter.html",
+            'Customizing/global/plugins/Services/Repository/RepositoryObject/LiveVoting'
+        );
         $tpl->setVariable('BASE', xlvoConf::getBaseVoteURL());
         $this->makeGlobal("tpl", $tpl);
 
@@ -617,8 +626,13 @@ class xlvoBasicInitialisation
         define('IL_COOKIE_SECURE', $cookie_secure); // Default Value
 
         define('IL_COOKIE_HTTPONLY', true); // Default Value
-        session_set_cookie_params(IL_COOKIE_EXPIRE, IL_COOKIE_PATH, IL_COOKIE_DOMAIN, IL_COOKIE_SECURE,
-            IL_COOKIE_HTTPONLY);
+        session_set_cookie_params(
+            IL_COOKIE_EXPIRE,
+            IL_COOKIE_PATH,
+            IL_COOKIE_DOMAIN,
+            IL_COOKIE_SECURE,
+            IL_COOKIE_HTTPONLY
+        );
     }
 
     /**
@@ -730,8 +744,12 @@ class xlvoBasicInitialisation
         };
 
         $DIC['http'] = function ($c) {
-            return new HTTPServices($c['http.response_sender_strategy'], $c['http.cookie_jar_factory'],
-                $c['http.request_factory'], $c['http.response_factory']);
+            return new HTTPServices(
+                $c['http.response_sender_strategy'],
+                $c['http.cookie_jar_factory'],
+                $c['http.request_factory'],
+                $c['http.response_factory']
+            );
         };
     }
 
@@ -780,8 +798,10 @@ class xlvoBasicInitialisation
      */
     private function initMail()
     {
-        $this->makeGlobal("mail.mime.transport.factory",
-            new ilMailMimeTransportFactory(self::dic()->settings(), self::dic()->appEventHandler()));
+        $this->makeGlobal(
+            "mail.mime.transport.factory",
+            new ilMailMimeTransportFactory(self::dic()->settings(), self::dic()->appEventHandler())
+        );
 
         $this->makeGlobal("mail.mime.sender.factory", new ilMailMimeSenderFactory(self::dic()->settings()));
     }
@@ -806,11 +826,11 @@ class xlvoBasicInitialisation
         }, null, ilInitialisation::class)();
     }
 
-    protected function initResourceStorage() : void
+    protected function initResourceStorage(): void
     {
         global $DIC;
 
-        $DIC['resource_storage'] = static function (Container $c) : \ILIAS\ResourceStorage\Services {
+        $DIC['resource_storage'] = static function (Container $c): \ILIAS\ResourceStorage\Services {
             return new \ILIAS\ResourceStorage\Services(
                 new StorageHandlerFactory([
                     new MaxNestingFileSystemStorageHandler($c['filesystem.storage'], Location::STORAGE),

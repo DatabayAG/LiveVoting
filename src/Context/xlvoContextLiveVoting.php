@@ -15,10 +15,9 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 class xlvoContextLiveVoting implements ilContextTemplate
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
 
     /**

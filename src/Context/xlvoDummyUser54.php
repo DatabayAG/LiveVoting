@@ -16,10 +16,9 @@ use ilObjUser;
  */
 class xlvoDummyUser54 extends ilObjUser implements xlvoDummyUser
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
     /**
      * xlvoDummyUser constructor.

@@ -25,12 +25,11 @@ use stdClass;
  */
 class xlvoVoting extends CachingActiveRecord
 {
-
-    const STAT_ACTIVE = 5;
-    const STAT_INACTIVE = 1;
-    const STAT_INCOMPLETE = 2;
-    const ROWS_DEFAULT = 1;
-    const TABLE_NAME = 'rep_robj_xlvo_voting_n';
+    public const STAT_ACTIVE = 5;
+    public const STAT_INACTIVE = 1;
+    public const STAT_INCOMPLETE = 2;
+    public const ROWS_DEFAULT = 1;
+    public const TABLE_NAME = 'rep_robj_xlvo_voting_n';
 
 
     /**
@@ -279,7 +278,6 @@ class xlvoVoting extends CachingActiveRecord
             $newObj->setObjId($new_obj_id);
         }
         if ($change_name) {
-
             $count = 1;
             while (xlvoVoting::where(array('title' => $newObj->getTitle() . ' (' . $count . ')'))->where(array('obj_id' => $newObj->getObjId()))
                 ->count()) {

@@ -24,10 +24,9 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 final class InitialisationManager
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
 
     /**
@@ -37,7 +36,7 @@ final class InitialisationManager
      * @return void
      * @throws Exception   Thrown if no compatible ILIAS version could be found.
      */
-    public static final function startMinimal()
+    final public static function startMinimal()
     {
         switch (true) {
             case self::version()->is7():
@@ -59,7 +58,7 @@ final class InitialisationManager
      *
      * @throws Exception When the user object is invalid.
      */
-    public static final function startLight()
+    final public static function startLight()
     {
         xlvoInitialisation::init();
 
@@ -75,6 +74,5 @@ final class InitialisationManager
 
     private function __construct()
     {
-
     }
 }

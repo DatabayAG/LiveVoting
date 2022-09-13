@@ -18,8 +18,7 @@ use LiveVoting\Voting\xlvoVoting;
  */
 class xlvoConfGUI extends xlvoGUI
 {
-
-    const CMD_RESET_TOKEN = 'resetToken';
+    public const CMD_RESET_TOKEN = 'resetToken';
 
 
     /**

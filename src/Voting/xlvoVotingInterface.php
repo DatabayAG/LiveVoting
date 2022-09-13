@@ -15,7 +15,6 @@ use LiveVoting\Vote\xlvoVote;
  */
 interface xlvoVotingInterface
 {
-
     /**
      * @param xlvoVote $vote
      *

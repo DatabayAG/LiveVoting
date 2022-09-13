@@ -13,8 +13,7 @@ use LiveVoting\Cache\CachingActiveRecord;
  */
 class xlvoFreeInputCategory extends CachingActiveRecord
 {
-
-    const TABLE_NAME = 'rep_robj_xlvo_cat';
+    public const TABLE_NAME = 'rep_robj_xlvo_cat';
 
 
     /**

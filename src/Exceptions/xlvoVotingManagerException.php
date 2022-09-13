@@ -9,7 +9,6 @@ namespace LiveVoting\Exceptions;
  */
 class xlvoVotingManagerException extends xlvoException
 {
-
     /**
      * @param string $message
      */

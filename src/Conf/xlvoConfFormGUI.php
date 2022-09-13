@@ -25,10 +25,9 @@ use xlvoConfGUI;
  */
 class xlvoConfFormGUI extends ilPropertyFormGUI
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var xlvoConf
      */
@@ -215,7 +214,7 @@ class xlvoConfFormGUI extends ilPropertyFormGUI
      */
     public static function checkForSubItem($item)
     {
-        return !$item instanceof ilFormSectionHeaderGUI AND !$item instanceof ilMultiSelectInputGUI;
+        return !$item instanceof ilFormSectionHeaderGUI and !$item instanceof ilMultiSelectInputGUI;
     }
 
 

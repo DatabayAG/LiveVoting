@@ -12,8 +12,7 @@ use LiveVoting\Cache\CachingActiveRecord;
  */
 class xlvoVoteHistoryObject extends CachingActiveRecord
 {
-
-    const TABLE_NAME = 'rep_robj_xlvo_votehist';
+    public const TABLE_NAME = 'rep_robj_xlvo_votehist';
 
 
     /**

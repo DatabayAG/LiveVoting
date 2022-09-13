@@ -19,8 +19,7 @@ use ilException;
  */
 final class xlvoBarGroupingCollectionGUI extends xlvoBarCollectionGUI
 {
-
-    const TEMPLATE_BLOCK_NAME = 'bar';
+    public const TEMPLATE_BLOCK_NAME = 'bar';
     /**
      * @var xlvoBarFreeInputsGUI[] $bars
      */
@@ -79,7 +78,6 @@ final class xlvoBarGroupingCollectionGUI extends xlvoBarCollectionGUI
      */
     public function getHTML()
     {
-
         $this->checkCollectionState();
 
         $this->renderVotersAndVotes();

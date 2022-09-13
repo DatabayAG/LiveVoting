@@ -14,7 +14,6 @@ use LiveVoting\Access\Ilias;
  */
 trait LiveVotingTrait
 {
-
     /**
      * @return Access
      */

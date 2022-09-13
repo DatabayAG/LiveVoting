@@ -23,16 +23,15 @@ use xlvoCorrectOrderGUI;
  */
 class xlvoPlayer extends CachingActiveRecord
 {
-
-    const STAT_STOPPED = 0;
-    const STAT_RUNNING = 1;
-    const STAT_START_VOTING = 2;
-    const STAT_END_VOTING = 3;
-    const STAT_FROZEN = 4;
-    const SECONDS_ACTIVE = 4;
-    const SECONDS_TO_SLEEP = 30;
-    const CACHE_TTL_SECONDS = 1800;
-    const TABLE_NAME = 'rep_robj_xlvo_player_n';
+    public const STAT_STOPPED = 0;
+    public const STAT_RUNNING = 1;
+    public const STAT_START_VOTING = 2;
+    public const STAT_END_VOTING = 3;
+    public const STAT_FROZEN = 4;
+    public const SECONDS_ACTIVE = 4;
+    public const SECONDS_TO_SLEEP = 30;
+    public const CACHE_TTL_SECONDS = 1800;
+    public const TABLE_NAME = 'rep_robj_xlvo_player_n';
 
 
     /**
@@ -67,7 +66,6 @@ class xlvoPlayer extends CachingActiveRecord
      */
     public static function getInstanceForObjId($obj_id)
     {
-
         //use in memory instance if possible
         if (!empty(self::$instance_cache[$obj_id])) {
             return self::$instance_cache[$obj_id];
@@ -85,7 +83,6 @@ class xlvoPlayer extends CachingActiveRecord
 
     private static function getInstanceForObjectIdWithCache($obj_id)
     {
-
         $key = self::TABLE_NAME . '_obj_id_' . $obj_id;
         $cache = xlvoCacheFactory::getInstance();
         $instance = $cache->get($key);
@@ -366,7 +363,7 @@ class xlvoPlayer extends CachingActiveRecord
      */
     public function isUnattended()
     {
-        if ($this->getStatus() != self::STAT_STOPPED AND ($this->getTimestampRefresh() < (time() - self::SECONDS_TO_SLEEP))) {
+        if ($this->getStatus() != self::STAT_STOPPED and ($this->getTimestampRefresh() < (time() - self::SECONDS_TO_SLEEP))) {
             $this->setStatus(self::STAT_STOPPED);
             $this->store();
         }

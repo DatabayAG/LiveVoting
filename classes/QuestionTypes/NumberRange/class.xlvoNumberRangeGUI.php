@@ -17,11 +17,10 @@ use LiveVoting\Voting\xlvoVotingManager2;
  */
 class xlvoNumberRangeGUI extends xlvoQuestionTypesGUI
 {
-
-    const USER_SELECTED_NUMBER = 'user_selected_number';
-    const SAVE_BUTTON_VOTE = 'voter_start_button_vote';
-    const CLEAR_BUTTON = 'voter_clear';
-    const SAVE_BUTTON_UNVOTE = 'voter_start_button_unvote';
+    public const USER_SELECTED_NUMBER = 'user_selected_number';
+    public const SAVE_BUTTON_VOTE = 'voter_start_button_vote';
+    public const CLEAR_BUTTON = 'voter_clear';
+    public const SAVE_BUTTON_UNVOTE = 'voter_start_button_unvote';
 
 
     /**
@@ -31,7 +30,6 @@ class xlvoNumberRangeGUI extends xlvoQuestionTypesGUI
      */
     public function setManager($manager)
     {
-
         if ($manager === null) {
             throw new ilException('The manager must not be null.');
         }

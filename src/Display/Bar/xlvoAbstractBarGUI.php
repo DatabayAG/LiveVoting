@@ -15,10 +15,9 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 abstract class xlvoAbstractBarGUI implements xlvoGeneralBarGUI
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var bool
      */
@@ -46,7 +45,6 @@ abstract class xlvoAbstractBarGUI implements xlvoGeneralBarGUI
      */
     public function __construct()
     {
-
     }
 
 

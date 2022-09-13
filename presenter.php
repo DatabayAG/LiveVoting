@@ -18,36 +18,32 @@ use LiveVoting\Voting\xlvoVotingConfig;
 use srag\DIC\LiveVoting\DICStatic;
 
 try {
+    $pin = trim(filter_input(INPUT_GET, ParamManager::PARAM_PIN), "/");
+    $puk = trim(filter_input(INPUT_GET, ParamManager::PARAM_PUK), "/");
 
-	$pin = trim(filter_input(INPUT_GET, ParamManager::PARAM_PIN), "/");
-	$puk = trim(filter_input(INPUT_GET, ParamManager::PARAM_PUK), "/");
+    if (!empty($pin)) {
+        InitialisationManager::startMinimal();
 
-	if (!empty($pin)) {
-		InitialisationManager::startMinimal();
+        if (xlvoPin::checkPinAndGetObjId($pin) && !empty($puk)) {
+            $param_manager = ParamManager::getInstance();
 
-		if (xlvoPin::checkPinAndGetObjId($pin) && !empty($puk)) {
+            /**
+             * @var xlvoVotingConfig|null $xlvoVotingConfig
+             */
+            $xlvoVotingConfig = xlvoVotingConfig::where([ "pin" => $pin ])->first();
+            if ($xlvoVotingConfig !== null) {
+                if ($xlvoVotingConfig->getPuk() === $puk) {
+                    xlvoContext::setContext(xlvoContext::CONTEXT_PIN);
 
-			$param_manager = ParamManager::getInstance();
-
-			/**
-			 * @var xlvoVotingConfig|null $xlvoVotingConfig
-			 */
-			$xlvoVotingConfig = xlvoVotingConfig::where([ "pin" => $pin ])->first();
-			if ($xlvoVotingConfig !== NULL) {
-
-				if ($xlvoVotingConfig->getPuk() === $puk) {
-
-					xlvoContext::setContext(xlvoContext::CONTEXT_PIN);
-
-					DICStatic::dic()->ctrl()->setTargetScript(xlvoConf::getFullApiURL());
-					DICStatic::dic()->ctrl()->redirectByClass([
-						ilUIPluginRouterGUI::class,
-						xlvoPlayerGUI::class,
-					], xlvoPlayerGUI::CMD_START_PRESENTER);
-				}
-			}
-		}
-	}
+                    DICStatic::dic()->ctrl()->setTargetScript(xlvoConf::getFullApiURL());
+                    DICStatic::dic()->ctrl()->redirectByClass([
+                        ilUIPluginRouterGUI::class,
+                        xlvoPlayerGUI::class,
+                    ], xlvoPlayerGUI::CMD_START_PRESENTER);
+                }
+            }
+        }
+    }
 } catch (Throwable $ex) {
-	echo $ex->getMessage() . "<br /><br /><a href='/'>back</a>";
+    echo $ex->getMessage() . "<br /><br /><a href='/'>back</a>";
 }

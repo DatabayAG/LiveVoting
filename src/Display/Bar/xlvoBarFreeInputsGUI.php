@@ -13,7 +13,6 @@ use LiveVoting\Voting\xlvoVoting;
  */
 class xlvoBarFreeInputsGUI extends xlvoAbstractBarGUI implements xlvoGeneralBarGUI
 {
-
     /**
      * @var xlvoVoting
      */

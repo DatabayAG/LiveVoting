@@ -24,15 +24,14 @@ use ilGlobalPageTemplate;
  */
 class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
 {
-
-    const F_OPTIONS = 'options';
-    const F_TEXT = 'text';
-    const F_ID = 'id';
-    const F_POSITION = 'position';
-    const F_CORRECT_POSITION = 'correct_position';
-    const OPTION_RANDOMIZE_OPTIONS_AFTER_SAVE = 'option_randomise_option_after_save';
-    const OPTION_RANDOMIZE_OPTIONS_AFTER_SAVE_INFO = 'option_randomise_option_after_save_info';
-    const CSS_FILE_PATH = './Customizing/global/plugins/Services/Repository/RepositoryObject/LiveVoting/templates/default/QuestionTypes/CorrectOrder/correct_order_form.css';
+    public const F_OPTIONS = 'options';
+    public const F_TEXT = 'text';
+    public const F_ID = 'id';
+    public const F_POSITION = 'position';
+    public const F_CORRECT_POSITION = 'correct_position';
+    public const OPTION_RANDOMIZE_OPTIONS_AFTER_SAVE = 'option_randomise_option_after_save';
+    public const OPTION_RANDOMIZE_OPTIONS_AFTER_SAVE_INFO = 'option_randomise_option_after_save_info';
+    public const CSS_FILE_PATH = './Customizing/global/plugins/Services/Repository/RepositoryObject/LiveVoting/templates/default/QuestionTypes/CorrectOrder/correct_order_form.css';
 
     /**
      * @var xlvoOption[]
@@ -49,7 +48,6 @@ class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
      */
     protected function initFormElements()
     {
-
         $xlvoMultiLineInputGUI = new MultiLineNewInputGUI($this->txt(self::F_OPTIONS), self::F_OPTIONS);
         $xlvoMultiLineInputGUI->setShowInputLabel(false);
         $xlvoMultiLineInputGUI->setShowSort(false);
@@ -146,9 +144,9 @@ class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
                         self::F_TEXT             => $option->getTextForEditor(),
                         self::F_POSITION         => $option->getPosition(),
                         self::F_CORRECT_POSITION => /*($this->getXlvoVoting()->getRandomiseOptionSequence() ? "<br>" : "")
-							. */
+                            . */
                             $option->getCorrectPosition()/* . ($this->getXlvoVoting()->getRandomiseOptionSequence() ? "." : "")
-						// Display as text whit dot and break if shuffled otherwise only position for input*/
+                        // Display as text whit dot and break if shuffled otherwise only position for input*/
                     ];
                 }
 
@@ -209,7 +207,6 @@ class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
      */
     private function randomiseOptionPosition(array &$options)
     {
-
         //reorder only if there is something to reorder
         if (count($options) < 2) {
             return;

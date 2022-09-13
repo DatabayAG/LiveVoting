@@ -18,9 +18,8 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 class xlvoQRModalGUI extends ilModalGUI
 {
-
     use DICTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
 
     /**

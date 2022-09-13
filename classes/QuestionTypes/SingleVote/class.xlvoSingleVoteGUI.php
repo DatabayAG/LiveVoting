@@ -16,8 +16,7 @@ use LiveVoting\UIComponent\GlyphGUI;
  */
 class xlvoSingleVoteGUI extends xlvoQuestionTypesGUI
 {
-
-    const BUTTON_TOGGLE_PERCENTAGE = 'toggle_percentage';
+    public const BUTTON_TOGGLE_PERCENTAGE = 'toggle_percentage';
 
 
     /**

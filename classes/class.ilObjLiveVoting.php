@@ -1,25 +1,25 @@
 <?php
 
 /*
-	+-----------------------------------------------------------------------------+
-	| ILIAS open source                                                           |
-	+-----------------------------------------------------------------------------+
-	| Copyright (c) 1998-2009 ILIAS open source, University of Cologne            |
-	|                                                                             |
-	| This program is free software; you can redistribute it and/or               |
-	| modify it under the terms of the GNU General Public License                 |
-	| as published by the Free Software Foundation; either version 2              |
-	| of the License, or (at your option) any later version.                      |
-	|                                                                             |
-	| This program is distributed in the hope that it will be useful,             |
-	| but WITHOUT ANY WARRANTY; without even the implied warranty of              |
-	| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               |
-	| GNU General Public License for more details.                                |
-	|                                                                             |
-	| You should have received a copy of the GNU General Public License           |
-	| along with this program; if not, write to the Free Software                 |
-	| Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. |
-	+-----------------------------------------------------------------------------+
+    +-----------------------------------------------------------------------------+
+    | ILIAS open source                                                           |
+    +-----------------------------------------------------------------------------+
+    | Copyright (c) 1998-2009 ILIAS open source, University of Cologne            |
+    |                                                                             |
+    | This program is free software; you can redistribute it and/or               |
+    | modify it under the terms of the GNU General Public License                 |
+    | as published by the Free Software Foundation; either version 2              |
+    | of the License, or (at your option) any later version.                      |
+    |                                                                             |
+    | This program is distributed in the hope that it will be useful,             |
+    | but WITHOUT ANY WARRANTY; without even the implied warranty of              |
+    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               |
+    | GNU General Public License for more details.                                |
+    |                                                                             |
+    | You should have received a copy of the GNU General Public License           |
+    | along with this program; if not, write to the Free Software                 |
+    | Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. |
+    +-----------------------------------------------------------------------------+
 */
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -45,17 +45,16 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 class ilObjLiveVoting extends ilObjectPlugin
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
 
     /**
      * @param int        $a_ref_id
      * @param bool|false $by_oid
      */
-    function __construct($a_ref_id = 0, $by_oid = false)
+    public function __construct($a_ref_id = 0, $by_oid = false)
     {
         parent::__construct($a_ref_id);
         /*if ($a_ref_id != 0) {
@@ -68,7 +67,7 @@ class ilObjLiveVoting extends ilObjectPlugin
     /**
      * Get type.
      */
-    final function initType()
+    final public function initType()
     {
         $this->setType(ilLiveVotingPlugin::PLUGIN_ID);
     }
@@ -77,7 +76,7 @@ class ilObjLiveVoting extends ilObjectPlugin
     /**
      * Create object
      */
-    function doCreate()
+    public function doCreate()
     {
         $xlvoPin = new xlvoPin();
         $xlvoPuk = new Puk();
@@ -92,7 +91,7 @@ class ilObjLiveVoting extends ilObjectPlugin
     /**
      * Read data from db
      */
-    function doRead()
+    public function doRead()
     {
     }
 
@@ -100,14 +99,13 @@ class ilObjLiveVoting extends ilObjectPlugin
     /**
      * Update data
      */
-    function doUpdate()
+    public function doUpdate()
     {
     }
 
 
     public function doDelete()
     {
-
         /**
          * @var xlvoPlayer[] $players
          */
@@ -175,7 +173,6 @@ class ilObjLiveVoting extends ilObjectPlugin
      */
     public function doCloneObject($new_obj, $a_target_id, $a_copy_id = null)
     {
-
         /**
          * @var xlvoVotingConfig $config
          */
@@ -213,7 +210,6 @@ class ilObjLiveVoting extends ilObjectPlugin
         $votings = xlvoVoting::where(array('obj_id' => $this->getId()))->get();
         $media_object_ids = array();
         foreach ($votings as $voting) {
-
             /**
              * @var xlvoVoting $voting_clone
              */

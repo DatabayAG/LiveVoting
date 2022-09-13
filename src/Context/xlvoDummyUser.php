@@ -9,5 +9,4 @@ namespace LiveVoting\Context;
  */
 interface xlvoDummyUser
 {
-
 }

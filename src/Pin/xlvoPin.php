@@ -24,10 +24,9 @@ use stdClass;
  */
 class xlvoPin
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var string
      */
@@ -52,7 +51,7 @@ class xlvoPin
      * @var xlvoCacheService $cache
      */
     private $cache;
-    const CACHE_TTL_SECONDS = 1800;
+    public const CACHE_TTL_SECONDS = 1800;
 
 
     /**

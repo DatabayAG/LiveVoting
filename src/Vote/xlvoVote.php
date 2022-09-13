@@ -20,12 +20,11 @@ use LiveVoting\Voting\xlvoVoting;
  */
 class xlvoVote extends CachingActiveRecord
 {
-
-    const STAT_INACTIVE = 0;
-    const STAT_ACTIVE = 1;
-    const USER_ILIAS = 0;
-    const USER_ANONYMOUS = 1;
-    const TABLE_NAME = 'rep_robj_xlvo_vote_n';
+    public const STAT_INACTIVE = 0;
+    public const STAT_ACTIVE = 1;
+    public const USER_ILIAS = 0;
+    public const USER_ANONYMOUS = 1;
+    public const TABLE_NAME = 'rep_robj_xlvo_vote_n';
 
 
     /**

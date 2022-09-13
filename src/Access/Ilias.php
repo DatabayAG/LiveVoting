@@ -15,10 +15,9 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 final class Ilias
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     /**
      * @var self
      */
@@ -43,6 +42,5 @@ final class Ilias
      */
     private function __construct()
     {
-
     }
 }

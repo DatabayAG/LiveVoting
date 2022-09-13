@@ -27,12 +27,11 @@ use xlvoVotingGUI;
  */
 class xlvoVotingTableGUI extends ilTable2GUI
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    const TBL_ID = 'tbl_xlvo';
-    const LENGTH = 100;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const TBL_ID = 'tbl_xlvo';
+    public const LENGTH = 100;
     /**
      * @var xlvoVotingGUI
      */

@@ -16,10 +16,9 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 class xlvoCacheFactory
 {
-
     use DICTrait;
     use LiveVotingTrait;
-    const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
+    public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     private static $cache_instance = null;
 
 

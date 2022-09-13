@@ -21,7 +21,6 @@ namespace LiveVoting\Cache;
  */
 interface Initialisable
 {
-
     /**
      * Initialise the cache.
      *

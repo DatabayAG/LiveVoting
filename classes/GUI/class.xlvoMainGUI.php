@@ -23,7 +23,7 @@ class xlvoMainGUI extends xlvoGUI
     /**
      * @return void
      */
-    public function executeCommand()
+    public function executeCommand(): void
     {
         $nextClass = self::dic()->ctrl()->getNextClass();
         switch ($nextClass) {

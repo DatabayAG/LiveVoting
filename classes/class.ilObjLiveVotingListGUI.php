@@ -45,7 +45,7 @@ class ilObjLiveVotingListGUI extends ilObjectPluginListGUI
     /**
      * @var array
      */
-    protected $commands = array();
+    protected array $commands = array();
 
 
     /**
@@ -60,7 +60,7 @@ class ilObjLiveVotingListGUI extends ilObjectPluginListGUI
     /**
      * Get name of gui class handling the commands
      */
-    public function getGuiClass()
+    public function getGuiClass(): string
     {
         return ilObjLiveVotingGUI::class;
     }
@@ -69,7 +69,7 @@ class ilObjLiveVotingListGUI extends ilObjectPluginListGUI
     /**
      * Get commands
      */
-    public function initCommands()
+    public function initCommands(): array
     {
         $this->static_link_enabled = true;
         $this->delete_enabled = true;
@@ -107,7 +107,7 @@ class ilObjLiveVotingListGUI extends ilObjectPluginListGUI
      *
      * @return string
      */
-    public function getCommandFrame($a_cmd)
+    public function getCommandFrame(string $a_cmd): string
     {
         if (!$this->checkCommandAccess("write", $a_cmd, $this->ref_id, $this->type)) {
             return '_blank';
@@ -125,7 +125,7 @@ class ilObjLiveVotingListGUI extends ilObjectPluginListGUI
      *                        "property" (string) => property name
      *                        "value" (string) => property value
      */
-    public function getProperties()
+    public function getProperties(): array
     {
         $props = array();
 

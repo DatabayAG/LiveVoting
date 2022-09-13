@@ -67,7 +67,7 @@ class ilObjLiveVoting extends ilObjectPlugin
     /**
      * Get type.
      */
-    final public function initType()
+    final public function initType(): void
     {
         $this->setType(ilLiveVotingPlugin::PLUGIN_ID);
     }
@@ -76,7 +76,7 @@ class ilObjLiveVoting extends ilObjectPlugin
     /**
      * Create object
      */
-    public function doCreate()
+    protected function doCreate($clone_mode = false): void
     {
         $xlvoPin = new xlvoPin();
         $xlvoPuk = new Puk();
@@ -91,7 +91,7 @@ class ilObjLiveVoting extends ilObjectPlugin
     /**
      * Read data from db
      */
-    public function doRead()
+    public function doRead(): void
     {
     }
 
@@ -99,12 +99,12 @@ class ilObjLiveVoting extends ilObjectPlugin
     /**
      * Update data
      */
-    public function doUpdate()
+    public function doUpdate(): void
     {
     }
 
 
-    public function doDelete()
+    public function doDelete(): void
     {
         /**
          * @var xlvoPlayer[] $players
@@ -150,7 +150,7 @@ class ilObjLiveVoting extends ilObjectPlugin
     }
 
 
-    public function renegerateVotingSorting()
+    public function renegerateVotingSorting(): void
     {
         $i = 1;
         /**
@@ -171,7 +171,7 @@ class ilObjLiveVoting extends ilObjectPlugin
      * @param                 $a_copy_id
      * @param ilObjLiveVoting $new_obj
      */
-    public function doCloneObject($new_obj, $a_target_id, $a_copy_id = null)
+    public function doCloneObject(ilObject2 $new_obj, int $a_target_id, int $a_copy_id = null): void
     {
         /**
          * @var xlvoVotingConfig $config

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use LiveVoting\Conf\xlvoConf;
@@ -10,29 +12,20 @@ use LiveVoting\Pin\xlvoPin;
 use LiveVoting\Voting\xlvoVoting;
 
 /**
- * Class xlvoConfGUI
- *
  * @author            Fabian Schmid <fs@studer-raimann.ch>
- *
  * @ilCtrl_IsCalledBy xlvoConfGUI : xlvoMainGUI
  */
 class xlvoConfGUI extends xlvoGUI
 {
     public const CMD_RESET_TOKEN = 'resetToken';
 
-
-    /**
-     * @param string $key
-     *
-     * @return string
-     */
-    public function txt($key)
+    public function txt(string $key): string
     {
         return self::plugin()->translate($key, 'config');
     }
 
 
-    public function index()
+    public function index(): void
     {
         if (xlvoConf::getConfig(xlvoConf::F_RESULT_API)) {
             $b = ilLinkButton::getInstance();
@@ -41,7 +34,7 @@ class xlvoConfGUI extends xlvoGUI
             self::dic()->toolbar()->addButtonInstance($b);
             $b = ilLinkButton::getInstance();
             $xlvoVoting = xlvoVoting::last();
-            $xlvoVoting = $xlvoVoting ? $xlvoVoting : new xlvoVoting();
+            $xlvoVoting = $xlvoVoting ?: new xlvoVoting();
             $url = xlvoConf::getBaseVoteURL() . xlvoConf::RESULT_API_URL . '?token=%s&type=%s&' . ParamManager::PARAM_PIN . '=%s';
             $url = sprintf($url, xlvoConf::getApiToken(), xlvoConf::getConfig(xlvoConf::F_API_TYPE), xlvoPin::lookupPin($xlvoVoting->getObjId()));
             $b->setUrl($url);
@@ -56,7 +49,7 @@ class xlvoConfGUI extends xlvoGUI
     }
 
 
-    protected function resetToken()
+    protected function resetToken() : void
     {
         xlvoConf::set(xlvoConf::F_API_TOKEN, null);
         xlvoConf::getConfig(xlvoConf::F_API_TOKEN);
@@ -64,39 +57,39 @@ class xlvoConfGUI extends xlvoGUI
     }
 
 
-    protected function update()
+    protected function update() : void
     {
         $xlvoConfFormGUI = new xlvoConfFormGUI($this);
         $xlvoConfFormGUI->setValuesByPost();
         if ($xlvoConfFormGUI->saveObject()) {
-            ilUtil::sendSuccess($this->txt('msg_success'), true);
+            $this->tpl->setO($this->txt('msg_success'), true);
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         }
         self::dic()->ui()->mainTemplate()->setContent($xlvoConfFormGUI->getHTML());
     }
 
 
-    protected function confirmDelete()
+    protected function confirmDelete() : void
     {
     }
 
 
-    protected function delete()
+    protected function delete() : void
     {
     }
 
 
-    protected function add()
+    protected function add(): void
     {
     }
 
 
-    protected function create()
+    protected function create(): void
     {
     }
 
 
-    protected function edit()
+    protected function edit(): void
     {
     }
 }

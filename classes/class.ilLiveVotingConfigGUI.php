@@ -24,7 +24,7 @@ class ilLiveVotingConfigGUI extends ilPluginConfigGUI
     }
 
 
-    public function executeCommand()
+    public function executeCommand(): void
     {
         // TODO: Refactoring
         self::dic()->ctrl()->setParameterByClass(ilObjComponentSettingsGUI::class, "ctype", $_GET["ctype"]);
@@ -60,7 +60,7 @@ class ilLiveVotingConfigGUI extends ilPluginConfigGUI
     }
 
 
-    public function performCommand($cmd)
+    public function performCommand($cmd): void
     {
     }
 }

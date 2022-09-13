@@ -88,7 +88,7 @@ class xlvoPlayerGUI extends xlvoGUI
     /**
      *
      */
-    protected function index()
+    protected function index(): void
     {
         try {
             $this->manager->prepareStart();
@@ -146,7 +146,7 @@ class xlvoPlayerGUI extends xlvoGUI
     /**
      *
      */
-    protected function getAttendees()
+    protected function getAttendees(): void
     {
         xlvoJsResponse::getInstance(self::plugin()->translate("start_online", "", [xlvoVoter::countVoters($this->manager->getPlayer()->getId())]))
             ->send();
@@ -156,7 +156,7 @@ class xlvoPlayerGUI extends xlvoGUI
     /**
      *
      */
-    protected function startPlayerAnUnfreeze()
+    protected function startPlayerAnUnfreeze(): void
     {
         $this->initJsAndCss();
         $this->initToolbarDuringVoting();
@@ -172,7 +172,7 @@ class xlvoPlayerGUI extends xlvoGUI
     /**
      *
      */
-    protected function startPlayer()
+    protected function startPlayer(): void
     {
         $this->initJsAndCss();
         $this->manager->prepare();
@@ -192,7 +192,7 @@ class xlvoPlayerGUI extends xlvoGUI
     /**
      * @throws ilException
      */
-    protected function startPresenter()
+    protected function startPresenter(): void
     {
         try {
             xlvoPin::checkPinAndGetObjId($this->param_manager->getPin());
@@ -200,7 +200,7 @@ class xlvoPlayerGUI extends xlvoGUI
             throw new ilException("PlayerGUI startPresenter: Wrong PIN! (1)");
         }
 
-        if ($this->param_manager->getVoting() == 0) {
+        if ($this->param_manager->getVoting() === 0) {
             throw new ilException("PlayerGUI startPresenter: No Voting!");
         }
 
@@ -233,7 +233,7 @@ class xlvoPlayerGUI extends xlvoGUI
     /**
      *
      */
-    protected function getPlayerData()
+    protected function getPlayerData(): void
     {
         $this->manager->attend();
 
@@ -256,7 +256,7 @@ class xlvoPlayerGUI extends xlvoGUI
      *
      * @return string
      */
-    protected function getPlayerHTML($inner = false)
+    protected function getPlayerHTML($inner = false): string
     {
         $xlvoDisplayPlayerGUI = new xlvoDisplayPlayerGUI($this->manager);
 
@@ -267,7 +267,7 @@ class xlvoPlayerGUI extends xlvoGUI
     /**
      * @return string
      */
-    protected function getButtonsHTML()
+    protected function getButtonsHTML(): string
     {
         // Buttons from Questions
         $xlvoQuestionTypesGUI = xlvoQuestionTypesGUI::getInstance($this->manager);
@@ -290,7 +290,7 @@ class xlvoPlayerGUI extends xlvoGUI
     /**
      *
      */
-    protected function next()
+    protected function next(): void
     {
         $this->manager->next();
         self::dic()->ctrl()->redirect($this, self::CMD_START_PLAYER);
@@ -300,7 +300,7 @@ class xlvoPlayerGUI extends xlvoGUI
     /**
      *
      */
-    protected function previous()
+    protected function previous(): void
     {
         $this->manager->previous();
         self::dic()->ctrl()->redirect($this, self::CMD_START_PLAYER);
@@ -310,7 +310,7 @@ class xlvoPlayerGUI extends xlvoGUI
     /**
      *
      */
-    protected function terminate()
+    protected function terminate(): void
     {
         $this->manager->terminate();
         self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
@@ -320,7 +320,7 @@ class xlvoPlayerGUI extends xlvoGUI
     /**
      * @throws ilException
      */
-    protected function apiCall()
+    protected function apiCall(): void
     {
         /*if ($_POST['xvi'] > 0) {
             $this->manager->getPlayer()->setActiveVoting($_POST['xvi']);
@@ -431,7 +431,7 @@ class xlvoPlayerGUI extends xlvoGUI
     /**
      * Set Toolbar Content and Buttons for the Player.
      */
-    protected function initToolbarDuringVoting()
+    protected function initToolbarDuringVoting(): void
     {
         // Freeze
         $suspendButton = xlvoLinkButton::getInstance();

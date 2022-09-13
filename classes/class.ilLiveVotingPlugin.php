@@ -64,7 +64,7 @@ class ilLiveVotingPlugin extends ilRepositoryObjectPlugin
     /**
      * @return string
      */
-    public function getPluginName()
+    public function getPluginName(): string
     {
         return self::PLUGIN_NAME;
     }
@@ -73,7 +73,7 @@ class ilLiveVotingPlugin extends ilRepositoryObjectPlugin
     /**
      * @return bool
      */
-    public function allowCopy()
+    public function allowCopy(): bool
     {
         return true;
     }

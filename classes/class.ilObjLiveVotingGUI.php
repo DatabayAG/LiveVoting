@@ -56,7 +56,7 @@ class ilObjLiveVotingGUI extends ilObjectPluginGUI implements ilDesktopItemHandl
     /**
      *
      */
-    protected function afterConstructor()
+    protected function afterConstructor(): void
     {
     }
 
@@ -64,7 +64,7 @@ class ilObjLiveVotingGUI extends ilObjectPluginGUI implements ilDesktopItemHandl
     /**
      * @return string
      */
-    final public function getType()
+    final public function getType(): string
     {
         return ilLiveVotingPlugin::PLUGIN_ID;
     }
@@ -113,7 +113,7 @@ class ilObjLiveVotingGUI extends ilObjectPluginGUI implements ilDesktopItemHandl
     /**
      * @throws ilCtrlException
      */
-    public function executeCommand()
+    public function executeCommand(): void
     {
         $this->initHeaderAndLocator();
 
@@ -218,11 +218,10 @@ class ilObjLiveVotingGUI extends ilObjectPluginGUI implements ilDesktopItemHandl
     /**
      *
      */
-    protected function performCommand()
+    public function performCommand(string $cmd): void
     {
         self::dic()->help()->setScreenIdComponent(ilLiveVotingPlugin::PLUGIN_ID);
 
-        $cmd = self::dic()->ctrl()->getCmd(self::CMD_STANDARD);
         switch ($cmd) {
             case self::CMD_STANDARD:
             case self::CMD_SHOW_CONTENT:
@@ -238,7 +237,7 @@ class ilObjLiveVotingGUI extends ilObjectPluginGUI implements ilDesktopItemHandl
     /**
      * @return string
      */
-    public function getAfterCreationCmd()
+    public function getAfterCreationCmd(): string
     {
         return self::CMD_AFTER_CREATION;
     }
@@ -247,7 +246,7 @@ class ilObjLiveVotingGUI extends ilObjectPluginGUI implements ilDesktopItemHandl
     /**
      * @return string
      */
-    public function getStandardCmd()
+    public function getStandardCmd(): string
     {
         return self::CMD_STANDARD;
     }
@@ -256,7 +255,7 @@ class ilObjLiveVotingGUI extends ilObjectPluginGUI implements ilDesktopItemHandl
     /**
      *
      */
-    protected function setTabs()
+    protected function setTabs(): void
     {
         self::dic()->tabs()->addTab(self::TAB_CONTENT, self::plugin()->translate(self::TAB_CONTENT), self::dic()->ctrl()
             ->getLinkTargetByClass(xlvoPlayerGUI::class, xlvoPlayerGUI::CMD_STANDARD));
@@ -269,7 +268,6 @@ class ilObjLiveVotingGUI extends ilObjectPluginGUI implements ilDesktopItemHandl
         }
         parent::setTabs();
 
-        return true;
     }
 
 
@@ -335,7 +333,7 @@ class ilObjLiveVotingGUI extends ilObjectPluginGUI implements ilDesktopItemHandl
      *
      * @return array
      */
-    protected function initCreationForms($a_new_type)
+    protected function initCreationForms(string $a_new_type): array
     {
         $forms = array(
             self::CFORM_NEW   => $this->initCreateForm($a_new_type),
@@ -351,7 +349,7 @@ class ilObjLiveVotingGUI extends ilObjectPluginGUI implements ilDesktopItemHandl
      *
      * @return ilPropertyFormGUI
      */
-    public function initCreateForm($a_new_type)
+    public function initCreateForm($a_new_type) : ilPropertyFormGUI
     {
         $form = parent::initCreateForm($a_new_type);
         $form->setPreventDoubleSubmission(false);
@@ -534,7 +532,7 @@ class ilObjLiveVotingGUI extends ilObjectPluginGUI implements ilDesktopItemHandl
     /**
      * Goto redirection
      */
-    public static function _goto($a_target)
+    public static function _goto(string $a_target): void
     {
         if (preg_match("/[\\d]*_pin_([\\w]*)/", $a_target[0], $matches)) {
             xlvoInitialisation::saveContext(xlvoInitialisation::CONTEXT_ILIAS);
@@ -576,7 +574,7 @@ class ilObjLiveVotingGUI extends ilObjectPluginGUI implements ilDesktopItemHandl
     /**
      *
      */
-    public function addToDeskObject()
+    public function addToDeskObject(): void
     {
         ilDesktopItemGUI::addToDesktop();
         ilUtil::sendSuccess(self::dic()->language()->txt("added_to_desktop"));
@@ -586,7 +584,7 @@ class ilObjLiveVotingGUI extends ilObjectPluginGUI implements ilDesktopItemHandl
     /**
      *
      */
-    public function removeFromDeskObject()
+    public function removeFromDeskObject(): void
     {
         ilDesktopItemGUI::removeFromDesktop();
         ilUtil::sendSuccess(self::dic()->language()->txt("removed_from_desktop"));

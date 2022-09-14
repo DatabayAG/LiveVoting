@@ -73,6 +73,11 @@ class xlvoNumberRangeGUI extends xlvoQuestionTypesGUI
         return $this->manager->getVoting()->getStartRange();
     }
 
+    private function getStep(): int
+    {
+        return $this->manager->getVoting()->getStepRange();
+    }
+
     private function getEnd(): int
     {
         return $this->manager->getVoting()->getEndRange();
@@ -98,11 +103,6 @@ class xlvoNumberRangeGUI extends xlvoQuestionTypesGUI
               ->addSettings([
                   "step" => $this->getStep()
               ])->init();
-    }
-
-    private function getStep(): int
-    {
-        return $this->manager->getVoting()->getStepRange();
     }
 
     public function getMobileHTML(): string

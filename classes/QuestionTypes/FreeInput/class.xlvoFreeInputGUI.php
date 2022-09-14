@@ -215,7 +215,7 @@ class xlvoFreeInputGUI extends xlvoQuestionTypesGUI
      * @return ilButtonBase[]
      * @throws \srag\DIC\LiveVoting\Exception\DICException
      */
-    public function getButtonInstances() : array
+    public function getButtonInstances(): array
     {
         if (!$this->manager->getPlayer()->isShowResults()) {
             return array();
@@ -246,7 +246,7 @@ class xlvoFreeInputGUI extends xlvoQuestionTypesGUI
      */
     public function handleButtonCall($button_id, $data): void
     {
-        $data = $this->getButtonsStates()[self::BUTTON_CATEGORIZE] == 'true' ? 'false' : 'true';
+        $data = $this->getButtonsStates()[self::BUTTON_CATEGORIZE] === 'true' ? 'false' : 'true';
         $this->saveButtonState($button_id, $data);
     }
 }

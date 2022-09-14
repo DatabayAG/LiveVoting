@@ -184,8 +184,7 @@ class xlvoCorrectOrderGUI extends xlvoQuestionTypesGUI
     {
         $states = $this->getButtonsStates();
 
-        return ($states[self::BUTTON_TOTTLE_DISPLAY_CORRECT_ORDER] && $this->manager->getPlayer(
-        )->isShowResults());
+        return ($states[self::BUTTON_TOTTLE_DISPLAY_CORRECT_ORDER] && $this->manager->getPlayer()->isShowResults());
     }
 
     /**

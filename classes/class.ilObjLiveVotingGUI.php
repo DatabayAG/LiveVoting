@@ -386,7 +386,11 @@ class ilObjLiveVotingGUI extends ilObjectPluginGUI implements ilDesktopItemHandl
     public function editProperties(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('obj_permission_denied'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                'failure',
+                self::plugin()->translate('obj_permission_denied'),
+                true
+            );
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
             self::dic()->tabs()->activateTab(self::TAB_EDIT);
@@ -399,7 +403,11 @@ class ilObjLiveVotingGUI extends ilObjectPluginGUI implements ilDesktopItemHandl
     protected function initPropertiesForm(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('obj_permission_denied'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                'failure',
+                self::plugin()->translate('obj_permission_denied'),
+                true
+            );
         } else {
             $this->form = new ilPropertyFormGUI();
             $this->form->setTitle(self::plugin()->translate('obj_edit_properties'));
@@ -518,7 +526,11 @@ class ilObjLiveVotingGUI extends ilObjectPluginGUI implements ilDesktopItemHandl
     public function updateProperties(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('obj_permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                'failure',
+                self::plugin()->translate('obj_permission_denied_write'),
+                true
+            );
         } else {
             self::dic()->tabs()->activateTab(self::TAB_EDIT);
             $this->initPropertiesForm();
@@ -551,7 +563,11 @@ class ilObjLiveVotingGUI extends ilObjectPluginGUI implements ilDesktopItemHandl
                 $config->setShowAttendees($this->form->getInput(xlvoVotingConfig::F_SHOW_ATTENDEES));
 
                 $config->store();
-                self::dic()->ui()->mainTemplate()->setOnScreenMessage('success', self::plugin()->translate('obj_msg_properties_form_saved'), true);
+                self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                    'success',
+                    self::plugin()->translate('obj_msg_properties_form_saved'),
+                    true
+                );
                 self::dic()->ctrl()->redirect($this, self::CMD_EDIT);
             }
 
@@ -578,7 +594,10 @@ class ilObjLiveVotingGUI extends ilObjectPluginGUI implements ilDesktopItemHandl
     public function addToDeskObject(): void
     {
         ilDesktopItemGUI::addToDesktop();
-        self::dic()->ui()->mainTemplate()->setOnScreenMessage('success', self::dic()->language()->txt("added_to_desktop"));
+        self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+            'success',
+            self::dic()->language()->txt("added_to_desktop")
+        );
     }
 
     /**
@@ -587,6 +606,9 @@ class ilObjLiveVotingGUI extends ilObjectPluginGUI implements ilDesktopItemHandl
     public function removeFromDeskObject(): void
     {
         ilDesktopItemGUI::removeFromDesktop();
-        self::dic()->ui()->mainTemplate()->setOnScreenMessage('success', self::dic()->language()->txt("removed_from_desktop"));
+        self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+            'success',
+            self::dic()->language()->txt("removed_from_desktop")
+        );
     }
 }

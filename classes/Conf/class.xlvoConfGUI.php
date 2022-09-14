@@ -45,6 +45,11 @@ class xlvoConfGUI extends xlvoGUI
         self::dic()->ui()->mainTemplate()->setContent($xlvoConfFormGUI->getHTML());
     }
 
+    public function txt(string $key): string
+    {
+        return self::plugin()->translate($key, 'config');
+    }
+
     public function index(): void
     {
         if (xlvoConf::getConfig(xlvoConf::F_RESULT_API)) {
@@ -72,10 +77,5 @@ class xlvoConfGUI extends xlvoGUI
         $xlvoConfFormGUI = new xlvoConfFormGUI($this);
         $xlvoConfFormGUI->fillForm();
         self::dic()->ui()->mainTemplate()->setContent($xlvoConfFormGUI->getHTML());
-    }
-
-    public function txt(string $key): string
-    {
-        return self::plugin()->translate($key, 'config');
     }
 }

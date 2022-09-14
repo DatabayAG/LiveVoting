@@ -74,7 +74,11 @@ class xlvoVotingGUI
     protected function content(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                'failure',
+                self::plugin()->translate('permission_denied_write'),
+                true
+            );
         } elseif (ilObjLiveVotingAccess::hasWriteAccess()) {
             $b = ilLinkButton::getInstance();
             $b->setPrimary(true);
@@ -177,7 +181,11 @@ class xlvoVotingGUI
     protected function selectType(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                'failure',
+                self::plugin()->translate('permission_denied_write'),
+                true
+            );
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
             $form = new ilPropertyFormGUI();
@@ -205,7 +213,11 @@ class xlvoVotingGUI
     protected function add(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                'failure',
+                self::plugin()->translate('permission_denied_write'),
+                true
+            );
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
             $xlvoVoting = new xlvoVoting();
@@ -219,7 +231,11 @@ class xlvoVotingGUI
     protected function create(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                'failure',
+                self::plugin()->translate('permission_denied_write'),
+                true
+            );
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
             $xlvoVoting = new xlvoVoting();
@@ -227,7 +243,11 @@ class xlvoVotingGUI
             $xlvoVotingFormGUI = xlvoVotingFormGUI::get($this, $xlvoVoting);
             $xlvoVotingFormGUI->setValuesByPost();
             if ($xlvoVotingFormGUI->saveObject()) {
-                self::dic()->ui()->mainTemplate()->setOnScreenMessage('success', self::plugin()->translate('msg_success_voting_created'), true);
+                self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                    'success',
+                    self::plugin()->translate('msg_success_voting_created'),
+                    true
+                );
                 self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
             }
             self::dic()->ui()->mainTemplate()->setContent($xlvoVotingFormGUI->getHTML());
@@ -237,7 +257,11 @@ class xlvoVotingGUI
     protected function edit(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                'failure',
+                self::plugin()->translate('permission_denied_write'),
+                true
+            );
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
             /**
@@ -325,7 +349,11 @@ class xlvoVotingGUI
     protected function confirmDelete(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                'failure',
+                self::plugin()->translate('permission_denied_write'),
+                true
+            );
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
             /**
@@ -343,7 +371,11 @@ class xlvoVotingGUI
 
                 self::dic()->ui()->mainTemplate()->setContent($confirm->getHTML());
             } else {
-                self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_object'), true);
+                self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                    'failure',
+                    self::plugin()->translate('permission_denied_object'),
+                    true
+                );
                 self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
             }
         }
@@ -355,7 +387,11 @@ class xlvoVotingGUI
     protected function delete(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                'failure',
+                self::plugin()->translate('permission_denied_write'),
+                true
+            );
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
             /**
@@ -381,7 +417,11 @@ class xlvoVotingGUI
                 $xlvoVoting->delete();
                 $this->cancel();
             } else {
-                self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('delete_failed'), true);
+                self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                    'failure',
+                    self::plugin()->translate('delete_failed'),
+                    true
+                );
                 self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
             }
         }
@@ -401,7 +441,11 @@ class xlvoVotingGUI
     protected function confirmReset(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                'failure',
+                self::plugin()->translate('permission_denied_write'),
+                true
+            );
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
             /**
@@ -419,7 +463,11 @@ class xlvoVotingGUI
 
                 self::dic()->ui()->mainTemplate()->setContent($confirm->getHTML());
             } else {
-                self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', $this->txt('permission_denied_object'), true);
+                self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                    'failure',
+                    $this->txt('permission_denied_object'),
+                    true
+                );
                 self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
             }
         }
@@ -431,7 +479,11 @@ class xlvoVotingGUI
     protected function reset(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                'failure',
+                self::plugin()->translate('permission_denied_write'),
+                true
+            );
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
             /**
@@ -449,7 +501,11 @@ class xlvoVotingGUI
                 }
                 $this->cancel();
             } else {
-                self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('reset_failed'), true);
+                self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                    'failure',
+                    self::plugin()->translate('reset_failed'),
+                    true
+                );
                 self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
             }
         }
@@ -461,7 +517,11 @@ class xlvoVotingGUI
     protected function confirmResetAll(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                'failure',
+                self::plugin()->translate('permission_denied_write'),
+                true
+            );
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
             self::dic()->ui()->mainTemplate()->setOnScreenMessage('question', $this->txt('confirm_reset_all'), true);
@@ -489,7 +549,11 @@ class xlvoVotingGUI
     protected function resetAll(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                'failure',
+                self::plugin()->translate('permission_denied_write'),
+                true
+            );
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
             /**
@@ -520,7 +584,11 @@ class xlvoVotingGUI
          */
         $xlvoVoting = xlvoVoting::find($_GET[self::IDENTIFIER]);
         $xlvoVoting->fullClone(true, true);
-        self::dic()->ui()->mainTemplate()->setOnScreenMessage('success', self::plugin()->translate('voting_msg_duplicated'), true);
+        self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+            'success',
+            self::plugin()->translate('voting_msg_duplicated'),
+            true
+        );
         $this->cancel();
     }
 
@@ -574,7 +642,11 @@ class xlvoVotingGUI
          */
         $xlvoVoting = xlvoVoting::find($_GET[self::IDENTIFIER]);
         $xlvoVoting->fullClone(true, true, $obj_id);
-        self::dic()->ui()->mainTemplate()->setOnScreenMessage('success', self::plugin()->translate('voting_msg_duplicated'), true);
+        self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+            'success',
+            self::plugin()->translate('voting_msg_duplicated'),
+            true
+        );
         $this->cancel();
     }
 
@@ -584,7 +656,11 @@ class xlvoVotingGUI
     protected function saveSorting(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                'failure',
+                self::plugin()->translate('permission_denied_write'),
+                true
+            );
         } else {
             if (is_array($_POST['position'])) {
                 foreach ($_POST['position'] as $k => $v) {
@@ -596,7 +672,11 @@ class xlvoVotingGUI
                     $xlvoVoting->store();
                 }
             }
-            self::dic()->ui()->mainTemplate()->setOnScreenMessage('success', self::plugin()->translate('voting_msg_sorting_saved'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                'success',
+                self::plugin()->translate('voting_msg_sorting_saved'),
+                true
+            );
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         }
     }
@@ -832,7 +912,11 @@ class xlvoVotingGUI
     protected function update($cmd = self::CMD_STANDARD): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                'failure',
+                self::plugin()->translate('permission_denied_write'),
+                true
+            );
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
             $xlvoVoting = xlvoVoting::find($_GET[self::IDENTIFIER]);
@@ -840,7 +924,11 @@ class xlvoVotingGUI
             $xlvoVotingFormGUI = xlvoVotingFormGUI::get($this, $xlvoVoting);
             $xlvoVotingFormGUI->setValuesByPost();
             if ($xlvoVotingFormGUI->saveObject()) {
-                self::dic()->ui()->mainTemplate()->setOnScreenMessage('success', self::plugin()->translate('msg_success_voting_updated'), true);
+                self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                    'success',
+                    self::plugin()->translate('msg_success_voting_updated'),
+                    true
+                );
                 self::dic()->ctrl()->redirect($this, $cmd);
             }
             self::dic()->ui()->mainTemplate()->setContent($xlvoVotingFormGUI->getHTML());

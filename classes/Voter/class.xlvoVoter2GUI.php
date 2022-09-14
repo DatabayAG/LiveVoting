@@ -20,7 +20,6 @@ use LiveVoting\Voting\xlvoVotingConfig;
 use LiveVoting\Voting\xlvoVotingManager2;
 use LiveVoting\UIComponent\GlyphGUI;
 use srag\CustomInputGUIs\LiveVoting\TextInputGUI\TextInputGUI;
-use JetBrains\PhpStorm\NoReturn;
 
 /**
  * Class xlvoVoter2GUI
@@ -63,7 +62,10 @@ class xlvoVoter2GUI extends xlvoGUI
         } catch (xlvoVoterException $e) {
             $param_manager->setPin('');
 
-            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', $this->txt('msg_validation_error_pin_' . $e->getCode()));
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+                'failure',
+                $this->txt('msg_validation_error_pin_' . $e->getCode())
+            );
 
             $this->index();
         }

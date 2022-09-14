@@ -115,11 +115,11 @@ class ilObjLiveVotingAccess extends ilObjectPluginAccess
      * Please do not check any preconditions handled by
      * ilConditionHandler here. Also don't do usual RBAC checks.
      *
-     * @param string $a_cmd command (not permission!)
+     * @param string $a_cmd        command (not permission!)
      * @param string $a_permission permission
-     * @param int    $a_ref_id reference id
-     * @param int    $a_obj_id object id
-     * @param string $a_user_id user id (if not provided, current user is taken)
+     * @param int    $a_ref_id     reference id
+     * @param int    $a_obj_id     object id
+     * @param string $a_user_id    user id (if not provided, current user is taken)
      *
      * @return    bool        true, if everything is ok
      */

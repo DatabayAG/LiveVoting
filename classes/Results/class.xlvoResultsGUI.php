@@ -160,7 +160,7 @@ class xlvoResultsGUI extends xlvoGUI
         $titles = array_replace(
             $titles,
             xlvoVoting::where(array("obj_id" => $this->obj_id))
-                               ->getArray("id", "title")
+                      ->getArray("id", "title")
         ); //dont use array_merge: it kills the keys.
         $closure = $this->getShortener(40);
         array_walk($titles, $closure);
@@ -176,7 +176,7 @@ class xlvoResultsGUI extends xlvoGUI
         $votings = array_replace(
             $votings,
             xlvoVoting::where(array("obj_id" => $this->obj_id))
-                                ->getArray("id", "question")
+                      ->getArray("id", "question")
         ); //dont use array_merge: it kills the keys.
         array_walk($votings, $closure);
         $filter->setOptions($votings);
@@ -246,7 +246,11 @@ class xlvoResultsGUI extends xlvoGUI
         $newRound->setObjId($this->obj_id);
         $newRound->store();
         self::dic()->ctrl()->setParameter($this, 'round_id', xlvoRound::getLatestRound($this->obj_id)->getId());
-        self::dic()->ui()->mainTemplate()->setOnScreenMessage('success', self::plugin()->translate("common_new_round_created"), true);
+        self::dic()->ui()->mainTemplate()->setOnScreenMessage(
+            'success',
+            self::plugin()->translate("common_new_round_created"),
+            true
+        );
         self::dic()->ctrl()->redirect($this, self::CMD_SHOW);
     }
 

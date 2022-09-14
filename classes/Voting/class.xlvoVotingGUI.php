@@ -20,12 +20,8 @@ use LiveVoting\UIComponent\GlyphGUI;
 use srag\DIC\LiveVoting\DICTrait;
 
 /**
- *
- * Class xlvoVotingGUI
- *
  * @author            Daniel Aemmer <daniel.aemmer@phbern.ch>
  * @author            Fabian Schmid <fs@studer-raimann.ch>
- * @version           1.0.0
  *
  * @ilCtrl_Calls      xlvoVotingGUI: xlvoSingleVoteVotingGUI, xlvoFreeInputVotingGUI
  * @ilCtrl_Calls      xlvoVotingGUI: ilPropertyFormGUI
@@ -61,26 +57,11 @@ class xlvoVotingGUI
     public const CMD_IMPORT = 'import';
     public const CMD_POWERPOINT_EXPORT = 'powerPointExport';
     public const F_TYPE = 'type';
-    /**
-     * @var ilObjLiveVotingAccess
-     */
-    protected $access;
-    /**
-     * @var int
-     */
-    protected $obj_id;
-    /**
-     * @var xlvoRound
-     */
-    protected $round;
-    /**
-     * @var ilObjLiveVoting
-     */
-    protected $obj;
+    protected ilObjLiveVotingAccess $access;
+    protected int $obj_id;
+    protected xlvoRound $round;
+    protected ilObjLiveVoting $obj;
 
-    /**
-     *
-     */
     public function __construct()
     {
         $this->access = new ilObjLiveVotingAccess();
@@ -90,13 +71,10 @@ class xlvoVotingGUI
         $this->obj = new ilObjLiveVoting($ref_id);
     }
 
-    /**
-     *
-     */
-    protected function content()
+    protected function content(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            ilUtil::sendFailure(self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
         } elseif (ilObjLiveVotingAccess::hasWriteAccess()) {
             $b = ilLinkButton::getInstance();
             $b->setPrimary(true);
@@ -116,13 +94,13 @@ class xlvoVotingGUI
                 self::dic()->toolbar()->addButtonInstance($powerpoint_export);
             }
 
-            $voting_ids = xlvoVoting::where(array('obj_id' => $this->obj_id))->getArray(null, 'id');
+            $voting_ids = xlvoVoting::where(['obj_id' => $this->obj_id])->getArray(null, 'id');
             $has_votes = false;
             if (count($voting_ids) > 0) {
-                $has_votes = xlvoVote::where(array(
+                $has_votes = xlvoVote::where([
                     'voting_id' => $voting_ids,
                     'round_id' => $this->round->getId(),
-                ))->hasSets();
+                ])->hasSets();
             }
 
             $b = ilLinkButton::getInstance();
@@ -164,7 +142,7 @@ class xlvoVotingGUI
                 ) . '</i><ol>'
                 . implode(
                     "",
-                    array_map(function ($step) {
+                    array_map(static function ($step) {
                         return '<li>' . htmlspecialchars(
                             self::plugin()->translate(
                                 "config_" . xlvoConf::F_ACTIVATE_POWERPOINT_EXPORT
@@ -178,28 +156,17 @@ class xlvoVotingGUI
         }
     }
 
-    /**
-     * @param string $key
-     *
-     * @return string
-     */
-    public function txt($key)
+    public function txt(string $key): string
     {
         return self::plugin()->translate($key, 'voting');
     }
 
-    /**
-     * @return int
-     */
-    public function getObjId()
+    public function getObjId(): int
     {
         return $this->obj_id;
     }
 
-    /**
-     * @param int $obj_id
-     */
-    public function setObjId($obj_id)
+    public function setObjId(int $obj_id): void
     {
         $this->obj_id = $obj_id;
     }
@@ -207,10 +174,10 @@ class xlvoVotingGUI
     /**
      *
      */
-    protected function selectType()
+    protected function selectType(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            ilUtil::sendFailure(self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
             $form = new ilPropertyFormGUI();
@@ -235,10 +202,10 @@ class xlvoVotingGUI
     /**
      *
      */
-    protected function add()
+    protected function add(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            ilUtil::sendFailure(self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
             $xlvoVoting = new xlvoVoting();
@@ -249,13 +216,10 @@ class xlvoVotingGUI
         }
     }
 
-    /**
-     *
-     */
-    protected function create()
+    protected function create(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            ilUtil::sendFailure(self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
             $xlvoVoting = new xlvoVoting();
@@ -263,20 +227,17 @@ class xlvoVotingGUI
             $xlvoVotingFormGUI = xlvoVotingFormGUI::get($this, $xlvoVoting);
             $xlvoVotingFormGUI->setValuesByPost();
             if ($xlvoVotingFormGUI->saveObject()) {
-                ilUtil::sendSuccess(self::plugin()->translate('msg_success_voting_created'), true);
+                self::dic()->ui()->mainTemplate()->setOnScreenMessage('success', self::plugin()->translate('msg_success_voting_created'), true);
                 self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
             }
             self::dic()->ui()->mainTemplate()->setContent($xlvoVotingFormGUI->getHTML());
         }
     }
 
-    /**
-     *
-     */
-    protected function edit()
+    protected function edit(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            ilUtil::sendFailure(self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
             /**
@@ -298,7 +259,7 @@ class xlvoVotingGUI
                 self::dic()->ctrl()->setParameter($this, self::IDENTIFIER, $prev_id);
                 $prev = ilLinkButton::getInstance();
                 $prev->setUrl(self::dic()->ctrl()->getLinkTarget($this, self::CMD_EDIT));
-                $prev->setCaption(GlyphGUI::get(GlyphGUI::PREVIOUS), false);
+                $prev->setCaption(GlyphGUI::get(ilGlyphGUI::PREVIOUS), false);
                 self::dic()->toolbar()->addButtonInstance($prev);
             }
 
@@ -306,7 +267,7 @@ class xlvoVotingGUI
             $next_id = xlvoVoting::where(array(
                 'obj_id' => $xlvoVoting->getObjId(),
                 'voting_status' => xlvoVoting::STAT_ACTIVE,
-            ))->orderBy('position', 'ASC')->where(array('position' => $xlvoVoting->getPosition()), '>')->limit(
+            ))->orderBy('position', 'ASC')->where(['position' => $xlvoVoting->getPosition()], '>')->limit(
                 0,
                 1
             )->getArray('id', 'id');
@@ -317,7 +278,7 @@ class xlvoVotingGUI
                 self::dic()->ctrl()->setParameter($this, self::IDENTIFIER, $next_id);
                 $next = ilLinkButton::getInstance();
                 $next->setUrl(self::dic()->ctrl()->getLinkTarget($this, self::CMD_EDIT));
-                $next->setCaption(GlyphGUI::get(GlyphGUI::NEXT), false);
+                $next->setCaption(GlyphGUI::get(ilGlyphGUI::NEXT), false);
                 self::dic()->toolbar()->addButtonInstance($next);
             }
             self::dic()->ctrl()->setParameter($this, self::IDENTIFIER, $xlvoVoting->getId());
@@ -344,7 +305,7 @@ class xlvoVotingGUI
                         self::plugin()->translate("config_ppt_link_info_manual")
                     ) . '</i><ol>' . implode(
                         "",
-                        array_map(function ($step) {
+                        array_map(static function ($step) {
                             return '<li>' . htmlspecialchars(
                                 self::plugin()->translate("config_ppt_link_info_manual_" . $step)
                             ) . '</li>';
@@ -361,13 +322,10 @@ class xlvoVotingGUI
         }
     }
 
-    /**
-     *
-     */
-    protected function confirmDelete()
+    protected function confirmDelete(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            ilUtil::sendFailure(self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
             /**
@@ -375,17 +333,17 @@ class xlvoVotingGUI
              */
             $xlvoVoting = xlvoVoting::find($_GET[self::IDENTIFIER]);
 
-            if ($xlvoVoting->getObjId() == $this->getObjId()) {
-                ilUtil::sendQuestion($this->txt('delete_confirm'), true);
+            if ($xlvoVoting->getObjId() === $this->getObjId()) {
+                self::dic()->ui()->mainTemplate()->setOnScreenMessage('question', $this->txt('delete_confirm'), true);
                 $confirm = new ilConfirmationGUI();
-                $confirm->addItem(self::IDENTIFIER, $xlvoVoting->getId(), $xlvoVoting->getTitle());
+                $confirm->addItem(self::IDENTIFIER, (string) $xlvoVoting->getId(), $xlvoVoting->getTitle());
                 $confirm->setFormAction(self::dic()->ctrl()->getFormAction($this));
                 $confirm->setCancel($this->txt('cancel'), self::CMD_CANCEL);
                 $confirm->setConfirm($this->txt('delete'), self::CMD_DELETE);
 
                 self::dic()->ui()->mainTemplate()->setContent($confirm->getHTML());
             } else {
-                ilUtil::sendFailure(self::plugin()->translate('permission_denied_object'), true);
+                self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_object'), true);
                 self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
             }
         }
@@ -394,10 +352,10 @@ class xlvoVotingGUI
     /**
      *
      */
-    protected function delete()
+    protected function delete(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            ilUtil::sendFailure(self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
             /**
@@ -405,7 +363,7 @@ class xlvoVotingGUI
              */
             $xlvoVoting = xlvoVoting::find($_POST[self::IDENTIFIER]);
 
-            if ($xlvoVoting->getObjId() == $this->getObjId()) {
+            if ($xlvoVoting->getObjId() === $this->getObjId()) {
                 /**
                  * @var xlvoOption[] $options
                  */
@@ -423,7 +381,7 @@ class xlvoVotingGUI
                 $xlvoVoting->delete();
                 $this->cancel();
             } else {
-                ilUtil::sendFailure(self::plugin()->translate('delete_failed'), true);
+                self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('delete_failed'), true);
                 self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
             }
         }
@@ -432,7 +390,7 @@ class xlvoVotingGUI
     /**
      *
      */
-    protected function cancel()
+    protected function cancel(): void
     {
         self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
     }
@@ -440,10 +398,10 @@ class xlvoVotingGUI
     /**
      *
      */
-    protected function confirmReset()
+    protected function confirmReset(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            ilUtil::sendFailure(self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
             /**
@@ -451,17 +409,17 @@ class xlvoVotingGUI
              */
             $xlvoVoting = xlvoVoting::find($_GET[self::IDENTIFIER]);
 
-            if ($xlvoVoting->getObjId() == $this->getObjId()) {
-                ilUtil::sendQuestion($this->txt('confirm_reset'), true);
+            if ($xlvoVoting->getObjId() === $this->getObjId()) {
+                self::dic()->ui()->mainTemplate()->setOnScreenMessage('question', $this->txt('confirm_reset'), true);
                 $confirm = new ilConfirmationGUI();
-                $confirm->addItem(self::IDENTIFIER, $xlvoVoting->getId(), $xlvoVoting->getTitle());
+                $confirm->addItem(self::IDENTIFIER, (string) $xlvoVoting->getId(), $xlvoVoting->getTitle());
                 $confirm->setFormAction(self::dic()->ctrl()->getFormAction($this));
                 $confirm->setCancel($this->txt('cancel'), self::CMD_CANCEL);
                 $confirm->setConfirm($this->txt('reset'), self::CMD_RESET);
 
                 self::dic()->ui()->mainTemplate()->setContent($confirm->getHTML());
             } else {
-                ilUtil::sendFailure($this->txt('permission_denied_object'), true);
+                self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', $this->txt('permission_denied_object'), true);
                 self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
             }
         }
@@ -470,10 +428,10 @@ class xlvoVotingGUI
     /**
      *
      */
-    protected function reset()
+    protected function reset(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            ilUtil::sendFailure(self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
             /**
@@ -481,7 +439,7 @@ class xlvoVotingGUI
              */
             $xlvoVoting = xlvoVoting::find($_POST[self::IDENTIFIER]);
 
-            if ($xlvoVoting->getObjId() == $this->getObjId()) {
+            if ($xlvoVoting->getObjId() === $this->getObjId()) {
                 /**
                  * @var xlvoVote[] $votes
                  */
@@ -491,7 +449,7 @@ class xlvoVotingGUI
                 }
                 $this->cancel();
             } else {
-                ilUtil::sendFailure(self::plugin()->translate('reset_failed'), true);
+                self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('reset_failed'), true);
                 self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
             }
         }
@@ -500,13 +458,13 @@ class xlvoVotingGUI
     /**
      *
      */
-    protected function confirmResetAll()
+    protected function confirmResetAll(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            ilUtil::sendFailure(self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
-            ilUtil::sendQuestion($this->txt('confirm_reset_all'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage('question', $this->txt('confirm_reset_all'), true);
             $confirm = new ilConfirmationGUI();
             /**
              * @var xlvoVoting[] $votings
@@ -516,7 +474,7 @@ class xlvoVotingGUI
             foreach ($votings as $voting) {
                 $num_votes += xlvoVote::where(array('voting_id' => $voting->getId()))->count();
             }
-            $confirm->addItem(self::IDENTIFIER, 0, $this->txt('confirm_number_of_votes') . " " . $num_votes);
+            $confirm->addItem(self::IDENTIFIER, '0', $this->txt('confirm_number_of_votes') . " " . $num_votes);
             $confirm->setFormAction(self::dic()->ctrl()->getFormAction($this));
             $confirm->setCancel($this->txt('cancel'), self::CMD_CANCEL);
             $confirm->setConfirm($this->txt('reset_all'), self::CMD_RESET_ALL);
@@ -528,10 +486,10 @@ class xlvoVotingGUI
     /**
      *
      */
-    protected function resetAll()
+    protected function resetAll(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            ilUtil::sendFailure(self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
             /**
@@ -555,21 +513,21 @@ class xlvoVotingGUI
     /**
      *
      */
-    protected function duplicate()
+    protected function duplicate(): void
     {
         /**
          * @var xlvoVoting $xlvoVoting
          */
         $xlvoVoting = xlvoVoting::find($_GET[self::IDENTIFIER]);
         $xlvoVoting->fullClone(true, true);
-        ilUtil::sendSuccess(self::plugin()->translate('voting_msg_duplicated'), true);
+        self::dic()->ui()->mainTemplate()->setOnScreenMessage('success', self::plugin()->translate('voting_msg_duplicated'), true);
         $this->cancel();
     }
 
     /**
      *
      */
-    protected function duplicateToAnotherObjectSelect()
+    protected function duplicateToAnotherObjectSelect(): void
     {
         $form = $this->getDuplicateToAnotherObjectSelectForm();
 
@@ -579,19 +537,17 @@ class xlvoVotingGUI
     /**
      * @return DuplicateToAnotherObjectSelectFormGUI
      */
-    public function getDuplicateToAnotherObjectSelectForm()
+    public function getDuplicateToAnotherObjectSelectForm(): DuplicateToAnotherObjectSelectFormGUI
     {
         self::dic()->ctrl()->setParameter($this, self::IDENTIFIER, $_GET[self::IDENTIFIER]);
 
-        $form = new DuplicateToAnotherObjectSelectFormGUI($this);
-
-        return $form;
+        return new DuplicateToAnotherObjectSelectFormGUI($this);
     }
 
     /**
      *
      */
-    protected function handleExplorerCommand()
+    protected function handleExplorerCommand(): void
     {
         $form = $this->getDuplicateToAnotherObjectSelectForm();
 
@@ -601,7 +557,7 @@ class xlvoVotingGUI
     /**
      *
      */
-    protected function duplicateToAnotherObject()
+    protected function duplicateToAnotherObject(): void
     {
         $form = $this->getDuplicateToAnotherObjectSelectForm();
 
@@ -618,17 +574,17 @@ class xlvoVotingGUI
          */
         $xlvoVoting = xlvoVoting::find($_GET[self::IDENTIFIER]);
         $xlvoVoting->fullClone(true, true, $obj_id);
-        ilUtil::sendSuccess(self::plugin()->translate('voting_msg_duplicated'), true);
+        self::dic()->ui()->mainTemplate()->setOnScreenMessage('success', self::plugin()->translate('voting_msg_duplicated'), true);
         $this->cancel();
     }
 
     /**
      *
      */
-    protected function saveSorting()
+    protected function saveSorting(): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            ilUtil::sendFailure(self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
         } else {
             if (is_array($_POST['position'])) {
                 foreach ($_POST['position'] as $k => $v) {
@@ -640,7 +596,7 @@ class xlvoVotingGUI
                     $xlvoVoting->store();
                 }
             }
-            ilUtil::sendSuccess(self::plugin()->translate('voting_msg_sorting_saved'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage('success', self::plugin()->translate('voting_msg_sorting_saved'), true);
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         }
     }
@@ -648,7 +604,7 @@ class xlvoVotingGUI
     /**
      *
      */
-    protected function applyFilter()
+    protected function applyFilter(): void
     {
         $xlvoVotingGUI = new xlvoVotingTableGUI($this, self::CMD_STANDARD);
         $xlvoVotingGUI->writeFilterToSession();
@@ -658,7 +614,7 @@ class xlvoVotingGUI
     /**
      *
      */
-    protected function resetFilter()
+    protected function resetFilter(): void
     {
         $xlvoVotingTableGUI = new xlvoVotingTableGUI($this, self::CMD_STANDARD);
         $xlvoVotingTableGUI->resetFilter();
@@ -669,7 +625,7 @@ class xlvoVotingGUI
     /**
      *
      */
-    protected function export()
+    protected function export(): void
     {
         $domxml = new DOMDocument('1.0', 'UTF-8');
         $domxml->preserveWhiteSpace = false;
@@ -702,36 +658,36 @@ class xlvoVotingGUI
                 new DOMCdataSection($xlvoVoting->getVotingType())
             );
             $xml_voting->appendChild(new DOMElement('multi_selection'))->appendChild(
-                new DOMCdataSection($xlvoVoting->isMultiSelection())
+                new DOMCdataSection((string) $xlvoVoting->isMultiSelection())
             );
             $xml_voting->appendChild(new DOMElement('colors'))->appendChild(
-                new DOMCdataSection($xlvoVoting->isColors())
+                new DOMCdataSection((string) $xlvoVoting->isColors())
             );
             $xml_voting->appendChild(new DOMElement('multi_free_input'))->appendChild(
-                new DOMCdataSection($xlvoVoting->isMultiFreeInput())
+                new DOMCdataSection((string) $xlvoVoting->isMultiFreeInput())
             );
             $xml_voting->appendChild(new DOMElement('voting_status'))->appendChild(
-                new DOMCdataSection($xlvoVoting->getVotingStatus())
+                new DOMCdataSection((string) $xlvoVoting->getVotingStatus())
             );
             $xml_voting->appendChild(new DOMElement('position'))->appendChild(
-                new DOMCdataSection($xlvoVoting->getPosition())
+                new DOMCdataSection((string) $xlvoVoting->getPosition())
             );
             $xml_voting->appendChild(new DOMElement('columns'))->appendChild(
-                new DOMCdataSection($xlvoVoting->getColumns())
+                new DOMCdataSection((string) $xlvoVoting->getColumns())
             );
             $xml_voting->appendChild(new DOMElement('percentage'))->appendChild(
-                new DOMCdataSection($xlvoVoting->getPercentage())
+                new DOMCdataSection((string) $xlvoVoting->getPercentage())
             );
             $xml_voting->appendChild(new DOMElement('start_range'))->appendChild(
-                new DOMCdataSection($xlvoVoting->getStartRange())
+                new DOMCdataSection((string) $xlvoVoting->getStartRange())
             );
             $xml_voting->appendChild(new DOMElement('end_range'))->appendChild(
-                new DOMCdataSection($xlvoVoting->getEndRange())
+                new DOMCdataSection((string) $xlvoVoting->getEndRange())
             );
             $xml_voting->appendChild(new DOMElement('alt_result_display_mode'))
-                       ->appendChild(new DOMCdataSection($xlvoVoting->getAltResultDisplayMode()));
+                       ->appendChild(new DOMCdataSection((string) $xlvoVoting->getAltResultDisplayMode()));
             $xml_voting->appendChild(new DOMElement('randomise_option_sequence'))
-                       ->appendChild(new DOMCdataSection($xlvoVoting->getRandomiseOptionSequence()));
+                       ->appendChild(new DOMCdataSection((string) $xlvoVoting->getRandomiseOptionSequence()));
 
             $xml_options = $xml_voting->appendChild(new DOMElement('options'));
             foreach ($xlvoVoting->getVotingOptions() as $xlvoOption) {
@@ -740,10 +696,10 @@ class xlvoVotingGUI
                     new DOMCdataSection($xlvoOption->getText())
                 );
                 $xml_option->appendChild(new DOMElement('type'))->appendChild(
-                    new DOMCdataSection($xlvoOption->getType())
+                    new DOMCdataSection((string) $xlvoOption->getType())
                 );
                 $xml_option->appendChild(new DOMElement('status'))->appendChild(
-                    new DOMCdataSection($xlvoOption->getStatus())
+                    new DOMCdataSection((string) $xlvoOption->getStatus())
                 );
                 $xml_option->appendChild(new DOMElement('position'))->appendChild(
                     new DOMCdataSection($xlvoOption->getPosition())
@@ -756,14 +712,14 @@ class xlvoVotingGUI
 
         file_put_contents('/tmp/votings.xml', $domxml->saveXML());
         ob_end_clean();
-        ilUtil::deliverFile('/tmp/votings.xml', 'votings.xml');
+        ilFileDelivery::deliverFileLegacy('/tmp/votings.xml', 'votings.xml');
         unlink('/tmp/votings.xml');
     }
 
     /**
      *
      */
-    protected function import()
+    protected function import(): void
     {
         $domxml = new DOMDocument('1.0', 'UTF-8');
         $domxml->loadXML(file_get_contents($_FILES['xlvo_import']['tmp_name']));
@@ -800,7 +756,7 @@ class xlvoVotingGUI
             $xlvoVoting->setMultiFreeInput($multi_free_input);
             $xlvoVoting->setVotingStatus($voting_status);
             $xlvoVoting->setPosition($position);
-            $xlvoVoting->setColumns($columns ? $columns : 2);
+            $xlvoVoting->setColumns($columns ?: 2);
             $xlvoVoting->setPercentage($percentage);
             $xlvoVoting->setStartRange($start_range);
             $xlvoVoting->setEndRange($end_range);
@@ -841,7 +797,7 @@ class xlvoVotingGUI
     /**
      *
      */
-    protected function powerPointExport()
+    protected function powerPointExport(): void
     {
         $powerPointExport = new PowerPointExport($this->obj);
         $powerPointExport->run();
@@ -850,7 +806,7 @@ class xlvoVotingGUI
     /**
      *
      */
-    public function executeCommand()
+    public function executeCommand(): void
     {
         $nextClass = self::dic()->ctrl()->getNextClass();
         switch ($nextClass) {
@@ -864,7 +820,7 @@ class xlvoVotingGUI
     /**
      *
      */
-    public function updateAndStay()
+    public function updateAndStay(): void
     {
         self::dic()->ctrl()->setParameter($this, self::IDENTIFIER, filter_input(INPUT_GET, self::IDENTIFIER));
         $this->update(self::CMD_EDIT);
@@ -873,10 +829,10 @@ class xlvoVotingGUI
     /**
      * @param string $cmd
      */
-    protected function update($cmd = self::CMD_STANDARD)
+    protected function update($cmd = self::CMD_STANDARD): void
     {
         if (!ilObjLiveVotingAccess::hasWriteAccess()) {
-            ilUtil::sendFailure(self::plugin()->translate('permission_denied_write'), true);
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', self::plugin()->translate('permission_denied_write'), true);
             self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
         } else {
             $xlvoVoting = xlvoVoting::find($_GET[self::IDENTIFIER]);
@@ -884,7 +840,7 @@ class xlvoVotingGUI
             $xlvoVotingFormGUI = xlvoVotingFormGUI::get($this, $xlvoVoting);
             $xlvoVotingFormGUI->setValuesByPost();
             if ($xlvoVotingFormGUI->saveObject()) {
-                ilUtil::sendSuccess(self::plugin()->translate('msg_success_voting_updated'), true);
+                self::dic()->ui()->mainTemplate()->setOnScreenMessage('success', self::plugin()->translate('msg_success_voting_updated'), true);
                 self::dic()->ctrl()->redirect($this, $cmd);
             }
             self::dic()->ui()->mainTemplate()->setContent($xlvoVotingFormGUI->getHTML());

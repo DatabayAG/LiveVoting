@@ -317,7 +317,7 @@ class xlvoVoting extends CachingActiveRecord
     /**
      * @return int
      */
-    public function getObjId()
+    public function getObjId(): int
     {
         return $this->obj_id;
     }
@@ -586,7 +586,7 @@ class xlvoVoting extends CachingActiveRecord
     /**
      * @return int
      */
-    public function getPercentage()
+    public function getPercentage(): int
     {
         return $this->percentage;
     }
@@ -606,7 +606,7 @@ class xlvoVoting extends CachingActiveRecord
     /**
      * @return int
      */
-    public function getStartRange()
+    public function getStartRange(): int
     {
         return $this->start_range;
     }
@@ -626,7 +626,7 @@ class xlvoVoting extends CachingActiveRecord
     /**
      * @return int
      */
-    public function getEndRange()
+    public function getEndRange(): int
     {
         return $this->end_range;
     }
@@ -646,7 +646,7 @@ class xlvoVoting extends CachingActiveRecord
     /**
      * @return int
      */
-    public function getStepRange()
+    public function getStepRange(): int
     {
         return $this->step_range;
     }
@@ -765,7 +765,7 @@ class xlvoVoting extends CachingActiveRecord
     /**
      * @return int
      */
-    public function getAnswerField()
+    public function getAnswerField(): int
     {
         return $this->answer_field;
     }

@@ -23,7 +23,7 @@ class xlvoSingleVoteGUI extends xlvoQuestionTypesGUI
     /**
      *
      */
-    protected function submit()
+    protected function submit(): void
     {
         $this->manager->vote($_GET['option_id']);
     }
@@ -31,7 +31,7 @@ class xlvoSingleVoteGUI extends xlvoQuestionTypesGUI
     /**
      * @param bool $current
      */
-    public function initJS($current = false)
+    public function initJS(bool $current = false): void
     {
         xlvoJs::getInstance()->api($this)->name(xlvoQuestionTypes::SINGLE_VOTE)->category('QuestionTypes')
               ->addLibToHeader('jquery.ui.touch-punch.min.js')->init();
@@ -40,7 +40,7 @@ class xlvoSingleVoteGUI extends xlvoQuestionTypesGUI
     /**
      * @return array
      */
-    public function getButtonInstances()
+    public function getButtonInstances(): array
     {
         if (!$this->manager->getPlayer()->isShowResults()) {
             return array();
@@ -61,7 +61,7 @@ class xlvoSingleVoteGUI extends xlvoQuestionTypesGUI
      * @param $button_id
      * @param $data
      */
-    public function handleButtonCall($button_id, $data)
+    public function handleButtonCall($button_id, $data): void
     {
         $states = $this->getButtonsStates();
         $this->saveButtonState($button_id, !$states[$button_id]);
@@ -70,7 +70,7 @@ class xlvoSingleVoteGUI extends xlvoQuestionTypesGUI
     /**
      * @return string
      */
-    public function getMobileHTML()
+    public function getMobileHTML(): string
     {
         $tpl = self::plugin()->template('default/QuestionTypes/SingleVote/tpl.single_vote.html', false);
         $answer_count = 64;

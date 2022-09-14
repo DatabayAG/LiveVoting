@@ -2,28 +2,6 @@
 
 declare(strict_types=1);
 
-/*
-    +-----------------------------------------------------------------------------+
-    | ILIAS open source                                                           |
-    +-----------------------------------------------------------------------------+
-    | Copyright (c) 1998-2009 ILIAS open source, University of Cologne            |
-    |                                                                             |
-    | This program is free software; you can redistribute it and/or               |
-    | modify it under the terms of the GNU General Public License                 |
-    | as published by the Free Software Foundation; either version 2              |
-    | of the License, or (at your option) any later version.                      |
-    |                                                                             |
-    | This program is distributed in the hope that it will be useful,             |
-    | but WITHOUT ANY WARRANTY; without even the implied warranty of              |
-    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               |
-    | GNU General Public License for more details.                                |
-    |                                                                             |
-    | You should have received a copy of the GNU General Public License           |
-    | along with this program; if not, write to the Free Software                 |
-    | Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. |
-    +-----------------------------------------------------------------------------+
-*/
-
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use LiveVoting\Option\xlvoOption;
@@ -37,13 +15,9 @@ use LiveVoting\Voting\xlvoVotingConfig;
 use srag\DIC\LiveVoting\DICTrait;
 
 /**
- * Class ilObjLiveVoting
- *
  * @author  Oskar Truffer <ot@studer-raimann.ch>
  * @author  Fabian Schmid <fs@studer-raimann.ch>
  * @author  Daniel Aemmer <daniel.aemmer@phbern.ch>
- *
- * @version $Id$
  */
 class ilObjLiveVoting extends ilObjectPlugin
 {
@@ -52,11 +26,7 @@ class ilObjLiveVoting extends ilObjectPlugin
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
-    /**
-     * @param int        $a_ref_id
-     * @param bool|false $by_oid
-     */
-    public function __construct($a_ref_id = 0, $by_oid = false)
+    public function __construct(int $a_ref_id = 0, bool $by_oid = false)
     {
         parent::__construct($a_ref_id);
         /*if ($a_ref_id != 0) {
@@ -65,9 +35,6 @@ class ilObjLiveVoting extends ilObjectPlugin
         }*/
     }
 
-    /**
-     * Create object
-     */
     protected function doCreate($clone_mode = false): void
     {
         $xlvoPin = new xlvoPin();
@@ -79,29 +46,12 @@ class ilObjLiveVoting extends ilObjectPlugin
         $config->store();
     }
 
-    /**
-     * Get type.
-     */
-    final public function initType(): void
+    final protected function initType(): void
     {
         $this->setType(ilLiveVotingPlugin::PLUGIN_ID);
     }
 
-    /**
-     * Read data from db
-     */
-    public function doRead(): void
-    {
-    }
-
-    /**
-     * Update data
-     */
-    public function doUpdate(): void
-    {
-    }
-
-    public function doDelete(): void
+    protected function doDelete(): void
     {
         /**
          * @var xlvoPlayer[] $players
@@ -146,12 +96,7 @@ class ilObjLiveVoting extends ilObjectPlugin
         }
     }
 
-    /**
-     * @param                 $a_target_id
-     * @param                 $a_copy_id
-     * @param ilObjLiveVoting $new_obj
-     */
-    public function doCloneObject(ilObject2 $new_obj, int $a_target_id, int $a_copy_id = null): void
+    protected function doCloneObject(ilObject2 $new_obj, int $a_target_id, int $a_copy_id = null): void
     {
         /**
          * @var xlvoVotingConfig $config

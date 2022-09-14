@@ -32,15 +32,9 @@ class xlvoFreeInputGUI extends xlvoQuestionTypesGUI
     public const F_VOTE_ID = 'vote_id';
 
     public const BUTTON_CATEGORIZE = 'btn_categorize';
-    /**
-     * @var ilTemplate
-     */
-    protected $tpl;
+    protected ilGlobalTemplateInterface $tpl;
 
-    /**
-     *
-     */
-    protected function submit()
+    protected function submit(): void
     {
         $input_gui = $this->getTextInputGUI("", self::F_FREE_INPUT);
 
@@ -83,7 +77,7 @@ class xlvoFreeInputGUI extends xlvoQuestionTypesGUI
      */
     protected function getTextInputGUI($a_title = "", $a_postvar = "")
     {
-        switch (intval($this->manager->getVoting()->getAnswerField())) {
+        switch ($this->manager->getVoting()->getAnswerField()) {
             case xlvoFreeInputSubFormGUI::ANSWER_FIELD_MULTI_LINE:
                 $input_gui = new TextAreaInputGUI($a_title, $a_postvar);
                 $input_gui->setMaxlength(1000);
@@ -111,16 +105,13 @@ class xlvoFreeInputGUI extends xlvoQuestionTypesGUI
     /**
      * @param bool $current
      */
-    public function initJS($current = false)
+    public function initJS(bool $current = false): void
     {
         MultiLineNewInputGUI::init();
         xlvoJs::getInstance()->api($this)->name(xlvoQuestionTypes::FREE_INPUT)->category('QuestionTypes')->init();
     }
 
-    /**
-     * @return string
-     */
-    public function getMobileHTML()
+    public function getMobileHTML(): string
     {
         $this->tpl = self::plugin()->template('default/QuestionTypes/FreeInput/tpl.free_input.html');
         $this->render();
@@ -133,7 +124,7 @@ class xlvoFreeInputGUI extends xlvoQuestionTypesGUI
     /**
      *
      */
-    protected function render()
+    protected function render(): void
     {
         $form = $this->getForm();
 
@@ -143,19 +134,19 @@ class xlvoFreeInputGUI extends xlvoQuestionTypesGUI
     /**
      * @return ilPropertyFormGUI
      */
-    protected function getForm()
+    protected function getForm(): ?ilPropertyFormGUI
     {
         if ($this->manager->getVoting()->isMultiFreeInput()) {
             return $this->getMultiForm();
-        } else {
-            return $this->getSingleForm();
         }
+
+        return $this->getSingleForm();
     }
 
     /**
      * @return ilPropertyFormGUI
      */
-    protected function getMultiForm()
+    protected function getMultiForm(): ilPropertyFormGUI
     {
         $form = new ilPropertyFormGUI();
         $form->setFormAction(self::dic()->ctrl()->getFormAction($this));
@@ -193,7 +184,7 @@ class xlvoFreeInputGUI extends xlvoQuestionTypesGUI
     /**
      * @return ilPropertyFormGUI
      */
-    protected function getSingleForm()
+    protected function getSingleForm(): ilPropertyFormGUI
     {
         $form = new ilPropertyFormGUI();
         $form->setFormAction(self::dic()->ctrl()->getFormAction($this));
@@ -209,7 +200,7 @@ class xlvoFreeInputGUI extends xlvoQuestionTypesGUI
             if ($vote->isActive()) {
                 $an->setValue($vote->getFreeInput());
             }
-            $hi2->setValue($vote->getId());
+            $hi2->setValue((string) $vote->getId());
             //$form->addCommandButton(self::CMD_CLEAR, $this->txt(self::CMD_CLEAR));
         }
 
@@ -224,7 +215,7 @@ class xlvoFreeInputGUI extends xlvoQuestionTypesGUI
      * @return ilButtonBase[]
      * @throws \srag\DIC\LiveVoting\Exception\DICException
      */
-    public function getButtonInstances()
+    public function getButtonInstances() : array
     {
         if (!$this->manager->getPlayer()->isShowResults()) {
             return array();
@@ -234,7 +225,7 @@ class xlvoFreeInputGUI extends xlvoQuestionTypesGUI
         $b->setId(self::BUTTON_CATEGORIZE);
         $b->setUrl('#');
 
-        if ($this->getButtonsStates()[self::BUTTON_CATEGORIZE] == 'true') {
+        if ($this->getButtonsStates()[self::BUTTON_CATEGORIZE] === 'true') {
             $b->setCaption(
                 GlyphGUI::get('folder-close') . '&nbsp' . self::plugin()->translate('categorize_done', 'btn'),
                 false
@@ -253,7 +244,7 @@ class xlvoFreeInputGUI extends xlvoQuestionTypesGUI
      * @param $button_id
      * @param $data
      */
-    public function handleButtonCall($button_id, $data)
+    public function handleButtonCall($button_id, $data): void
     {
         $data = $this->getButtonsStates()[self::BUTTON_CATEGORIZE] == 'true' ? 'false' : 'true';
         $this->saveButtonState($button_id, $data);

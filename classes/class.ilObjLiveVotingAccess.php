@@ -2,28 +2,6 @@
 
 declare(strict_types=1);
 
-/*
-    +-----------------------------------------------------------------------------+
-    | ILIAS open source                                                           |
-    +-----------------------------------------------------------------------------+
-    | Copyright (c) 1998-2001 ILIAS open source, University of Cologne            |
-    |                                                                             |
-    | This program is free software; you can redistribute it and/or               |
-    | modify it under the terms of the GNU General Public License                 |
-    | as published by the Free Software Foundation; either version 2              |
-    | of the License, or (at your option) any later version.                      |
-    |                                                                             |
-    | This program is distributed in the hope that it will be useful,             |
-    | but WITHOUT ANY WARRANTY; without even the implied warranty of              |
-    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               |
-    | GNU General Public License for more details.                                |
-    |                                                                             |
-    | You should have received a copy of the GNU General Public License           |
-    | along with this program; if not, write to the Free Software                 |
-    | Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. |
-    +-----------------------------------------------------------------------------+
-*/
-
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use LiveVoting\Utils\LiveVotingTrait;
@@ -31,9 +9,6 @@ use LiveVoting\Voting\xlvoVotingConfig;
 use srag\DIC\LiveVoting\DICTrait;
 
 /**
- *
- * Class ilObjLiveVotingAccess
- *
  * Access/Condition checking for LiveVoting object
  *
  * Please do not create instances of large application classes (like ilObjExample)
@@ -57,7 +32,7 @@ class ilObjLiveVotingAccess extends ilObjectPluginAccess
      *
      * @return bool
      */
-    public static function hasReadAccessForObject($obj_id, $user_id)
+    public static function hasReadAccessForObject($obj_id, $user_id): bool
     {
         $refs = ilObject2::_getAllReferences($obj_id);
         foreach ($refs as $ref_id) {
@@ -70,13 +45,7 @@ class ilObjLiveVotingAccess extends ilObjectPluginAccess
         return false;
     }
 
-    /**
-     * @param null $ref_id
-     * @param null $user_id
-     *
-     * @return bool
-     */
-    public static function hasReadAccess($ref_id = null, $user_id = null)
+    public static function hasReadAccess(int $ref_id = null, int $user_id = null): bool
     {
         return self::hasAccess('read', $ref_id, $user_id);
     }
@@ -88,10 +57,10 @@ class ilObjLiveVotingAccess extends ilObjectPluginAccess
      *
      * @return bool
      */
-    protected static function hasAccess($permission, $ref_id = null, $user_id = null)
+    protected static function hasAccess(string $permission, int $ref_id = null, int $user_id = null): bool
     {
-        $ref_id = $ref_id ? $ref_id : $_GET['ref_id'];
-        $user_id = $user_id ? $user_id : self::dic()->user()->getId();
+        $ref_id = $ref_id ?: (int) $_GET['ref_id'];
+        $user_id = $user_id ?: self::dic()->user()->getId();
         //		if (!$this->user_id) {
         //			try {
         //				throw new Exception();
@@ -110,13 +79,7 @@ class ilObjLiveVotingAccess extends ilObjectPluginAccess
         return self::dic()->access()->checkAccessOfUser($user_id, $permission, '', $ref_id);
     }
 
-    /**
-     * @param $obj_id
-     * @param $user_id
-     *
-     * @return bool
-     */
-    public static function hasWriteAccessForObject($obj_id, $user_id)
+    public static function hasWriteAccessForObject(int $obj_id, int $user_id): bool
     {
         $refs = ilObject2::_getAllReferences($obj_id);
 
@@ -130,35 +93,17 @@ class ilObjLiveVotingAccess extends ilObjectPluginAccess
         return false;
     }
 
-    /**
-     * @param null $ref_id
-     * @param null $user_id
-     *
-     * @return bool
-     */
-    public static function hasWriteAccess($ref_id = null, $user_id = null)
+    public static function hasWriteAccess(int $ref_id = null, int $user_id = null): bool
     {
         return self::hasAccess('write', $ref_id, $user_id);
     }
 
-    /**
-     * @param null $ref_id
-     * @param null $user_id
-     *
-     * @return bool
-     */
-    public static function hasDeleteAccess($ref_id = null, $user_id = null)
+    public static function hasDeleteAccess(int $ref_id = null, int $user_id = null): bool
     {
         return self::hasAccess('delete', $ref_id, $user_id);
     }
 
-    /**
-     * @param null $ref_id
-     * @param null $user_id
-     *
-     * @return bool
-     */
-    public static function hasCreateAccess($ref_id = null, $user_id = null)
+    public static function hasCreateAccess(int $ref_id = null, int $user_id = null): bool
     {
         return self::hasAccess('create_xlvo', $ref_id, $user_id);
     }
@@ -183,9 +128,9 @@ class ilObjLiveVotingAccess extends ilObjectPluginAccess
         string $a_permission,
         int $a_ref_id,
         int $a_obj_id,
-        $a_user_id = ""
+        int $a_user_id = null
     ): bool {
-        if ($a_user_id == "") {
+        if ($a_user_id === null) {
             $a_user_id = self::dic()->user()->getId();
         }
 
@@ -203,15 +148,12 @@ class ilObjLiveVotingAccess extends ilObjectPluginAccess
         return true;
     }
 
-    /**
-     * Check online status of example object
-     */
-    public static function checkOnline($a_id = null)
+    public static function checkOnline($a_id = null): bool
     {
         /**
          * @var xlvoVotingConfig $config
          */
-        $obj_id = $a_id ? $a_id : ilObject2::_lookupObjId($_GET['ref_id']);
+        $obj_id = $a_id ?: ilObject2::_lookupObjId($_GET['ref_id']);
         $config = xlvoVotingConfig::find($obj_id);
         if ($config instanceof xlvoVotingConfig) {
             return $config->isObjOnline();

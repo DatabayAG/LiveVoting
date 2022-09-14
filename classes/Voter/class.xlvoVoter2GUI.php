@@ -20,6 +20,7 @@ use LiveVoting\Voting\xlvoVotingConfig;
 use LiveVoting\Voting\xlvoVotingManager2;
 use LiveVoting\UIComponent\GlyphGUI;
 use srag\CustomInputGUIs\LiveVoting\TextInputGUI\TextInputGUI;
+use JetBrains\PhpStorm\NoReturn;
 
 /**
  * Class xlvoVoter2GUI
@@ -47,7 +48,7 @@ class xlvoVoter2GUI extends xlvoGUI
     /**
      * @throws Exception
      */
-    protected function checkPin()
+    protected function checkPin(): void
     {
         $param_manager = ParamManager::getInstance();
 
@@ -62,26 +63,18 @@ class xlvoVoter2GUI extends xlvoGUI
         } catch (xlvoVoterException $e) {
             $param_manager->setPin('');
 
-            ilUtil::sendFailure($this->txt('msg_validation_error_pin_' . $e->getCode()));
+            self::dic()->ui()->mainTemplate()->setOnScreenMessage('failure', $this->txt('msg_validation_error_pin_' . $e->getCode()));
 
             $this->index();
         }
     }
 
-    /**
-     * @param string $key
-     *
-     * @return string
-     */
-    protected function txt($key)
+    protected function txt(string $key): string
     {
         return self::plugin()->translate($key, 'voter');
     }
 
-    /**
-     *
-     */
-    protected function index()
+    protected function index(): void
     {
         if ($this->manager->getObjId() > 0) {
             self::dic()->ctrl()->redirect($this, self::CMD_START_VOTER_PLAYER);
@@ -112,7 +105,7 @@ class xlvoVoter2GUI extends xlvoGUI
     /**
      * @throws ilException
      */
-    protected function startVoterPlayer()
+    protected function startVoterPlayer(): void
     {
         try {
             xlvoPin::checkPinAndGetObjId($this->pin);
@@ -133,7 +126,7 @@ class xlvoVoter2GUI extends xlvoGUI
     /**
      * @throws ilException
      */
-    protected function initJsAndCss()
+    protected function initJsAndCss(): void
     {
         self::dic()->ui()->mainTemplate()->addCss(self::plugin()->directory() . '/templates/default/Voter/voter.css');
         self::dic()->ui()->mainTemplate()->addCss(
@@ -174,15 +167,12 @@ class xlvoVoter2GUI extends xlvoGUI
               ->setRunCode();
         foreach (xlvoQuestionTypes::getActiveTypes() as $type) {
             xlvoQuestionTypesGUI::getInstance($this->manager, $type)->initJS(
-                $type == $this->manager->getVoting()->getVotingType()
+                $type === $this->manager->getVoting()->getVotingType()
             );
         }
     }
 
-    /**
-     *
-     */
-    protected function getVotingData()
+    protected function getVotingData(): void
     {
         /**
          * @var xlvoVotingConfig $showAttendees
@@ -199,7 +189,7 @@ class xlvoVoter2GUI extends xlvoGUI
      * @throws xlvoVotingManagerException
      * @throws ilException
      */
-    protected function getHTML()
+    protected function getHTML(): void
     {
         $tpl = self::plugin()->template('default/Voter/tpl.inner_screen.html');
 
@@ -265,7 +255,7 @@ class xlvoVoter2GUI extends xlvoGUI
      * @throws ilCtrlException
      * @throws xlvoVotingManagerException
      */
-    public function executeCommand()
+    public function executeCommand(): void
     {
         $param_manager = ParamManager::getInstance();
 
@@ -275,8 +265,8 @@ class xlvoVoter2GUI extends xlvoGUI
         switch ($nextClass) {
             case '':
                 if (!$this->manager->getVotingConfig()->isAnonymous()
-                    && (is_null(self::dic()->user()) || self::dic()->user()->getId() == 13
-                        || self::dic()->user()->getId() == 0)
+                    && (is_null(self::dic()->user()) || self::dic()->user()->getId() === 13
+                        || self::dic()->user()->getId() === 0)
                 ) {
                     //remove plugin path to get "real" web root otherwise we break installations with context paths -> http://demo.ilias.ch/test/goto.php
                     $plugin_path = substr(self::plugin()->directory(), 2); // Remove ./

@@ -17,56 +17,33 @@ use LiveVoting\UIComponent\GlyphGUI;
  */
 class xlvoFreeOrderGUI extends xlvoCorrectOrderGUI
 {
-    /**
-     * xlvoFreeOrderGUI constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
-     * @return bool
-     */
-    protected function isRandomizeOptions()
+    protected function isRandomizeOptions(): bool
     {
         return false;
     }
 
-    /**
-     * @return bool
-     */
-    protected function isShowCorrectOrder()
+    protected function isShowCorrectOrder(): bool
     {
         return false;
     }
 
-    /**
-     * @return string
-     */
-    public function getMobileHTML()
+    public function getMobileHTML(): string
     {
         return $this->getFormContent() . xlvoJs::getInstance()->name(xlvoQuestionTypes::FREE_ORDER)->category(
             'QuestionTypes'
         )->getRunCode();
     }
 
-    /**
-     * @param bool $current
-     */
-    public function initJS($current = false)
+    public function initJS(bool $current = false): void
     {
         xlvoJs::getInstance()->api($this)->name(xlvoQuestionTypes::FREE_ORDER)->category('QuestionTypes')
               ->addLibToHeader('jquery.ui.touch-punch.min.js')->init();
     }
 
-    /**
-     * @return array
-     */
-    public function getButtonInstances()
+    public function getButtonInstances(): array
     {
         if (!$this->manager->getPlayer()->isShowResults()) {
-            return array();
+            return [];
         }
         $states = $this->getButtonsStates();
         $b = ilLinkButton::getInstance();
@@ -85,6 +62,6 @@ class xlvoFreeOrderGUI extends xlvoCorrectOrderGUI
         //			$t->setCaption(GlyphGUI::get('user'), false);
         //		}
 
-        return array($b);
+        return [$b];
     }
 }

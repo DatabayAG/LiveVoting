@@ -11,10 +11,7 @@ use LiveVoting\Vote\xlvoVote;
 use LiveVoting\Voting\xlvoVotingManager2;
 
 /**
- * Class xlvoNumberRange
- *
  * @author            Nicolas Schäfli <ns@studer-raimann.ch>
- *
  * @ilCtrl_IsCalledBy xlvoNumberRangeGUI: xlvoVoter2GUI
  */
 class xlvoNumberRangeGUI extends xlvoQuestionTypesGUI
@@ -24,16 +21,13 @@ class xlvoNumberRangeGUI extends xlvoQuestionTypesGUI
     public const CLEAR_BUTTON = 'voter_clear';
     public const SAVE_BUTTON_UNVOTE = 'voter_start_button_unvote';
 
-    protected function clear()
+    protected function clear(): void
     {
         $this->manager->unvoteAll();
         $this->afterSubmit();
     }
 
-    /**
-     *
-     */
-    protected function submit()
+    protected function submit(): void
     {
         if ($this->manager === null) {
             throw new ilException('The NumberRange question got no voting manager! Please set one via setManager.');
@@ -60,56 +54,34 @@ class xlvoNumberRangeGUI extends xlvoQuestionTypesGUI
                     'input' => $filteredInput,
                     'vote_id' => '-1',
                 ]);
-
-                return;
             }
         }
     }
 
-    /**
-     * @param int $start
-     * @param int $step
-     * @param float $value
-     *
-     * @return bool
-     */
-    private function isVoteValid($start, $end, $value)
+    private function isVoteValid(int $start, int $end, float $value): bool
     {
-        return ($value >= $start && $value <= $end && $value === $this->snapToStep($value));
+        return ($value >= $start && $value <= $end && (int) $value === $this->snapToStep($value));
+    }
+
+    private function snapToStep(float $value): int
+    {
+        return (int) (ceil(($value - $this->getStart()) / $this->getStep()) * $this->getStep()) + $this->getStart();
+    }
+
+    private function getStart(): int
+    {
+        return $this->manager->getVoting()->getStartRange();
+    }
+
+    private function getEnd(): int
+    {
+        return $this->manager->getVoting()->getEndRange();
     }
 
     /**
-     * @param float $value
-     *
-     * @return int
-     */
-    private function snapToStep($value)
-    {
-        return intval(ceil(($value - $this->getStart()) / $this->getStep()) * $this->getStep()) + $this->getStart();
-    }
-
-    /**
-     * @return int
-     */
-    private function getStart()
-    {
-        return (int) $this->manager->getVoting()->getStartRange();
-    }
-
-    /**
-     * @return int
-     */
-    private function getEnd()
-    {
-        return (int) $this->manager->getVoting()->getEndRange();
-    }
-
-    /**
-     * @param xlvoVotingManager2 $manager
-     *
      * @throws ilException
      */
-    public function setManager($manager)
+    public function setManager(xlvoVotingManager2 $manager): void
     {
         if ($manager === null) {
             throw new ilException('The manager must not be null.');
@@ -118,10 +90,7 @@ class xlvoNumberRangeGUI extends xlvoQuestionTypesGUI
         parent::setManager($manager);
     }
 
-    /**
-     * @param bool $current
-     */
-    public function initJS($current = false)
+    public function initJS(bool $current = false): void
     {
         xlvoJs::getInstance()->api($this)->name(xlvoQuestionTypes::NUMBER_RANGE)->category(
             'QuestionTypes'
@@ -131,22 +100,16 @@ class xlvoNumberRangeGUI extends xlvoQuestionTypesGUI
               ])->init();
     }
 
-    /**
-     * @return int
-     */
-    private function getStep()
+    private function getStep(): int
     {
-        return (int) $this->manager->getVoting()->getStepRange();
+        return $this->manager->getVoting()->getStepRange();
     }
 
-    /**
-     * @return string
-     */
-    public function getMobileHTML()
+    public function getMobileHTML(): string
     {
         $template = self::plugin()->template('default/QuestionTypes/NumberRange/tpl.number_range.html');
         $template->setVariable('ACTION', self::dic()->ctrl()->getFormAction($this));
-        $template->setVariable('SHOW_PERCENTAGE', (int) $this->manager->getVoting()->getPercentage());
+        $template->setVariable('SHOW_PERCENTAGE', $this->manager->getVoting()->getPercentage());
 
         /**
          * @var xlvoVote[] $userVotes
@@ -177,10 +140,7 @@ class xlvoNumberRangeGUI extends xlvoQuestionTypesGUI
         )->getRunCode();
     }
 
-    /**
-     * @return int
-     */
-    private function getDefaultValue()
+    private function getDefaultValue(): int
     {
         return $this->snapToStep(($this->getStart() + $this->getEnd()) / 2);
     }

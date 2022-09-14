@@ -21,8 +21,6 @@ use LiveVoting\Voting\xlvoVotingConfig;
 use srag\RemovePluginDataConfirm\LiveVoting\RepositoryObjectPluginUninstallTrait;
 
 /**
- * LiveVoting repository object plugin
- *
  * @author  Fabian Schmid <fs@studer-raimann.ch>
  * @version $Id$
  *
@@ -36,23 +34,9 @@ class ilLiveVotingPlugin extends ilRepositoryObjectPlugin
     public const PLUGIN_NAME = 'LiveVoting';
     public const PLUGIN_CLASS_NAME = self::class;
     public const REMOVE_PLUGIN_DATA_CONFIRM_CLASS_NAME = LiveVotingRemoveDataConfirm::class;
-    /**
-     * @var ilLiveVotingPlugin
-     */
-    protected static $instance;
+    protected static self $instance;
 
-    /**
-     *
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
-     * @return ilLiveVotingPlugin
-     */
-    public static function getInstance()
+    public static function getInstance(): self
     {
         if (!isset(self::$instance)) {
             self::$instance = new self();
@@ -61,9 +45,6 @@ class ilLiveVotingPlugin extends ilRepositoryObjectPlugin
         return self::$instance;
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function deleteData(): void
     {
         self::dic()->database()->dropTable(xlvoConfOld::TABLE_NAME, false);
@@ -86,17 +67,11 @@ class ilLiveVotingPlugin extends ilRepositoryObjectPlugin
         return false;
     }
 
-    /**
-     * @return string
-     */
     public function getPluginName(): string
     {
         return self::PLUGIN_NAME;
     }
 
-    /**
-     * @return bool
-     */
     public function allowCopy(): bool
     {
         return true;

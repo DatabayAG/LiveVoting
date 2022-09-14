@@ -62,9 +62,7 @@ class xlvoPlayerGUI extends xlvoGUI
     {
         parent::__construct();
         $param_manager = ParamManager::getInstance();
-
         $this->manager = xlvoVotingManager2::getInstanceFromObjId(ilObject2::_lookupObjId($param_manager->getRefId()));
-
         self::dic()->ui()->mainTemplate()->addCss(self::plugin()->directory() . '/templates/default/default.css');
     }
 
@@ -134,12 +132,7 @@ class xlvoPlayerGUI extends xlvoGUI
         return self::plugin()->translate($key, 'player');
     }
 
-    /**
-     * @param bool $async
-     *
-     * @return ilAdvancedSelectionListGUI
-     */
-    protected function getVotingSelectionList($async = true)
+    protected function getVotingSelectionList(bool $async = true): ilAdvancedSelectionListGUI
     {
         $current_selection_list = new ilAdvancedSelectionListGUI();
         $current_selection_list->setItemLinkClass('xlvo-preview');
@@ -153,7 +146,7 @@ class xlvoPlayerGUI extends xlvoGUI
         foreach ($this->manager->getAllVotings() as $voting) {
             $id = $voting->getId();
             $t = $voting->getTitle();
-            self::dic()->ctrl()->setParameterByClass(xlvoPlayerGUI::class, ParamManager::PARAM_VOTING, $id);
+            self::dic()->ctrl()->setParameterByClass(__CLASS__, ParamManager::PARAM_VOTING, $id);
 
             $target = self::dic()->ctrl()->getLinkTarget(new xlvoPlayerGUI(), self::CMD_START_PLAYER);
             if ($async) {
@@ -210,15 +203,15 @@ class xlvoPlayerGUI extends xlvoGUI
      * @throws ilException
      * @throws xlvoVotingManagerException
      */
-    protected function initJsAndCss()
+    protected function initJsAndCss(): void
     {
         $mathJaxSetting = new ilSetting("MathJax");
-        $settings = array(
+        $settings = [
             'status_running' => xlvoPlayer::STAT_RUNNING,
             'identifier' => self::IDENTIFIER,
             'use_mathjax' => (bool) $mathJaxSetting->get("enable"),
             'debug' => self::DEBUG
-        );
+        ];
 
         xlvoJs::getInstance()->initMathJax();
 
@@ -325,14 +318,14 @@ class xlvoPlayerGUI extends xlvoGUI
             $suspendButton = ilLinkButton::getInstance();
             $suspendButton->setDisabled(true);
             $suspendButton->setUrl(self::dic()->ctrl()->getLinkTarget($this, self::CMD_PREVIOUS));
-            $suspendButton->setCaption(GlyphGUI::get(GlyphGUI::PREVIOUS), false);
+            $suspendButton->setCaption(GlyphGUI::get(ilGlyphGUI::PREVIOUS), false);
             $suspendButton->setId('btn-previous');
             self::dic()->toolbar()->addButtonInstance($suspendButton);
 
             // NEXT
             $suspendButton = ilLinkButton::getInstance();
             $suspendButton->setDisabled(true);
-            $suspendButton->setCaption(GlyphGUI::get(GlyphGUI::NEXT), false);
+            $suspendButton->setCaption(GlyphGUI::get(ilGlyphGUI::NEXT), false);
             $suspendButton->setUrl(self::dic()->ctrl()->getLinkTarget($this, self::CMD_NEXT));
             $suspendButton->setId('btn-next');
             self::dic()->toolbar()->addButtonInstance($suspendButton);
@@ -351,7 +344,7 @@ class xlvoPlayerGUI extends xlvoGUI
         //
 
         // Fullscreen
-        if ($this->manager->getVotingConfig()->isFullScreen() && !$this->param_manager->isPpt()) {
+        if (!$this->param_manager->isPpt() && $this->manager->getVotingConfig()->isFullScreen()) {
             $suspendButton = ilLinkButton::getInstance();
             $suspendButton->setCaption(GlyphGUI::get('fullscreen'), false);
             $suspendButton->setUrl('#');
@@ -389,15 +382,12 @@ class xlvoPlayerGUI extends xlvoGUI
      *
      * @return void
      */
-    private function addStickyButtonToToolbar(ilButtonBase $button)
+    private function addStickyButtonToToolbar(ilButtonBase $button): void
     {
         self::dic()->toolbar()->addStickyItem($button);
     }
 
-    /**
-     * @param string $content
-     */
-    protected function setContent(string $content)/* : void*/
+    protected function setContent(string $content): void
     {
         if (self::dic()->ui()->mainTemplate()->blockExists("xlvo_player_content")) {
             self::dic()->ui()->mainTemplate()->setVariable(
@@ -414,17 +404,15 @@ class xlvoPlayerGUI extends xlvoGUI
      *
      * @return string
      */
-    protected function getPlayerHTML($inner = false): string
+    protected function getPlayerHTML(bool $inner = false): string
     {
-        $xlvoDisplayPlayerGUI = new xlvoDisplayPlayerGUI($this->manager);
-
-        return $xlvoDisplayPlayerGUI->getHTML($inner);
+        return (new xlvoDisplayPlayerGUI($this->manager))->getHTML($inner);
     }
 
     /**
      * @throws xlvoVotingManagerException
      */
-    protected function handlePreview()
+    protected function handlePreview(): void
     {
         if ($this->manager->getVotingConfig()->isSelfVote()) {
             $preview = self::plugin()->template('default/Player/tpl.preview.html', true, false);

@@ -152,7 +152,7 @@ abstract class xlvoQuestionTypesGUI extends xlvoGUI
     /**
      * @param bool $current
      */
-    abstract public function initJS($current = false);
+    abstract public function initJS(bool $current = false);
 
     /**
      * @return string
@@ -197,7 +197,7 @@ abstract class xlvoQuestionTypesGUI extends xlvoGUI
     /**
      * @param xlvoVotingManager2 $manager
      */
-    public function setManager($manager)
+    public function setManager(xlvoVotingManager2 $manager): void
     {
         $this->manager = $manager;
     }

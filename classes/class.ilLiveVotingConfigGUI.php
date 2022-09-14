@@ -8,8 +8,6 @@ use LiveVoting\Utils\LiveVotingTrait;
 use srag\DIC\LiveVoting\DICTrait;
 
 /**
- * ilLiveVotingConfigGUI
- *
  * @author             Fabian Schmid <fs@studer-raimann.ch>
  *
  * @ilCtrl_IsCalledBy  ilLiveVotingConfigGUI: ilObjComponentSettingsGUIs
@@ -45,19 +43,19 @@ class ilLiveVotingConfigGUI extends ilPluginConfigGUI
             self::dic()->tabs()->setBackTarget(
                 self::dic()->language()->txt("cmps_plugin"),
                 self::dic()->ctrl()
-                                                                 ->getLinkTargetByClass(
-                                                                     ilObjComponentSettingsGUI::class,
-                                                                     "showPlugin"
-                                                                 )
+                    ->getLinkTargetByClass(
+                        ilObjComponentSettingsGUI::class,
+                        "showPlugin"
+                    )
             );
         } else {
             self::dic()->tabs()->setBackTarget(
                 self::dic()->language()->txt("cmps_plugins"),
                 self::dic()->ctrl()
-                                                                  ->getLinkTargetByClass(
-                                                                      ilObjComponentSettingsGUI::class,
-                                                                      "listPlugins"
-                                                                  )
+                    ->getLinkTargetByClass(
+                        ilObjComponentSettingsGUI::class,
+                        "listPlugins"
+                    )
             );
         }
 

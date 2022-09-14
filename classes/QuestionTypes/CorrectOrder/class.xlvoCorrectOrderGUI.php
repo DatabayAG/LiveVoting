@@ -24,40 +24,28 @@ class xlvoCorrectOrderGUI extends xlvoQuestionTypesGUI
     public const BUTTON_TOTTLE_DISPLAY_CORRECT_ORDER = 'display_correct_order';
     public const BUTTON_TOGGLE_PERCENTAGE = 'toggle_percentage';
 
-    /**
-     *
-     */
-    protected function submit()
+    protected function submit(): void
     {
         $this->manager->inputOne(array(
-            "input" => json_encode($_POST['id']),
+            "input" => json_encode($_POST['id'], JSON_THROW_ON_ERROR),
             "vote_id" => $_POST['vote_id']
         ));
     }
 
-    /**
-     *
-     */
-    protected function clear()
+    protected function clear(): void
     {
         $this->manager->unvoteAll();
         $this->afterSubmit();
     }
 
-    /**
-     * @return string
-     */
-    public function getMobileHTML()
+    public function getMobileHTML(): string
     {
         return $this->getFormContent() . xlvoJs::getInstance()->name(xlvoQuestionTypes::CORRECT_ORDER)->category(
             'QuestionTypes'
         )->getRunCode();
     }
 
-    /**
-     * @return string
-     */
-    protected function getFormContent()
+    protected function getFormContent(): string
     {
         $tpl = self::plugin()->template('default/QuestionTypes/FreeOrder/tpl.free_order.html', true, false);
         $tpl->setVariable('ACTION', self::dic()->ctrl()->getFormAction($this));
@@ -70,7 +58,7 @@ class xlvoCorrectOrderGUI extends xlvoQuestionTypesGUI
         $order = array();
         $vote_id = null;
         if ($vote instanceof xlvoVote) {
-            $order = json_decode($vote->getFreeInput());
+            $order = json_decode($vote->getFreeInput(), false);
             $vote_id = $vote->getId();
         }
         if (!$vote_id) {
@@ -105,7 +93,7 @@ class xlvoCorrectOrderGUI extends xlvoQuestionTypesGUI
      *
      * @return bool
      */
-    protected function isRandomizeOptions()
+    protected function isRandomizeOptions(): bool
     {
         return false;
     }
@@ -118,7 +106,7 @@ class xlvoCorrectOrderGUI extends xlvoQuestionTypesGUI
      *
      * @return xlvoOption[] The randomized option array.
      */
-    private function randomizeWithoutCorrectSequence(array &$options)
+    private function randomizeWithoutCorrectSequence(array &$options): array
     {
         if (count($options) < 2) {
             return $options;
@@ -161,7 +149,7 @@ class xlvoCorrectOrderGUI extends xlvoQuestionTypesGUI
      *
      * @return array The newly shuffled array.
      */
-    private function shuffleArray(array &$array)
+    private function shuffleArray(array &$array): array
     {
         $clone = $this->cloneArray($array);
         $shuffledArray = [];
@@ -182,36 +170,33 @@ class xlvoCorrectOrderGUI extends xlvoQuestionTypesGUI
      *
      * @return array    The newly created shallow copy of the given array.
      */
-    private function cloneArray(array &$array)
+    private function cloneArray(array $array): array
     {
         $clone = [];
         foreach ($array as $key => $value) {
-            $clone[$key] = &$array[$key]; //get the ref on the array value not the foreach value.
+            $clone[$key] = &$value; //get the ref on the array value not the foreach value.
         }
 
         return $clone;
     }
 
-    /**
-     * @return mixed
-     */
-    protected function isShowCorrectOrder()
+    protected function isShowCorrectOrder(): bool
     {
         $states = $this->getButtonsStates();
 
-        return ((bool) $states[xlvoCorrectOrderGUI::BUTTON_TOTTLE_DISPLAY_CORRECT_ORDER] && $this->manager->getPlayer(
+        return ($states[self::BUTTON_TOTTLE_DISPLAY_CORRECT_ORDER] && $this->manager->getPlayer(
         )->isShowResults());
     }
 
     /**
      * @return xlvoOption[]
      */
-    protected function getCorrectOrder()
+    protected function getCorrectOrder(): array
     {
         $correct_order = array();
         foreach ($this->manager->getVoting()->getVotingOptions() as $xlvoOption) {
             $correct_order[(int) $xlvoOption->getCorrectPosition()] = $xlvoOption;
-        };
+        }
         ksort($correct_order);
 
         return $correct_order;
@@ -220,16 +205,13 @@ class xlvoCorrectOrderGUI extends xlvoQuestionTypesGUI
     /**
      * @param bool $current
      */
-    public function initJS($current = false)
+    public function initJS(bool $current = false): void
     {
         xlvoJs::getInstance()->api($this)->name(xlvoQuestionTypes::CORRECT_ORDER)->category('QuestionTypes')
               ->addLibToHeader('jquery.ui.touch-punch.min.js')->init();
     }
 
-    /**
-     * @return array
-     */
-    public function getButtonInstances()
+    public function getButtonInstances(): array
     {
         if (!$this->manager->getPlayer()->isShowResults()) {
             return array();
@@ -258,7 +240,7 @@ class xlvoCorrectOrderGUI extends xlvoQuestionTypesGUI
      * @param $button_id
      * @param $data
      */
-    public function handleButtonCall($button_id, $data)
+    public function handleButtonCall($button_id, $data): void
     {
         $states = $this->getButtonsStates();
         $this->saveButtonState($button_id, !$states[$button_id]);

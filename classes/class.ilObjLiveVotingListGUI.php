@@ -2,28 +2,6 @@
 
 declare(strict_types=1);
 
-/*
-    +-----------------------------------------------------------------------------+
-    | ILIAS open source                                                           |
-    +-----------------------------------------------------------------------------+
-    | Copyright (c) 1998-2009 ILIAS open source, University of Cologne            |
-    |                                                                             |
-    | This program is free software; you can redistribute it and/or               |
-    | modify it under the terms of the GNU General Public License                 |
-    | as published by the Free Software Foundation; either version 2              |
-    | of the License, or (at your option) any later version.                      |
-    |                                                                             |
-    | This program is distributed in the hope that it will be useful,             |
-    | but WITHOUT ANY WARRANTY; without even the implied warranty of              |
-    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               |
-    | GNU General Public License for more details.                                |
-    |                                                                             |
-    | You should have received a copy of the GNU General Public License           |
-    | along with this program; if not, write to the Free Software                 |
-    | Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. |
-    +-----------------------------------------------------------------------------+
-*/
-
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use LiveVoting\Pin\xlvoPin;
@@ -45,22 +23,14 @@ class ilObjLiveVotingListGUI extends ilObjectPluginListGUI
     use LiveVotingTrait;
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    /**
-     * @var array
-     */
-    protected array $commands = array();
+    private bool $payment_enabled;
+    protected array $commands = [];
 
-    /**
-     * Init type
-     */
-    public function initType()
+    public function initType(): void
     {
         $this->setType(ilLiveVotingPlugin::PLUGIN_ID);
     }
 
-    /**
-     * Get commands
-     */
     public function initCommands(): array
     {
         $this->static_link_enabled = true;
@@ -93,26 +63,18 @@ class ilObjLiveVotingListGUI extends ilObjectPluginListGUI
         return $this->commands;
     }
 
-    /**
-     * Get name of gui class handling the commands
-     */
     public function getGuiClass(): string
     {
         return ilObjLiveVotingGUI::class;
     }
 
-    /**
-     * @param string $a_cmd
-     *
-     * @return string
-     */
-    public function getCommandFrame(string $a_cmd): string
+    public function getCommandFrame(string $cmd): string
     {
-        if (!$this->checkCommandAccess("write", $a_cmd, $this->ref_id, $this->type)) {
+        if (!$this->checkCommandAccess("write", $cmd, $this->ref_id, $this->type)) {
             return '_blank';
         }
 
-        return parent::getCommandFrame($a_cmd);
+        return parent::getCommandFrame($cmd);
     }
 
     /**
@@ -125,20 +87,20 @@ class ilObjLiveVotingListGUI extends ilObjectPluginListGUI
      */
     public function getProperties(): array
     {
-        $props = array();
+        $props = [];
 
-        $props[] = array(
+        $props[] = [
             "alert" => false,
             "property" => $this->txt("voter_pin_input"),
             "value" => xlvoPin::formatPin(xlvoPin::lookupPin($this->obj_id)) // TODO: default.css not loaded
-        );
+        ];
 
         if (!ilObjLiveVotingAccess::checkOnline($this->obj_id)) {
-            $props[] = array(
+            $props[] = [
                 "alert" => true,
                 "property" => $this->txt("obj_status"),
                 "value" => $this->txt("obj_offline")
-            );
+            ];
         }
 
         return $props;

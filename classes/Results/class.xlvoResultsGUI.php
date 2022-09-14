@@ -56,7 +56,7 @@ class xlvoResultsGUI extends xlvoGUI
     /**
      *
      */
-    private function buildRound()
+    private function buildRound(): void
     {
         if ($_GET['round_id']) {
             $this->round = xlvoRound::find($_GET['round_id']);
@@ -68,7 +68,7 @@ class xlvoResultsGUI extends xlvoGUI
     /**
      *
      */
-    private function showResults()
+    private function showResults(): void
     {
         $this->buildToolbar();
 
@@ -82,11 +82,11 @@ class xlvoResultsGUI extends xlvoGUI
     /**
      *
      */
-    private function buildToolbar()
+    private function buildToolbar(): void
     {
         $button = ilLinkButton::getInstance();
         $button->setUrl(
-            self::dic()->ctrl()->getLinkTargetByClass(xlvoResultsGUI::class, xlvoResultsGUI::CMD_CONFIRM_NEW_ROUND)
+            self::dic()->ctrl()->getLinkTarget($this, self::CMD_CONFIRM_NEW_ROUND)
         );
         $button->setCaption(self::plugin()->translate("new_round"), false);
         self::dic()->toolbar()->addButtonInstance($button);
@@ -112,7 +112,7 @@ class xlvoResultsGUI extends xlvoGUI
      * @return array
      * @throws \srag\DIC\LiveVoting\Exception\DICException
      */
-    private function getRounds()
+    private function getRounds(): array
     {
         /** @var xlvoRound[] $rounds */
         $rounds = xlvoRound::where(array('obj_id' => $this->obj_id))->get();
@@ -130,9 +130,9 @@ class xlvoResultsGUI extends xlvoGUI
      * @return string
      * @throws \srag\DIC\LiveVoting\Exception\DICException
      */
-    private function getRoundTitle(xlvoRound $round)
+    private function getRoundTitle(xlvoRound $round): string
     {
-        return $round->getTitle() ? $round->getTitle() : self::plugin()->translate(
+        return $round->getTitle() ?: self::plugin()->translate(
             "common_round"
         ) . " " . $round->getRoundNumber();
     }
@@ -140,14 +140,13 @@ class xlvoResultsGUI extends xlvoGUI
     /**
      * @param xlvoResultsTableGUI $table
      */
-    private function buildFilters(&$table)
+    private function buildFilters($table): void
     {
         $filter = new ilSelectInputGUI(self::plugin()->translate("common_participant"), "participant");
         $participants = xlvoParticipants::getInstance($this->obj_id)->getParticipantsForRound($this->round->getId());
         $options = array(0 => self::plugin()->translate("common_all"));
         foreach ($participants as $participant) {
-            $options[($participant->getUserIdentifier()
-                != null) ? $participant->getUserIdentifier() : $participant->getUserId()]
+            $options[$participant->getUserIdentifier() ?? $participant->getUserId()]
                 = $this->getParticipantName($participant);
         }
         $filter->setOptions($options);
@@ -188,12 +187,7 @@ class xlvoResultsGUI extends xlvoGUI
         $table->setFormAction(self::dic()->ctrl()->getFormAction($this, self::CMD_APPLY_FILTER));
     }
 
-    /**
-     * @param xlvoParticipant $participant
-     *
-     * @return string
-     */
-    public function getParticipantName(xlvoParticipant $participant = null)
+    public function getParticipantName(xlvoParticipant $participant = null): string
     {
         if (!$participant instanceof xlvoParticipant) {
             return '';
@@ -203,13 +197,10 @@ class xlvoResultsGUI extends xlvoGUI
         return $closure($participant);
     }
 
-    /**
-     * @return Closure
-     */
-    public function getParticipantNameCallable()
+    public function getParticipantNameCallable(): callable
     {
-        return function (xlvoParticipant $participant) {
-            if ($participant->getUserIdType() == xlvoUser::TYPE_ILIAS
+        return static function (xlvoParticipant $participant) {
+            if ($participant->getUserIdType() === xlvoUser::TYPE_ILIAS
                 && $participant->getUserId()
             ) {
                 $name = ilObjUser::_lookupName($participant->getUserId());
@@ -225,14 +216,9 @@ class xlvoResultsGUI extends xlvoGUI
         };
     }
 
-    /**
-     * @param int $length
-     *
-     * @return Closure
-     */
-    public function getShortener($length = self::LENGTH)
+    public function getShortener(int $length = self::LENGTH): callable
     {
-        return function (&$question) use ($length) {
+        return static function (&$question) use ($length) {
             $qs = nl2br($question, false);
             $qs = strip_tags($qs);
 
@@ -242,10 +228,7 @@ class xlvoResultsGUI extends xlvoGUI
         };
     }
 
-    /**
-     *
-     */
-    private function changeRound()
+    private function changeRound(): void
     {
         $round = $_POST['round_id'];
         self::dic()->ctrl()->setParameter($this, 'round_id', $round);
@@ -255,7 +238,7 @@ class xlvoResultsGUI extends xlvoGUI
     /**
      * @throws \srag\DIC\LiveVoting\Exception\DICException
      */
-    private function newRound()
+    private function newRound(): void
     {
         $lastRound = xlvoRound::getLatestRound($this->obj_id);
         $newRound = new xlvoRound();
@@ -263,14 +246,11 @@ class xlvoResultsGUI extends xlvoGUI
         $newRound->setObjId($this->obj_id);
         $newRound->store();
         self::dic()->ctrl()->setParameter($this, 'round_id', xlvoRound::getLatestRound($this->obj_id)->getId());
-        ilUtil::sendSuccess(self::plugin()->translate("common_new_round_created"), true);
+        self::dic()->ui()->mainTemplate()->setOnScreenMessage('success', self::plugin()->translate("common_new_round_created"), true);
         self::dic()->ctrl()->redirect($this, self::CMD_SHOW);
     }
 
-    /**
-     *
-     */
-    private function applyFilter()
+    private function applyFilter(): void
     {
         $table = new xlvoResultsTableGUI($this, self::CMD_SHOW);
         $this->buildFilters($table);
@@ -282,7 +262,7 @@ class xlvoResultsGUI extends xlvoGUI
     /**
      *
      */
-    private function resetFilter()
+    private function resetFilter(): void
     {
         $table = new xlvoResultsTableGUI($this, self::CMD_SHOW);
         $this->buildFilters($table);
@@ -294,17 +274,17 @@ class xlvoResultsGUI extends xlvoGUI
     /**
      * @throws \srag\DIC\LiveVoting\Exception\DICException
      */
-    private function showHistory()
+    private function showHistory(): void
     {
         self::dic()->tabs()->setBackTarget(
             self::plugin()->translate('common_back'),
             self::dic()->ctrl()->getLinkTarget($this, self::CMD_SHOW)
         );
 
-        $user_id = $_GET['user_id'] ? $_GET['user_id'] : $_GET['user_identifier'];
+        $user_id = $_GET['user_id'] ?: $_GET['user_identifier'];
         $participants = xlvoParticipants::getInstance($this->obj_id)->getParticipantsForRound(
             $this->round->getId(),
-            $this->user_id
+            $user_id
         );
         /** @var xlvoParticipant $participant */
         $participant = array_shift($participants);
@@ -326,10 +306,7 @@ class xlvoResultsGUI extends xlvoGUI
         self::dic()->ui()->mainTemplate()->setContent($form->getHTML() . $table->getHTML());
     }
 
-    /**
-     *
-     */
-    public function executeCommand()
+    public function executeCommand(): void
     {
         $cmd = self::dic()->ctrl()->getCmd();
         switch ($cmd) {
@@ -349,7 +326,7 @@ class xlvoResultsGUI extends xlvoGUI
     /**
      * @throws \srag\DIC\LiveVoting\Exception\DICException
      */
-    public function confirmNewRound()
+    public function confirmNewRound(): void
     {
         $conf = new ilConfirmationGUI();
         $conf->setFormAction(self::dic()->ctrl()->getFormAction($this));

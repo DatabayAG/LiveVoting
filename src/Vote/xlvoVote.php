@@ -11,15 +11,6 @@ use LiveVoting\User\xlvoUser;
 use LiveVoting\User\xlvoVoteHistoryObject;
 use LiveVoting\Voting\xlvoVoting;
 
-/**
- * Class xlvoVote
- *
- * @package   LiveVoting\Vote
- * @author    Daniel Aemmer <daniel.aemmer@phbern.ch>
- * @author    Fabian Schmid <fs@studer-raimann.ch>
- * @author    Oskar Truffer <ot@studer-raimann.ch>
- * @version   1.0.0
- */
 class xlvoVote extends CachingActiveRecord
 {
     public const STAT_INACTIVE = 0;
@@ -28,63 +19,61 @@ class xlvoVote extends CachingActiveRecord
     public const USER_ANONYMOUS = 1;
     public const TABLE_NAME = 'rep_robj_xlvo_vote_n';
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      * @db_is_primary       true
      * @con_sequence        true
      */
-    protected $id;
+    protected int $id;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $type;
+    protected int $type;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $status;
+    protected int $status;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $option_id;
+    protected int $option_id;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $voting_id;
+    protected int $voting_id;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $user_id_type;
+    protected int $user_id_type;
     /**
-     * @var string
-     *
      * @db_has_field        true
      * @db_fieldtype        text
      * @db_length           256
      */
-    protected $user_identifier = 0;
+    protected string $user_identifier = '';
+    /**
+     * @db_has_field        true
+     * @db_fieldtype        integer
+     * @db_length           8
+     */
+    protected int $user_id = 0;
+    /**
+     * @db_has_field        true
+     * @db_fieldtype        integer
+     * @db_length           8
+     */
+    protected int $last_update;
     /**
      * @var int
      *
@@ -92,58 +81,29 @@ class xlvoVote extends CachingActiveRecord
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $user_id = 0;
+    protected int $round_id = 0;
     /**
-     * @var int
-     *
-     * @db_has_field        true
-     * @db_fieldtype        integer
-     * @db_length           8
-     */
-    protected $last_update;
-    /**
-     * @var int
-     *
-     * @db_has_field        true
-     * @db_fieldtype        integer
-     * @db_length           8
-     */
-    protected $round_id = 0;
-    /**
-     * @var string
-     *
      * @db_has_field true
      * @db_fieldtype text
      * @db_length    2000
      */
-    protected $free_input;
+    protected string $free_input;
     /**
-     * @var integer
-     *
      * @db_has_field true
      * @db_fieldtype integer
      * @db_length    8
      */
-    protected $free_input_category;
+    protected int $free_input_category;
 
     /**
-     * @return string
      * @deprecated
      */
-    public static function returnDbTableName()
+    public static function returnDbTableName(): string
     {
         return self::TABLE_NAME;
     }
 
-    /**
-     * @param xlvoUser $xlvoUser
-     * @param          $voting_id
-     * @param          $round_id
-     * @param null     $option_id
-     *
-     * @return string
-     */
-    public static function vote(xlvoUser $xlvoUser, $voting_id, $round_id, $option_id = null)
+    public static function vote(xlvoUser $xlvoUser, int $voting_id, int $round_id, int $option_id = null): int
     {
         $obj = self::getUserInstance($xlvoUser, $voting_id, $option_id);
         $obj->setStatus(self::STAT_ACTIVE);
@@ -153,18 +113,11 @@ class xlvoVote extends CachingActiveRecord
         return $obj->getId();
     }
 
-    /**
-     * @param xlvoUser $xlvoUser
-     * @param int      $voting_id
-     * @param int      $option_id
-     *
-     * @return xlvoVote
-     */
-    protected static function getUserInstance(xlvoUser $xlvoUser, $voting_id, $option_id)
+    protected static function getUserInstance(xlvoUser $xlvoUser, int $voting_id, int $option_id): self
     {
-        $where = array('voting_id' => $voting_id);
+        $where = ['voting_id' => $voting_id];
         if ($option_id) {
-            $where = array('option_id' => $option_id);
+            $where = ['option_id' => $option_id];
         }
         if ($xlvoUser->isILIASUser()) {
             $where['user_id'] = $xlvoUser->getIdentifier();
@@ -190,30 +143,17 @@ class xlvoVote extends CachingActiveRecord
         return $vote;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @param xlvoUser $xlvoUser
-     * @param          $voting_id
-     * @param null     $option_id
-     *
-     * @return string
-     */
-    public static function unvote(xlvoUser $xlvoUser, $voting_id, $option_id = null)
+    public static function unvote(xlvoUser $xlvoUser, int $voting_id, int $option_id = null): int
     {
         $obj = self::getUserInstance($xlvoUser, $voting_id, $option_id);
         $obj->setStatus(self::STAT_INACTIVE);
@@ -223,25 +163,20 @@ class xlvoVote extends CachingActiveRecord
     }
 
     /**
-     * @param xlvoUser $xlvoUser
-     * @param int      $voting_id
-     * @param int      $round_id
-     * @param bool     $incl_inactive
-     *
      * @return xlvoVote[]
      */
-    public static function getVotesOfUser(xlvoUser $xlvoUser, $voting_id, $round_id, $incl_inactive = false)
+    public static function getVotesOfUser(xlvoUser $xlvoUser, int $voting_id, int $round_id, bool $incl_inactive = false): array
     {
-        $where = array(
+        $where = [
             'voting_id' => $voting_id,
             'status' => self::STAT_ACTIVE,
             'round_id' => $round_id,
-        );
+        ];
         if ($incl_inactive) {
-            $where['status'] = array(
+            $where['status'] = [
                 self::STAT_INACTIVE,
                 self::STAT_ACTIVE,
-            );
+            ];
         }
         if ($xlvoUser->isILIASUser()) {
             $where['user_id'] = $xlvoUser->getIdentifier();
@@ -252,21 +187,16 @@ class xlvoVote extends CachingActiveRecord
         return self::where($where)->get();
     }
 
-    /**
-     * @param xlvoUser $xlvoUser
-     * @param int      $voting_id
-     * @param int      $round_id
-     */
-    public static function createHistoryObject($xlvoUser, $voting_id, $round_id)
+    public static function createHistoryObject(xlvoUser $xlvoUser, int $voting_id, int $round_id): void
     {
         $historyObject = new xlvoVoteHistoryObject();
 
         if ($xlvoUser->isILIASUser()) {
-            $historyObject->setUserIdType(xlvoVote::USER_ILIAS);
+            $historyObject->setUserIdType(self::USER_ILIAS);
             $historyObject->setUserId($xlvoUser->getIdentifier());
             $historyObject->setUserIdentifier(null);
         } else {
-            $historyObject->setUserIdType(xlvoVote::USER_ANONYMOUS);
+            $historyObject->setUserIdType(self::USER_ANONYMOUS);
             $historyObject->setUserId(null);
             $historyObject->setUserIdentifier($xlvoUser->getIdentifier());
         }
@@ -276,15 +206,15 @@ class xlvoVote extends CachingActiveRecord
         $historyObject->setTimestamp(time());
         $gui = xlvoResultGUI::getInstance(xlvoVoting::find($voting_id));
 
-        $votes = xlvoVote::where(array(
+        $votes = self::where([
             'voting_id' => $voting_id,
             'status' => xlvoOption::STAT_ACTIVE,
             'round_id' => $round_id,
-        ));
+        ]);
         if ($xlvoUser->isILIASUser()) {
-            $votes->where(array("user_id" => $xlvoUser->getIdentifier()));
+            $votes->where(["user_id" => $xlvoUser->getIdentifier()]);
         } else {
-            $votes->where(array("user_identifier" => $xlvoUser->getIdentifier()));
+            $votes->where(["user_identifier" => $xlvoUser->getIdentifier()]);
         }
         $votes = $votes->get();
         $historyObject->setAnswer($gui->getTextRepresentation($votes));
@@ -292,85 +222,53 @@ class xlvoVote extends CachingActiveRecord
         $historyObject->store();
     }
 
-    /**
-     * @return string
-     */
-    public function getConnectorContainerName()
+    public function getConnectorContainerName(): string
     {
         return self::TABLE_NAME;
     }
 
-    /**
-     * @return bool
-     */
-    public function isActive()
+    public function isActive(): bool
     {
-        return ($this->getStatus() == self::STAT_ACTIVE);
+        return ($this->getStatus() === self::STAT_ACTIVE);
     }
 
-    /**
-     * @return int
-     */
-    public function getStatus()
+    public function getStatus(): int
     {
         return $this->status;
     }
 
-    /**
-     * @param int $status
-     */
-    public function setStatus($status)
+    public function setStatus(int $status): void
     {
         $this->status = $status;
     }
 
-    /**
-     * @return xlvoOption
-     */
-    public function getOption()
+    public function getOption(): xlvoOption
     {
         return xlvoOption::find($this->getOptionId());
     }
 
-    /**
-     * @return int
-     */
-    public function getOptionId()
+    public function getOptionId(): int
     {
         return $this->option_id;
     }
 
-    /**
-     * @param int $option_id
-     */
-    public function setOptionId($option_id)
+    public function setOptionId(int $option_id): void
     {
         $this->option_id = $option_id;
     }
 
-    /**
-     *
-     */
-    public function update()
+    public function update(): void
     {
         $this->setLastUpdate(time());
         parent::update();
     }
 
-    /**
-     *
-     */
-    public function create()
+    public function create(): void
     {
         $this->setLastUpdate(time());
         parent::create();
     }
 
-    /**
-     * @param string $field_name
-     *
-     * @return mixed
-     */
     public function sleep($field_name)
     {
         switch ($field_name) {
@@ -381,146 +279,92 @@ class xlvoVote extends CachingActiveRecord
         return parent::sleep($field_name);
     }
 
-    /**
-     * @return int
-     */
-    public function getType()
+    public function getType(): int
     {
         return $this->type;
     }
 
-    /**
-     * @param int $type
-     */
-    public function setType($type)
+    public function setType(int $type): void
     {
         $this->type = $type;
     }
 
-    /**
-     * @return int
-     */
-    public function getVotingId()
+    public function getVotingId(): int
     {
         return $this->voting_id;
     }
 
-    /**
-     * @param int $voting_id
-     */
-    public function setVotingId($voting_id)
+    public function setVotingId(int $voting_id): void
     {
         $this->voting_id = $voting_id;
     }
 
-    /**
-     * @return int
-     */
-    public function getUserIdType()
+    public function getUserIdType(): int
     {
         return $this->user_id_type;
     }
 
-    /**
-     * @param int $user_id_type
-     */
-    public function setUserIdType($user_id_type)
+    public function setUserIdType(int $user_id_type): void
     {
         $this->user_id_type = $user_id_type;
     }
 
-    /**
-     * @return int
-     */
-    public function getUserIdentifier()
+    public function getUserIdentifier(): string
     {
         return $this->user_identifier;
     }
 
-    /**
-     * @param int $user_identifier
-     */
-    public function setUserIdentifier($user_identifier)
+    public function setUserIdentifier(string $user_identifier): void
     {
         $this->user_identifier = $user_identifier;
     }
 
-    /**
-     * @return int
-     */
-    public function getUserId()
+    public function getUserId(): int
     {
         return $this->user_id;
     }
 
-    /**
-     * @param int $user_id
-     */
-    public function setUserId($user_id)
+    public function setUserId(int $user_id): void
     {
         $this->user_id = $user_id;
     }
 
-    /**
-     * @return int
-     */
-    public function getLastUpdate()
+    public function getLastUpdate(): int
     {
         return $this->last_update;
     }
 
-    /**
-     * @param int $last_update
-     */
-    public function setLastUpdate($last_update)
+    public function setLastUpdate(int $last_update): void
     {
         $this->last_update = $last_update;
     }
 
-    /**
-     * @return int
-     */
-    public function getRoundId()
+    public function getRoundId(): int
     {
         return $this->round_id;
     }
 
-    /**
-     * @param int $round_id
-     */
-    public function setRoundId($round_id)
+    public function setRoundId(int $round_id): void
     {
         $this->round_id = $round_id;
     }
 
-    /**
-     * @return string
-     */
-    public function getFreeInput()
+    public function getFreeInput(): string
     {
         return $this->free_input;
     }
 
-    /**
-     * @param string $free_input
-     */
-    public function setFreeInput($free_input)
+    public function setFreeInput(string $free_input): void
     {
         $this->free_input = $free_input;
     }
 
-    /**
-     * @return int
-     */
-    public function getFreeInputCategory()
+    public function getFreeInputCategory(): int
     {
         return $this->free_input_category;
     }
 
-    /**
-     * @param int $free_input_category
-     */
-    public function setFreeInputCategory($free_input_category)
+    public function setFreeInputCategory(int $free_input_category): void
     {
         $this->free_input_category = $free_input_category;
     }

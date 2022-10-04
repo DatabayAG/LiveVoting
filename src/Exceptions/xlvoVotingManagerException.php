@@ -4,17 +4,9 @@ declare(strict_types=1);
 
 namespace LiveVoting\Exceptions;
 
-/**
- * Class xlvoVotingManagerException
- *
- * @package LiveVoting\Exceptions
- */
 class xlvoVotingManagerException extends xlvoException
 {
-    /**
-     * @param string $message
-     */
-    public function __construct($message)
+    public function __construct(string $message)
     {
         parent::__construct($message);
     }

@@ -8,14 +8,6 @@ use ilLiveVotingPlugin;
 use LiveVoting\Utils\LiveVotingTrait;
 use srag\DIC\LiveVoting\DICTrait;
 
-/**
- * Class xlvoObjectDefinition
- *
- * This mocks ilObjectDefinition in PIN Context (bc of ilObjMediaObject in Text)
- *
- * @package LiveVoting\Context
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 class xlvoObjectDefinition
 {
     use DICTrait;
@@ -23,23 +15,17 @@ class xlvoObjectDefinition
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
-    /**
-     * @return bool
-     */
-    public function isRBACObject()
+    public function isRBACObject(): bool
     {
         return false;
     }
 
-    /**
-     * @return string
-     */
-    public function getTranslationType()
+    public function getTranslationType(): string
     {
         return ''; //"sys"
     }
 
-    public function getOrgUnitPermissionTypes()
+    public function getOrgUnitPermissionTypes(): array
     {
         return [];
     }

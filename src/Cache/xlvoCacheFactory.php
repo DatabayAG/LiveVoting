@@ -10,9 +10,6 @@ use LiveVoting\Utils\LiveVotingTrait;
 use srag\DIC\LiveVoting\DICTrait;
 
 /**
- * Class xlvoCacheFactory
- *
- * @package LiveVoting\Cache
  * @author  nschaefli
  */
 class xlvoCacheFactory
@@ -21,16 +18,11 @@ class xlvoCacheFactory
     use LiveVotingTrait;
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    private static $cache_instance = null;
+    private static $cache_instance;
 
-    /**
-     * Generates an new instance of the live voting service.
-     *
-     * @return xlvoCacheService
-     */
-    public static function getInstance()
+    public static function getInstance(): ?xlvoCacheService
     {
-        if (self::$cache_instance === null) {
+        if (!isset(self::$cache_instance)) {
             self::$cache_instance = xlvoCache::getInstance('');
 
             /*

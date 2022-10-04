@@ -9,12 +9,6 @@ use ilLiveVotingPlugin;
 use LiveVoting\Utils\LiveVotingTrait;
 use srag\DIC\LiveVoting\DICTrait;
 
-/**
- * Class xlvoILIAS
- *
- * @package LiveVoting\Context
- * @author  nschaefli
- */
 class xlvoILIAS
 {
     use DICTrait;
@@ -26,22 +20,12 @@ class xlvoILIAS
     {
     }
 
-    /**
-     * @param $key
-     *
-     * @return mixed
-     */
-    public function getSetting($key)
+    public function getSetting(string $key): ?string
     {
         return self::dic()->settings()->get($key);
     }
 
-    /**
-     * wrapper for downward compability
-     *
-     * @throws ilException
-     */
-    public function raiseError($a_msg, $a_err_obj)
+    public function raiseError(string $a_msg, $a_err_obj): void
     {
         throw new ilException($a_msg);
     }

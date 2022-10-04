@@ -7,32 +7,22 @@ namespace LiveVoting\QuestionTypes\FreeInput;
 use LiveVoting\QuestionTypes\xlvoResultGUI;
 use LiveVoting\Vote\xlvoVote;
 
-/**
- * Class xlvoFreeInputResultGUI
- *
- * @package LiveVoting\QuestionTypes\FreeInput
- * @author  Oskar Truffer <ot@studer-raimann.ch>
- */
 class xlvoFreeInputResultGUI extends xlvoResultGUI
 {
     /**
      * @param xlvoVote[] $votes
-     *
-     * @return string
      */
-    public function getAPIRepresentation(array $votes)
+    public function getAPIRepresentation(array $votes): string
     {
         return $this->getTextRepresentation($votes);
     }
 
     /**
      * @param xlvoVote[] $votes
-     *
-     * @return string
      */
-    public function getTextRepresentation(array $votes)
+    public function getTextRepresentation(array $votes): string
     {
-        $strings = array();
+        $strings = [];
         foreach ($votes as $vote) {
             $strings[] = str_replace(["\r\n", "\r", "\n"], " ", $vote->getFreeInput());
         }

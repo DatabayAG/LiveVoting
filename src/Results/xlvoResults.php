@@ -14,53 +14,29 @@ use LiveVoting\Vote\xlvoVote;
 use LiveVoting\Voting\xlvoVoting;
 use srag\DIC\LiveVoting\DICTrait;
 
-/**
- * Class xlvoResults
- *
- * @package LiveVoting\Results
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 class xlvoResults
 {
     use DICTrait;
     use LiveVotingTrait;
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    /**
-     * @var int
-     */
-    protected $obj_id = 0;
-    /**
-     * @var int
-     */
-    protected $round_id = 0;
+    protected int $obj_id = 0;
+    protected int $round_id = 0;
 
-    /**
-     * xlvoResults constructor.
-     *
-     * @param int $obj_id
-     * @param int $round_id
-     */
-    public function __construct($obj_id, $round_id)
+    public function __construct(int $obj_id, int $round_id)
     {
         $this->obj_id = $obj_id;
         $this->round_id = $round_id;
     }
 
     /**
-     * @param array|null    $filter
-     * @param callable|null $formatParticipantCallable
-     *
-     * @param callable|null $concatVotesCallable
-     *
-     * @return array
      * @throws \Exception
      */
     public function getData(
         array $filter = null,
         callable $formatParticipantCallable = null,
         callable $concatVotesCallable = null
-    ) {
+    ): array {
         if (!$formatParticipantCallable) {
             $formatParticipantCallable = $this->getFormatParticipantCallable();
         }
@@ -70,12 +46,12 @@ class xlvoResults
         }
 
         $obj_id = $this->getObjId();
-        $votingRecords = xlvoVoting::where(array("obj_id" => $obj_id));
+        $votingRecords = xlvoVoting::where(["obj_id" => $obj_id]);
         if ($filter['voting']) {
-            $votingRecords->where(array("id" => $filter['voting']));
+            $votingRecords->where(["id" => $filter['voting']]);
         }
         if ($filter['voting_title']) {
-            $votingRecords->where(array("id" => $filter['voting_title']));
+            $votingRecords->where(["id" => $filter['voting_title']]);
         }
         /**
          * @var xlvoVoting[]      $votings
@@ -98,9 +74,10 @@ class xlvoResults
                     "user_identifier" => $participant->getUserIdentifier(),
                     "status" => xlvoVote::STAT_ACTIVE,
                 ))->get();
-                $vote = array_shift(array_values($votes));
+                $vote_array_values = array_values($votes);
+                $vote = array_shift($vote_array_values);
                 $vote_ids = array_keys($votes);
-                $data[] = array(
+                $data[] = [
                     "position" => (int) $voting->getPosition(),
                     "participant" => $formatParticipantCallable($participant),
                     "user_id" => $participant->getUserId(),
@@ -112,63 +89,43 @@ class xlvoResults
                     "voting_id" => $voting->getId(),
                     "round_id" => $round_id,
                     "id" => ($vote instanceof xlvoVote ? $vote->getId() : ''),
-                );
+                ];
             }
         }
 
         return $data;
     }
 
-    /**
-     * @return Closure
-     */
-    protected function getFormatParticipantCallable()
+    protected function getFormatParticipantCallable(): Closure
     {
-        return function (xlvoParticipant $participant) {
+        return static function (xlvoParticipant $participant) {
             return $participant->getUserIdentifier();
         };
     }
 
-    /**
-     * @return Closure
-     */
-    protected function getConcatVotesCallable()
+    protected function getConcatVotesCallable(): Closure
     {
-        return function (xlvoVoting $voting, $votes) {
-            $resultsGUI = xlvoResultGUI::getInstance($voting);
-
-            return $resultsGUI->getAPIRepresentation($votes);
+        return static function (xlvoVoting $voting, array $votes) {
+            return xlvoResultGUI::getInstance($voting)->getAPIRepresentation($votes);
         };
     }
 
-    /**
-     * @return int
-     */
-    public function getObjId()
+    public function getObjId(): int
     {
         return $this->obj_id;
     }
 
-    /**
-     * @param int $obj_id
-     */
-    public function setObjId($obj_id)
+    public function setObjId(int $obj_id): void
     {
         $this->obj_id = $obj_id;
     }
 
-    /**
-     * @return int
-     */
-    public function getRoundId()
+    public function getRoundId(): int
     {
         return $this->round_id;
     }
 
-    /**
-     * @param int $round_id
-     */
-    public function setRoundId($round_id)
+    public function setRoundId(int $round_id): void
     {
         $this->round_id = $round_id;
     }

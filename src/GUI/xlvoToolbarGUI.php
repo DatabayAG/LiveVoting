@@ -9,12 +9,6 @@ use ilToolbarGUI;
 use LiveVoting\Utils\LiveVotingTrait;
 use srag\DIC\LiveVoting\DICTrait;
 
-/**
- * Class xlvoToolbarGUI
- *
- * @package LiveVoting\GUI
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 class xlvoToolbarGUI extends ilToolbarGUI
 {
     use DICTrait;
@@ -22,8 +16,7 @@ class xlvoToolbarGUI extends ilToolbarGUI
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
-    protected function applyAutoStickyToSingleElement()
+    protected function applyAutoStickyToSingleElement(): void
     {
-        return null;
     }
 }

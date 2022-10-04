@@ -12,12 +12,6 @@ use ilRadioOption;
 use LiveVoting\Exceptions\xlvoSubFormGUIHandleFieldException;
 use LiveVoting\QuestionTypes\xlvoSubFormGUI;
 
-/**
- * Class xlvoFreeInputSubFormGUI
- *
- * @package LiveVoting\QuestionTypes\FreeInput
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 class xlvoFreeInputSubFormGUI extends xlvoSubFormGUI
 {
     public const F_MULTI_FREE_INPUT = 'multi_free_input';
@@ -25,10 +19,7 @@ class xlvoFreeInputSubFormGUI extends xlvoSubFormGUI
     public const ANSWER_FIELD_SINGLE_LINE = 1;
     public const ANSWER_FIELD_MULTI_LINE = 2;
 
-    /**
-     *
-     */
-    protected function initFormElements()
+    protected function initFormElements(): void
     {
         $multi_free_input = new ilCheckboxInputGUI($this->txt(self::F_MULTI_FREE_INPUT), self::F_MULTI_FREE_INPUT);
         $multi_free_input->setInfo($this->txt(self::F_MULTI_FREE_INPUT . '_info'));
@@ -39,25 +30,23 @@ class xlvoFreeInputSubFormGUI extends xlvoSubFormGUI
         $this->addFormElement($answer_field);
         $answer_field_single_line = new ilRadioOption(
             $this->txt(self::F_ANSWER_FIELD . '_single_line'),
-            self::ANSWER_FIELD_SINGLE_LINE
+            (string) self::ANSWER_FIELD_SINGLE_LINE
         );
         $answer_field_single_line->setInfo($this->txt(self::F_ANSWER_FIELD . '_single_line_info'));
         $answer_field->addOption($answer_field_single_line);
         $answer_field_multi_line = new ilRadioOption(
             $this->txt(self::F_ANSWER_FIELD . '_multi_line'),
-            self::ANSWER_FIELD_MULTI_LINE
+            (string) self::ANSWER_FIELD_MULTI_LINE
         );
         $answer_field_multi_line->setInfo($this->txt(self::F_ANSWER_FIELD . '_multi_line_info'));
         $answer_field->addOption($answer_field_multi_line);
     }
 
     /**
-     * @param ilFormPropertyGUI $element
      * @param string|array      $value
-     *
      * @throws xlvoSubFormGUIHandleFieldException|ilException
      */
-    protected function handleField(ilFormPropertyGUI $element, $value)
+    protected function handleField(ilFormPropertyGUI $element, $value): void
     {
         switch ($element->getPostVar()) {
             case self::F_MULTI_FREE_INPUT:
@@ -73,8 +62,7 @@ class xlvoFreeInputSubFormGUI extends xlvoSubFormGUI
 
     /**
      * @param ilFormPropertyGUI $element
-     *
-     * @return string|int|float|array
+     * @return bool|int
      * @throws ilException
      */
     protected function getFieldValue(ilFormPropertyGUI $element)

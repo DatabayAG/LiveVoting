@@ -8,13 +8,8 @@ use ilContext;
 use ilLiveVotingPlugin;
 use LiveVoting\Utils\LiveVotingTrait;
 use srag\DIC\LiveVoting\DICTrait;
+use ilException;
 
-/**
- * Class xlvoContext
- *
- * @package LiveVoting\Context
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 class xlvoContext extends ilContext
 {
     use DICTrait;
@@ -30,12 +25,7 @@ class xlvoContext extends ilContext
         self::init(xlvoContextLiveVoting::class);
     }
 
-    /**
-     * @param int $context
-     *
-     * @return bool
-     */
-    public static function init($context)
+    public static function init(string $context): bool
     {
         ilContext::$class_name = xlvoContextLiveVoting::class;
         ilContext::$type = -1;
@@ -54,29 +44,29 @@ class xlvoContext extends ilContext
      *
      * @param int $context CONTEXT_ILIAS or CONTEXT_PIN are valid options.
      *
-     * @throws Exception Throws exception when the given context is invalid.
+     * @throws ilException Throws exception when the given context is invalid.
      */
-    public static function setContext($context)
+    public static function setContext(int $context): void
     {
-        if ($context === xlvoContext::CONTEXT_ILIAS || $context === xlvoContext::CONTEXT_PIN) {
-            $result = setcookie(xlvoContext::XLVO_CONTEXT, $context, null, '/');
+        if ($context === self::CONTEXT_ILIAS || $context === self::CONTEXT_PIN) {
+            $result = setcookie(self::XLVO_CONTEXT, $context, null, '/');
         } else {
-            throw new Exception("invalid context received");
+            throw new ilException("invalid context received");
         }
         if (!$result) {
-            throw new Exception("error setting cookie");
+            throw new ilException("error setting cookie");
         }
     }
 
     /**
      * @return int
      */
-    public static function getContext()
+    public static function getContext(): int
     {
-        if (!empty($_COOKIE[xlvoContext::XLVO_CONTEXT])) {
-            return $_COOKIE[xlvoContext::XLVO_CONTEXT];
+        if (!empty($_COOKIE[self::XLVO_CONTEXT])) {
+            return $_COOKIE[self::XLVO_CONTEXT];
         }
 
-        return xlvoContext::CONTEXT_ILIAS;
+        return self::CONTEXT_ILIAS;
     }
 }

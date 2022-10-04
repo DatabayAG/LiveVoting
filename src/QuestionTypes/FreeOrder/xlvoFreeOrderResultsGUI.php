@@ -8,18 +8,9 @@ use LiveVoting\Display\Bar\xlvoBarCollectionGUI;
 use LiveVoting\Display\Bar\xlvoBarPercentageGUI;
 use LiveVoting\QuestionTypes\CorrectOrder\xlvoCorrectOrderResultsGUI;
 
-/**
- * Class xlvoFreeOrderResultsGUI
- *
- * @package LiveVoting\QuestionTypes\FreeOrder
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 class xlvoFreeOrderResultsGUI extends xlvoCorrectOrderResultsGUI
 {
-    /**
-     * @return string
-     */
-    public function getHTML()
+    public function getHTML(): string
     {
         $bars = new xlvoBarCollectionGUI();
         $total_voters = $this->manager->countVoters();
@@ -33,10 +24,10 @@ class xlvoFreeOrderResultsGUI extends xlvoCorrectOrderResultsGUI
 
         foreach ($this->manager->getVotesOfVoting() as $xlvoVote) {
             $option_amount2 = $option_amount;
-            $json_decode = json_decode($xlvoVote->getFreeInput(), true);
+            $json_decode = json_decode($xlvoVote->getFreeInput(), true, 512, JSON_THROW_ON_ERROR);
             if (is_array($json_decode)) {
                 foreach ($json_decode as $option_id) {
-                    $option_weight[$option_id] = $option_weight[$option_id] + $option_amount2;
+                    $option_weight[$option_id] += $option_amount2;
                     $option_amount2--;
                 }
             }
@@ -62,7 +53,7 @@ class xlvoFreeOrderResultsGUI extends xlvoCorrectOrderResultsGUI
             $xlvoBarPercentageGUI->setShowInPercent(false);
             $xlvoBarPercentageGUI->setMaxVotes($possible_max);
             $xlvoBarPercentageGUI->setTitle($xlvoOption->getTextForPresentation());
-            if ($total_voters == 0) {
+            if ($total_voters === 0) {
                 $xlvoBarPercentageGUI->setVotes($total_voters);
             } else {
                 $xlvoBarPercentageGUI->setVotes($option_weight[$xlvoOption->getId()] / $total_voters);
@@ -75,10 +66,7 @@ class xlvoFreeOrderResultsGUI extends xlvoCorrectOrderResultsGUI
         return $bars->getHTML();
     }
 
-    /**
-     * @return string
-     */
-    public function getHTML2()
+    public function getHTML2(): string
     {
         $bars = new xlvoBarCollectionGUI();
 
@@ -87,8 +75,8 @@ class xlvoFreeOrderResultsGUI extends xlvoCorrectOrderResultsGUI
 
         foreach ($this->manager->getVotesOfVoting() as $xlvoVote) {
             $option_amount2 = $option_amount;
-            foreach (json_decode($xlvoVote->getFreeInput()) as $option_id) {
-                $option_weight[$option_id] = $option_weight[$option_id] + $option_amount2;
+            foreach (json_decode($xlvoVote->getFreeInput(), false, 512, JSON_THROW_ON_ERROR) as $option_id) {
+                $option_weight[$option_id] += $option_amount2;
                 $option_amount2--;
             }
         }

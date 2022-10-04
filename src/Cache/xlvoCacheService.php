@@ -25,14 +25,14 @@ interface xlvoCacheService
      *
      * @return void
      */
-    public function delete($key);
+    public function delete(string $key): bool;
 
     /**
      * Checks if the cache is active or not.
      *
      * @return bool
      */
-    public function isActive();
+    public function isActive(): bool;
 
     /**
      * Stores a new value in the cache.
@@ -44,7 +44,7 @@ interface xlvoCacheService
      *
      * @return bool              True if the cache entry was set otherwise false.
      */
-    public function set($key, $value, $ttl = null);
+    public function set(string $key, $value, int $ttl = null): bool;
 
     /**
      * Search the cached data with the help of the given key.

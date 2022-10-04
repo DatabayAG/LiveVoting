@@ -9,63 +9,31 @@ use ilTemplate;
 use LiveVoting\Utils\LiveVotingTrait;
 use srag\DIC\LiveVoting\DICTrait;
 
-/**
- * Class xlvoBarCollectionGUI
- *
- * @package LiveVoting\Display\Bar
- * @author  Daniel Aemmer <daniel.aemmer@phbern.ch>
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- * @version 1.0.0
- */
 class xlvoBarCollectionGUI
 {
     use DICTrait;
     use LiveVotingTrait;
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    /**
-     * @var ilTemplate
-     */
-    protected $tpl;
-    /**
-     * @var int
-     */
-    protected $total_votes = 0;
-    /**
-     * @var bool
-     */
-    protected $show_total_votes = false;
-    /**
-     * @var int
-     */
-    protected $total_voters = 0;
-    /**
-     * @var bool
-     */
-    protected $show_total_voters = false;
+    protected ilTemplate $tpl;
+    protected int $total_votes = 0;
+    protected bool $show_total_votes = false;
+    protected int $total_voters = 0;
+    protected bool $show_total_voters = false;
 
-    /**
-     *
-     */
     public function __construct()
     {
         $this->tpl = self::plugin()->template('default/Display/Bar/tpl.bar_collection.html');
     }
 
-    /**
-     * @return string
-     */
-    public function getHTML()
+    public function getHTML(): string
     {
         $this->renderVotersAndVotes();
 
         return $this->tpl->get();
     }
 
-    /**
-     *
-     */
-    protected function renderVotersAndVotes()
+    protected function renderVotersAndVotes(): void
     {
         if ($this->isShowTotalVotes()) {
             $this->tpl->setCurrentBlock('total_votes');
@@ -85,84 +53,54 @@ class xlvoBarCollectionGUI
         }
     }
 
-    /**
-     * @return boolean
-     */
-    public function isShowTotalVotes()
+    public function isShowTotalVotes(): bool
     {
         return $this->show_total_votes;
     }
 
-    /**
-     * @param boolean $show_total_votes
-     */
-    public function setShowTotalVotes($show_total_votes)
+    public function setShowTotalVotes(bool $show_total_votes): void
     {
         $this->show_total_votes = $show_total_votes;
     }
 
-    /**
-     * @return int
-     */
-    public function getTotalVotes()
+    public function getTotalVotes(): int
     {
         return $this->total_votes;
     }
 
-    /**
-     * @param int $total_votes
-     */
-    public function setTotalVotes($total_votes)
+    public function setTotalVotes(int $total_votes): void
     {
         $this->total_votes = $total_votes;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isShowTotalVoters()
+    public function isShowTotalVoters(): bool
     {
         return $this->show_total_voters;
     }
 
-    /**
-     * @param boolean $show_total_voters
-     */
-    public function setShowTotalVoters($show_total_voters)
+    public function setShowTotalVoters(bool $show_total_voters): void
     {
         $this->show_total_voters = $show_total_voters;
     }
 
-    /**
-     * @return int
-     */
-    public function getTotalVoters()
+    public function getTotalVoters(): int
     {
         return $this->total_voters;
     }
 
-    /**
-     * @param int $total_voters
-     */
-    public function setTotalVoters($total_voters)
+    public function setTotalVoters(int $total_voters): void
     {
         $this->total_voters = $total_voters;
     }
 
-    /**
-     * @param xlvoGeneralBarGUI $bar_gui
-     */
-    public function addBar(xlvoGeneralBarGUI $bar_gui)
+    public function addBar(xlvoGeneralBarGUI $bar_gui): void
     {
         $this->tpl->setCurrentBlock('bar');
         $this->tpl->setVariable('BAR', $bar_gui->getHTML());
         $this->tpl->parseCurrentBlock();
     }
 
-    /**
-     * @param $html
-     */
-    public function addSolution($html)
+    public function addSolution(string $html): void
     {
         $this->tpl->setCurrentBlock('solution');
         $this->tpl->setVariable('SOLUTION', $html);

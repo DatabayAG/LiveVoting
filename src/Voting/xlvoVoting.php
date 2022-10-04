@@ -16,6 +16,7 @@ use LiveVoting\QuestionTypes\FreeInput\xlvoFreeInputSubFormGUI;
 use LiveVoting\QuestionTypes\NumberRange\xlvoNumberRangeSubFormGUI;
 use LiveVoting\QuestionTypes\xlvoQuestionTypes;
 use stdClass;
+use ilLegacyFormElementsUtil;
 
 /**
  * Class xlvoVoting
@@ -33,71 +34,55 @@ class xlvoVoting extends CachingActiveRecord
     public const ROWS_DEFAULT = 1;
     public const TABLE_NAME = 'rep_robj_xlvo_voting_n';
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      * @db_is_primary       true
      * @con_sequence        true
      */
-    protected $id;
+    protected int $id;
     /**
-     * @var bool
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           1
      */
-    protected $multi_selection = false;
+    protected bool $multi_selection = false;
     /**
-     * @var bool
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           1
      */
-    protected $colors = false;
+    protected bool $colors = false;
     /**
-     * @var bool
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           1
      */
-    protected $multi_free_input = false;
+    protected bool $multi_free_input = false;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $obj_id = 0;
+    protected int $obj_id = 0;
     /**
-     * @var string
-     *
      * @db_has_field        true
      * @db_fieldtype        text
      * @db_length           256
      */
-    protected $title = '';
+    protected string $title = '';
     /**
-     * @var string
-     *
      * @db_has_field        true
      * @db_fieldtype        text
      * @db_length           4000
      */
-    protected $description = '';
+    protected string $description = '';
     /**
-     * @var string
-     *
      * @db_has_field        true
      * @db_fieldtype        text
      * @db_length           4000
      */
-    protected $question = '';
+    protected string $question = '';
     /**
      * @var string
      *
@@ -107,32 +92,24 @@ class xlvoVoting extends CachingActiveRecord
      */
     protected $voting_type = xlvoQuestionTypes::TYPE_SINGLE_VOTE;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $voting_status = self::STAT_ACTIVE;
+    protected int $voting_status = self::STAT_ACTIVE;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $position = 99;
+    protected int $position = 99;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           2
      */
-    protected $columns = self::ROWS_DEFAULT;
+    protected int $columns = self::ROWS_DEFAULT;
     /**
-     * @var int
-     *
      * This field must be:
      * 1 = true
      * 0 = false
@@ -141,39 +118,31 @@ class xlvoVoting extends CachingActiveRecord
      * @db_fieldtype        integer
      * @db_length           1
      */
-    protected $percentage = 1;
+    protected int $percentage = 1;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $start_range = 0;
+    protected int $start_range = 0;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $end_range = 100;
+    protected int $end_range = 100;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $step_range = xlvoNumberRangeSubFormGUI::STEP_RANGE_DEFAULT_VALUE;
+    protected int $step_range = xlvoNumberRangeSubFormGUI::STEP_RANGE_DEFAULT_VALUE;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           1
      */
-    protected $alt_result_display_mode;
+    protected int $alt_result_display_mode;
     /**
      * @var bool
      *
@@ -182,54 +151,31 @@ class xlvoVoting extends CachingActiveRecord
      * @db_length           1
      */
     protected $randomise_option_sequence = 0;
+    /** @var xlvoOption[] */
+    protected array $voting_options = [];
+    protected ?xlvoOption $first_voting_option = null;
     /**
-     * @var xlvoOption[]
-     */
-    protected $voting_options = array();
-    /**
-     * @var xlvoOption
-     */
-    protected $first_voting_option = null;
-    /**
-     * @var int
-     *
      * @db_has_field true
      * @db_fieldtype integer
      * @db_length    1
      */
-    protected $answer_field = xlvoFreeInputSubFormGUI::ANSWER_FIELD_SINGLE_LINE;
+    protected int $answer_field = xlvoFreeInputSubFormGUI::ANSWER_FIELD_SINGLE_LINE;
 
-    /**
-     * @return string
-     * @deprecated
-     */
-    public static function returnDbTableName()
+    public static function returnDbTableName(): string
     {
         return self::TABLE_NAME;
     }
 
-    /**
-     * @param       $primary_key
-     * @param array $add_constructor_args
-     *
-     * @return xlvoVoting
-     */
-    public static function findOrGetInstance($primary_key, array $add_constructor_args = array())
+    public static function findOrGetInstance($primary_key, array $add_constructor_args = []): xlvoVoting
     {
         return parent::findOrGetInstance($primary_key, $add_constructor_args);
     }
 
-    /**
-     * @return string
-     */
-    public function getConnectorContainerName()
+    public function getConnectorContainerName(): string
     {
         return self::TABLE_NAME;
     }
 
-    /**
-     * @return int
-     */
     public function getComputedColums()
     {
         return (12 / (in_array($this->getColumns(), array(
@@ -240,31 +186,21 @@ class xlvoVoting extends CachingActiveRecord
             )) ? $this->getColumns() : self::ROWS_DEFAULT));
     }
 
-    /**
-     * @return int
-     */
-    public function getColumns()
+    public function getColumns(): int
     {
         return $this->columns;
     }
 
-    /**
-     * @param int $columns
-     */
-    public function setColumns($columns)
+    public function setColumns(int $columns): void
     {
         $this->columns = $columns;
     }
 
     /**
-     * @param bool $change_name
-     * @param int|null $new_obj_id
-     *
-     * @return xlvoVoting
      * @throws Exception
      * @throws arException
      */
-    public function fullClone($change_name = true, $clone_options = true, $new_obj_id = null)
+    public function fullClone(bool $change_name = true, bool $clone_options = true, int $new_obj_id = null): self
     {
         /**
          * @var xlvoVoting $newObj
@@ -276,10 +212,10 @@ class xlvoVoting extends CachingActiveRecord
         }
         if ($change_name) {
             $count = 1;
-            while (xlvoVoting::where(array('title' => $newObj->getTitle() . ' (' . $count . ')'))->where(
-                array('obj_id' => $newObj->getObjId())
+            while (self::where(['title' => $newObj->getTitle() . ' (' . $count . ')'])->where(
+                ['obj_id' => $newObj->getObjId()]
             )
-                             ->count()) {
+                       ->count()) {
                 $count++;
             }
 
@@ -298,34 +234,22 @@ class xlvoVoting extends CachingActiveRecord
         return $newObj;
     }
 
-    /**
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @param string $title
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
 
-    /**
-     * @return int
-     */
     public function getObjId(): int
     {
         return $this->obj_id;
     }
 
-    /**
-     * @param int $obj_id
-     */
-    public function setObjId($obj_id)
+    public function setObjId(int $obj_id): void
     {
         $this->obj_id = $obj_id;
     }
@@ -333,7 +257,7 @@ class xlvoVoting extends CachingActiveRecord
     /**
      * @return xlvoOption[]
      */
-    public function getVotingOptions()
+    public function getVotingOptions(): array
     {
         return $this->voting_options;
     }
@@ -341,31 +265,22 @@ class xlvoVoting extends CachingActiveRecord
     /**
      * @param xlvoOption[] $voting_options
      */
-    public function setVotingOptions($voting_options)
+    public function setVotingOptions(array $voting_options): void
     {
         $this->voting_options = $voting_options;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
 
-    /**
-     *
-     */
-    public function regenerateOptionSorting()
+    public function regenerateOptionSorting(): void
     {
         $i = 1;
         foreach ($this->getVotingOptions() as $votingOption) {
@@ -375,10 +290,7 @@ class xlvoVoting extends CachingActiveRecord
         }
     }
 
-    /**
-     *
-     */
-    public function create()
+    public function create(): void
     {
         $res = self::dic()->database()->query(
             'SELECT MAX(position) AS max FROM ' . self::TABLE_NAME . ' WHERE obj_id = ' . self::dic()->database()
@@ -392,10 +304,7 @@ class xlvoVoting extends CachingActiveRecord
         parent::create();
     }
 
-    /**
-     * @return bool
-     */
-    public function isFirst()
+    public function isFirst(): bool
     {
         /**
          * @var xlvoVoting $first
@@ -405,22 +314,16 @@ class xlvoVoting extends CachingActiveRecord
             $first = new self();
         }
 
-        return $first->getId() == $this->getId();
+        return $first->getId() === $this->getId();
     }
 
-    /**
-     * @return ActiveRecordList
-     */
-    protected function getFirstLastList($order)
+    protected function getFirstLastList($order): ActiveRecordList
     {
         return self::where(array('obj_id' => $this->getObjId()))->orderBy('position', $order)
                    ->where(array('voting_type' => xlvoQuestionTypes::getActiveTypes()));
     }
 
-    /**
-     * @return bool
-     */
-    public function isLast()
+    public function isLast(): bool
     {
         /**
          * @var xlvoVoting $first
@@ -431,53 +334,35 @@ class xlvoVoting extends CachingActiveRecord
             $first = new self();
         }
 
-        return $first->getId() == $this->getId();
+        return $first->getId() === $this->getId();
     }
 
-    /**
-     * @return boolean
-     */
-    public function isMultiSelection()
+    public function isMultiSelection(): bool
     {
         return $this->multi_selection;
     }
 
-    /**
-     * @param boolean $multi_selection
-     */
-    public function setMultiSelection($multi_selection)
+    public function setMultiSelection(bool $multi_selection): void
     {
         $this->multi_selection = $multi_selection;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isColors()
+    public function isColors(): bool
     {
         return $this->colors;
     }
 
-    /**
-     * @param boolean $colors
-     */
-    public function setColors($colors)
+    public function setColors(bool $colors): void
     {
         $this->colors = $colors;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isMultiFreeInput()
+    public function isMultiFreeInput(): bool
     {
         return $this->multi_free_input;
     }
 
-    /**
-     * @param boolean $multi_free_input
-     */
-    public function setMultiFreeInput($multi_free_input)
+    public function setMultiFreeInput(bool $multi_free_input): void
     {
         $this->multi_free_input = $multi_free_input;
     }
@@ -485,7 +370,7 @@ class xlvoVoting extends CachingActiveRecord
     /**
      * @throws arException
      */
-    public function afterObjectLoad()
+    public function afterObjectLoad(): void
     {
         /**
          * @var xlvoOption[] $xlvoOptions
@@ -497,50 +382,32 @@ class xlvoVoting extends CachingActiveRecord
         $this->setFirstVotingOption($first_voting_option);
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
 
-    /**
-     * @param string $description
-     */
-    public function setDescription($description)
+    public function setDescription(string $description): void
     {
         $this->description = $description;
     }
 
-    /**
-     * @return string
-     */
-    public function getQuestion()
+    public function getQuestion(): string
     {
         return $this->question;
     }
 
-    /**
-     * @param string $question
-     */
-    public function setQuestion($question)
+    public function setQuestion(string $question): void
     {
         $this->question = $question;
     }
 
-    /**
-     * @return string
-     */
-    public function getQuestionForPresentation()
+    public function getQuestionForPresentation(): string
     {
-        return ilUtil::prepareTextareaOutput($this->getQuestionForEditor(), true);
+        return ilLegacyFormElementsUtil::prepareTextareaOutput($this->getQuestionForEditor(), true);
     }
 
-    /**
-     * @return string
-     */
-    public function getQuestionForEditor()
+    public function getQuestionForEditor(): string
     {
         try {
             $prepared = ilRTE::_replaceMediaObjectImageSrc($this->question, 1);
@@ -551,170 +418,107 @@ class xlvoVoting extends CachingActiveRecord
         return $prepared;
     }
 
-    /**
-     * @return int
-     */
-    public function getVotingStatus()
+    public function getVotingStatus(): int
     {
         return $this->voting_status;
     }
 
-    /**
-     * @param int $voting_status
-     */
-    public function setVotingStatus($voting_status)
+    public function setVotingStatus(int $voting_status): void
     {
         $this->voting_status = $voting_status;
     }
 
-    /**
-     * @return xlvoOption
-     */
-    public function getFirstVotingOption()
+    public function getFirstVotingOption(): ?xlvoOption
     {
         return $this->first_voting_option;
     }
 
-    /**
-     * @param xlvoOption $first_voting_option
-     */
-    public function setFirstVotingOption($first_voting_option)
+    public function setFirstVotingOption(xlvoOption $first_voting_option): void
     {
         $this->first_voting_option = $first_voting_option;
     }
 
-    /**
-     * @return int
-     */
     public function getPercentage(): int
     {
         return $this->percentage;
     }
 
-    /**
-     * @param int $percentage
-     *
-     * @return xlvoVoting
-     */
-    public function setPercentage($percentage)
+    public function setPercentage(int $percentage): xlvoVoting
     {
         $this->percentage = $percentage;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getStartRange(): int
     {
         return $this->start_range;
     }
 
-    /**
-     * @param int $start_range
-     *
-     * @return xlvoVoting
-     */
-    public function setStartRange($start_range)
+    public function setStartRange(int $start_range): self
     {
         $this->start_range = $start_range;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getEndRange(): int
     {
         return $this->end_range;
     }
 
-    /**
-     * @param int $end_range
-     *
-     * @return xlvoVoting
-     */
-    public function setEndRange($end_range)
+    public function setEndRange(int $end_range): self
     {
         $this->end_range = $end_range;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getStepRange(): int
     {
         return $this->step_range;
     }
 
-    /**
-     * @param int $end_range
-     *
-     * @return xlvoVoting
-     */
-    public function setStepRange($step_range)
+    public function setStepRange(int $step_range): self
     {
         $this->step_range = $step_range;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getAltResultDisplayMode()
+    public function getAltResultDisplayMode(): int
     {
         return $this->alt_result_display_mode;
     }
 
-    /**
-     * @param int $alt_result_display_mode
-     *
-     * @return xlvoVoting
-     */
-    public function setAltResultDisplayMode($alt_result_display_mode)
+    public function setAltResultDisplayMode(int $alt_result_display_mode): self
     {
         $this->alt_result_display_mode = $alt_result_display_mode;
 
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function getRandomiseOptionSequence()
+    public function getRandomiseOptionSequence(): bool
     {
         return boolval($this->randomise_option_sequence);
     }
 
-    /**
-     * @param bool $randomise_option_sequence
-     *
-     * @return xlvoVoting
-     */
-    public function setRandomiseOptionSequence($randomise_option_sequence)
+    public function setRandomiseOptionSequence(bool $randomise_option_sequence): xlvoVoting
     {
         $this->randomise_option_sequence = boolval($randomise_option_sequence);
 
         return $this;
     }
 
-    /**
-     * @return stdClass
-     */
-    public function _toJson()
+    public function _toJson(): stdClass
     {
         $class = new stdClass();
-        $class->Id = (int) $this->getId();
-        $class->Title = (string) $this->getTitle();
-        $class->QuestionType = (string) xlvoQuestionTypes::getClassName($this->getVotingType());
+        $class->Id = $this->getId();
+        $class->Title = $this->getTitle();
+        $class->QuestionType = xlvoQuestionTypes::getClassName($this->getVotingType());
         $class->QuestionTypeId = (int) $this->getVotingType();
-        $class->Question = (string) $this->getRawQuestion();
-        $class->Position = (int) $this->getPosition();
+        $class->Question = $this->getRawQuestion();
+        $class->Position = $this->getPosition();
         foreach ($this->getVotingOptions() as $xlvoOption) {
             $class->Options[] = $xlvoOption->_toJson();
         }
@@ -722,58 +526,37 @@ class xlvoVoting extends CachingActiveRecord
         return $class;
     }
 
-    /**
-     * @return string
-     */
-    public function getVotingType()
+    public function getVotingType(): string
     {
         return $this->voting_type;
     }
 
-    /**
-     * @param string $voting_type
-     */
-    public function setVotingType($voting_type)
+    public function setVotingType(string $voting_type): void
     {
         $this->voting_type = $voting_type;
     }
 
-    /**
-     * @return string
-     */
-    public function getRawQuestion()
+    public function getRawQuestion(): string
     {
         return trim(preg_replace('/\s+/', ' ', strip_tags($this->question)));
     }
 
-    /**
-     * @return int
-     */
-    public function getPosition()
+    public function getPosition(): int
     {
         return $this->position;
     }
 
-    /**
-     * @param int $position
-     */
-    public function setPosition($position)
+    public function setPosition(int $position): void
     {
         $this->position = $position;
     }
 
-    /**
-     * @return int
-     */
     public function getAnswerField(): int
     {
         return $this->answer_field;
     }
 
-    /**
-     * @param int $answer_field
-     */
-    public function setAnswerField($answer_field)
+    public function setAnswerField(int $answer_field): void
     {
         $this->answer_field = $answer_field;
     }

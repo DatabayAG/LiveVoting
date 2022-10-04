@@ -11,18 +11,8 @@ use ilLiveVotingPlugin;
 use LiveVoting\User\xlvoUser;
 use LiveVoting\Utils\LiveVotingTrait;
 use srag\DIC\LiveVoting\DICTrait;
+use ilException;
 
-/**
- * Class: InitialisationManager
- *
- * @package LiveVoting\Context
- *
- * The InitialisationManager provides different bootstrap behaviors for ilias to enhance performance.
- *
- * User: Nicolas Schaefli <ns@studer-raimann.ch>
- * Date: 10/7/16
- * Time: 1:50 PM
- */
 final class InitialisationManager
 {
     use DICTrait;
@@ -38,10 +28,9 @@ final class InitialisationManager
      * Starts ILIAS without user and rbag management.
      * Languages, templates, error handling and database are fully loaded.
      *
-     * @return void
-     * @throws Exception   Thrown if no compatible ILIAS version could be found.
+     * @throws ilException   Thrown if no compatible ILIAS version could be found.
      */
-    final public static function startMinimal()
+    public static function startMinimal(): void
     {
         switch (true) {
             case self::version()->is7():
@@ -51,7 +40,7 @@ final class InitialisationManager
                 Initialisation\Version\v6\xlvoBasicInitialisation::init();
                 break;
             default:
-                throw new Exception("Can't find bootstrap code for the given ILIAS version.");
+                throw new ilException("Can't find bootstrap code for the given ILIAS version.");
         }
 
         xlvoUser::getInstance()->setIdentifier(session_id())->setType(xlvoUser::TYPE_PIN);
@@ -60,9 +49,9 @@ final class InitialisationManager
     /**
      * Optimised ILIAS start with user management.
      *
-     * @throws Exception When the user object is invalid.
+     * @throws ilException When the user object is invalid.
      */
-    final public static function startLight()
+    public static function startLight(): void
     {
         xlvoInitialisation::init();
 
@@ -72,6 +61,6 @@ final class InitialisationManager
             return;
         }
 
-        throw new Exception("ILIAS light start failed because the user management returned an invalid user object.");
+        throw new ilException("ILIAS light start failed because the user management returned an invalid user object.");
     }
 }

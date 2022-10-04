@@ -8,20 +8,12 @@ use LiveVoting\Option\xlvoOption;
 use LiveVoting\QuestionTypes\xlvoResultGUI;
 use LiveVoting\Vote\xlvoVote;
 
-/**
- * Class xlvoSingleVoteResultGUI
- *
- * @package LiveVoting\QuestionTypes\SingleVote
- * @author  Oskar Truffer <ot@studer-raimann.ch>
- */
 class xlvoSingleVoteResultGUI extends xlvoResultGUI
 {
     /**
      * @param xlvoVote[] $votes
-     *
-     * @return string
      */
-    public function getTextRepresentation(array $votes)
+    public function getTextRepresentation(array $votes): string
     {
         if (!count($votes)) {
             return "";
@@ -41,10 +33,8 @@ class xlvoSingleVoteResultGUI extends xlvoResultGUI
 
     /**
      * @param xlvoVote[] $votes
-     *
-     * @return string
      */
-    public function getAPIRepresentation(array $votes)
+    public function getAPIRepresentation(array $votes): string
     {
         if (!count($votes)) {
             return "";

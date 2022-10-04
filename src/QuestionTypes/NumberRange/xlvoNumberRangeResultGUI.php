@@ -7,35 +7,22 @@ namespace LiveVoting\QuestionTypes\NumberRange;
 use LiveVoting\QuestionTypes\xlvoResultGUI;
 use LiveVoting\Vote\xlvoVote;
 
-/**
- * Class xlvoNumberRangeResultGUI
- *
- * @package LiveVoting\QuestionTypes\NumberRange
- * @author  Nicolas Schäfli <ns@studer-raimann.ch>
- */
 class xlvoNumberRangeResultGUI extends xlvoResultGUI
 {
     /**
      * @param xlvoVote[] $votes
-     *
-     * @return string
      */
-    public function getTextRepresentation(array $votes)
+    public function getTextRepresentation(array $votes): string
     {
         return $this->createCSV($votes);
     }
 
-    /**
-     * @param array $votes The votes which should be used to create the csv string.
-     *
-     * @return string
-     */
-    private function createCSV(array $votes)
+    private function createCSV(array $votes): string
     {
         $testVotes = [];
 
         foreach ($votes as $vote) {
-            $percentage = (int) $this->voting->getPercentage() === 1 ? ' %' : '';
+            $percentage = $this->voting->getPercentage() === 1 ? ' %' : '';
             $testVotes[] = "{$vote->getFreeInput()}{$percentage}";
         }
 
@@ -44,10 +31,8 @@ class xlvoNumberRangeResultGUI extends xlvoResultGUI
 
     /**
      * @param xlvoVote[] $votes
-     *
-     * @return string
      */
-    public function getAPIRepresentation(array $votes)
+    public function getAPIRepresentation(array $votes): string
     {
         return $this->createCSV($votes);
     }

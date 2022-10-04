@@ -8,28 +8,20 @@ use LiveVoting\Option\xlvoOption;
 use LiveVoting\QuestionTypes\xlvoResultGUI;
 use LiveVoting\Vote\xlvoVote;
 
-/**
- * Class xlvoFreeOrderResultGUI
- *
- * @package LiveVoting\QuestionTypes\FreeOrder
- * @author  Oskar Truffer <ot@studer-raimann.ch>
- */
 class xlvoFreeOrderResultGUI extends xlvoResultGUI
 {
     /**
      * @param xlvoVote[] $votes
-     *
-     * @return string
      */
-    public function getTextRepresentation(array $votes)
+    public function getTextRepresentation(array $votes): string
     {
         $strings = array();
         if (!count($votes)) {
             return "";
-        } else {
-            $vote = array_shift($votes);
         }
-        $json_decode = json_decode($vote->getFreeInput());
+
+        $vote = array_shift($votes);
+        $json_decode = json_decode($vote->getFreeInput(), false, 512, JSON_THROW_ON_ERROR);
         if (!is_array($json_decode)) {
             return "";
         }
@@ -47,18 +39,16 @@ class xlvoFreeOrderResultGUI extends xlvoResultGUI
 
     /**
      * @param xlvoVote[] $votes
-     *
-     * @return string
      */
-    public function getAPIRepresentation(array $votes)
+    public function getAPIRepresentation(array $votes): string
     {
         $strings = array();
         if (!count($votes)) {
             return "";
-        } else {
-            $vote = array_shift($votes);
         }
-        $json_decode = json_decode($vote->getFreeInput());
+
+        $vote = array_shift($votes);
+        $json_decode = json_decode($vote->getFreeInput(), false, 512, JSON_THROW_ON_ERROR);
         if (!is_array($json_decode)) {
             return "";
         }

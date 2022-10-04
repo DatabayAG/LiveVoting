@@ -6,80 +6,50 @@ namespace LiveVoting\Round;
 
 use LiveVoting\Cache\CachingActiveRecord;
 
-/**
- * Class xlvoRound
- *
- * @package LiveVoting\Round
- * @author  : Oskar Truffer <ot@studer-raimann.ch>
- *
- * A voting can go for several rounds. This active Record tracks these rounds
- *
- */
 class xlvoRound extends CachingActiveRecord
 {
     public const TABLE_NAME = 'rep_robj_xlvo_round_n';
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      * @db_is_primary       true
      * @con_sequence        true
      */
-    protected $id;
+    protected int $id;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $obj_id;
+    protected int $obj_id;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $round_number;
+    protected int $round_number;
     /**
-     * @var string
-     *
      * @db_has_field        true
      * @db_fieldtype        text
      * @db_length           256
      */
-    protected $title;
+    protected string $title;
 
     /**
-     * @return string
      * @deprecated
      */
-    public static function returnDbTableName()
+    public static function returnDbTableName(): string
     {
         return self::TABLE_NAME;
     }
 
-    /**
-     * Gets you the latest round for this object. creates the first one if there is no round yet.
-     *
-     * @param $obj_id int
-     *
-     * @return xlvoRound
-     */
-    public static function getLatestRound($obj_id)
+    public static function getLatestRound(int $obj_id): xlvoRound
     {
-        return xlvoRound::find(self::getLatestRoundId($obj_id));
+        return self::find(self::getLatestRoundId($obj_id));
     }
 
-    /**
-     * @param $obj_id
-     *
-     * @return int
-     */
-    public static function getLatestRoundId($obj_id)
+    public static function getLatestRoundId(int $obj_id): int
     {
         $q = "SELECT result.id FROM (SELECT id FROM " . self::TABLE_NAME . " WHERE " . self::TABLE_NAME
             . ".obj_id = %s) AS result ORDER BY result.id DESC LIMIT 1";
@@ -88,20 +58,13 @@ class xlvoRound extends CachingActiveRecord
         $data = self::dic()->database()->fetchObject($result);
 
         if (!isset($data->id)) {
-            $round = self::createFirstRound($obj_id);
-
-            return $round->getId();
+            return self::createFirstRound($obj_id)->getId();
         }
 
         return $data->id;
     }
 
-    /**
-     * @param $obj_id int
-     *
-     * @return xlvoRound
-     */
-    public static function createFirstRound($obj_id)
+    public static function createFirstRound(int $obj_id): xlvoRound
     {
         $round = new xlvoRound();
         $round->setRoundNumber(1);
@@ -111,74 +74,47 @@ class xlvoRound extends CachingActiveRecord
         return $round;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return string
-     */
-    public function getConnectorContainerName()
+    public function getConnectorContainerName(): string
     {
         return self::TABLE_NAME;
     }
 
-    /**
-     * @return int
-     */
-    public function getObjId()
+    public function getObjId(): int
     {
         return $this->obj_id;
     }
 
-    /**
-     * @param int $obj_id
-     */
-    public function setObjId($obj_id)
+    public function setObjId(int $obj_id): void
     {
         $this->obj_id = $obj_id;
     }
 
-    /**
-     * @return int
-     */
-    public function getRoundNumber()
+    public function getRoundNumber(): int
     {
         return $this->round_number;
     }
 
-    /**
-     * @param int $round_number
-     */
-    public function setRoundNumber($round_number)
+    public function setRoundNumber(int $round_number): void
     {
         $this->round_number = $round_number;
     }
 
-    /**
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @param string $title
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }

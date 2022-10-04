@@ -21,13 +21,9 @@ use ilUserRequestTargetAdjustment;
 use ilMainMenuGUI;
 use ilSession;
 use ilGlobalTemplate;
+use ilLoggerFactory;
 
 /**
- * Class xlvoInitialisation
- *
- * @package     LiveVoting\Context
- * @author      Fabian Schmid <fs@studer-raimann.ch>
- *
  * Initializes a ILIAS environment depending on Context (PIN or ILIAS).
  * This is used in every entry-point for users and AJAX requests
  *
@@ -41,21 +37,10 @@ class xlvoInitialisation extends ilInitialisation
     public const USE_OWN_GLOBAL_TPL = true;
     public const CONTEXT_PIN = 1;
     public const CONTEXT_ILIAS = 2;
-    /**
-     * @var ilTree
-     */
-    protected static $tree;
-    /**
-     * @var int
-     */
-    protected static $context = self::CONTEXT_PIN;
+    protected static ilTree $tree;
+    protected static int $context = self::CONTEXT_PIN;
 
-    /**
-     * xlvoInitialisation constructor.
-     *
-     * @param int $context
-     */
-    protected function __construct($context = null)
+    protected function __construct(int $context = null)
     {
         if ($context) {
             self::saveContext($context);
@@ -66,20 +51,15 @@ class xlvoInitialisation extends ilInitialisation
     }
 
     /**
-     * @param int $context
-     *
      * @throws Exception
      */
-    public static function saveContext($context)
+    public static function saveContext(int $context): void
     {
         self::setContext($context);
         xlvoContext::setContext($context);
     }
 
-    /**
-     *
-     */
-    protected function run()
+    protected function run(): void
     {
         //		$this->setContext(self::CONTEXT_ILIAS);
         switch (self::getContext()) {
@@ -95,26 +75,17 @@ class xlvoInitialisation extends ilInitialisation
         }
     }
 
-    /**
-     * @return int
-     */
-    public static function getContext()
+    public static function getContext(): int
     {
         return self::$context;
     }
 
-    /**
-     * @param int $context
-     */
-    public static function setContext($context)
+    public static function setContext(int $context): void
     {
         self::$context = $context;
     }
 
-    /**
-     *
-     */
-    protected static function initHTML2()
+    protected static function initHTML2(): void
     {
         global $DIC;
         if ($DIC->offsetExists("tpl")) {
@@ -164,13 +135,11 @@ class xlvoInitialisation extends ilInitialisation
         }
     }
 
-    /**
-     * copied parent function, commented out the lti section
-     */
-    protected static function initHTML()
+    protected static function initHTML(): void
     {
         if (!self::version()->is6()) {
-            return parent::initHTML();
+            parent::initHTML();
+            return;
         }
         // copied parent function
         global $ilUser, $DIC;
@@ -256,7 +225,7 @@ class xlvoInitialisation extends ilInitialisation
             // or not set at all (then we want the last offset, e.g. being used from a session var).
             // So I added the wrapping if statement. Seems to work (hopefully).
             // Alex April 14th 2006
-            if (isset($_GET['offset']) && $_GET['offset'] != "") {                            // added April 14th 2006
+            if (isset($_GET['offset']) && $_GET['offset'] !== "") {                            // added April 14th 2006
                 $_GET['offset'] = (int) $_GET['offset'];        // old code
             }
 
@@ -270,7 +239,7 @@ class xlvoInitialisation extends ilInitialisation
         }
     }
 
-    public static function initUIFramework(Container $c)
+    public static function initUIFramework(Container $c): void
     {
         parent::initUIFramework($c);
         parent::initRefinery($c);
@@ -278,10 +247,10 @@ class xlvoInitialisation extends ilInitialisation
 
     /**
      * @param string $a_name
-     * @param string $a_class
+     * @param string|object $a_class
      * @param null   $a_source_file
      */
-    protected static function initGlobal($a_name, $a_class, $a_source_file = null)
+    protected static function initGlobal($a_name, $a_class, $a_source_file = null): void
     {
         global $DIC;
 
@@ -295,7 +264,7 @@ class xlvoInitialisation extends ilInitialisation
     /**
      *
      */
-    public static function initILIAS2()
+    public static function initILIAS2(): void
     {
         global $DIC;
         require_once 'include/inc.ilias_version.php';
@@ -312,19 +281,16 @@ class xlvoInitialisation extends ilInitialisation
     /**
      *
      */
-    public static function initDependencyInjection()
+    public static function initDependencyInjection(): void
     {
         global $DIC;
         $DIC = new Container();
-        $DIC["ilLoggerFactory"] = function ($c) {
+        $DIC["ilLoggerFactory"] = static function ($c) {
             return ilLoggerFactory::getInstance();
         };
     }
 
-    /**
-     *
-     */
-    protected static function initClient()
+    protected static function initClient(): void
     {
         self::determineClient();
         self::initClientIniFile();
@@ -356,40 +322,32 @@ class xlvoInitialisation extends ilInitialisation
         self::initLog();
     }
 
-    /**
-     * set Custom Session handler which does not use db
-     */
-    public static function setSessionHandler()
+    public static function setSessionHandler(): void
     {
         $session = new xlvoSessionHandler();
 
-        session_set_save_handler(array(
+        session_set_save_handler([
             &$session,
             "open",
-        ), array(
+        ], [
             &$session,
             "close",
-        ), array(
+        ], [
             &$session,
             "read",
-        ), array(
+        ], [
             &$session,
             "write",
-        ), array(
+        ], [
             &$session,
             "destroy",
-        ), array(
+        ], [
             &$session,
             "gc",
-        ));
+        ]);
     }
 
-    /**
-     * @param int $context
-     *
-     * @return xlvoInitialisation
-     */
-    public static function init($context = null)
+    public static function init(int $context = null): xlvoInitialisation
     {
         return new self($context);
     }

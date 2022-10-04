@@ -6,152 +6,103 @@ namespace LiveVoting\Conf;
 
 use ilSetting;
 use LiveVoting\Cache\CachingActiveRecord;
+use arConnector;
 
 /**
- * Class xlvoConf
- *
- * @package    LiveVoting\Conf
  * @author     Fabian Schmid <fs@studer-raimann.ch>
- *
  * @deprecated Use srag\ActiveRecordConfig\LiveVoting
  */
 class xlvoConf extends CachingActiveRecord
 {
     /**
-     * @var int
-     *
      * @deprecated
      */
     public const CONFIG_VERSION = 2;
     /**
-     * @var string
-     *
      * @deprecated
      */
     public const F_CONFIG_VERSION = 'config_version';
     /**
-     * @var string
-     *
      * @deprecated
      */
     public const F_ALLOW_FREEZE = 'allow_freeze';
     /**
-     * @var string
-     *
      * @deprecated
      */
     public const F_ALLOW_FULLSCREEN = 'allow_fullscreen';
     /**
-     * @var string
-     *
      * @deprecated
      */
     public const F_ALLOW_SHORTLINK_VOTE = 'allow_shortlink';
     /**
-     * @var string
-     *
      * @deprecated
      */
     public const F_ALLOW_SHORTLINK_VOTE_LINK = 'allow_shortlink_link';
     /**
-     * @var string
-     *
      * @deprecated
      */
     public const F_BASE_URL_VOTE = 'base_url';
     /**
-     * @var string
-     *
      * @deprecated
      */
     public const F_ALLOW_GLOBAL_ANONYMOUS = 'global_anonymous';
     /**
-     * @var string
-     *
      * @deprecated
      */
     public const F_REGENERATE_TOKEN = 'regenerate_token';
     /**
-     * @var string
-     *
      * @deprecated
      */
     public const F_USE_QR = 'use_qr';
     /**
-     * @var string
-     *
      * @deprecated
      */
     public const REWRITE_RULE_VOTE = "RewriteRule ^/?vote(/\\w*)? /Customizing/global/plugins/Services/Repository/RepositoryObject/LiveVoting/pin.php?xlvo_pin=$1 [L]";
     /**
-     * @var string
-     *
      * @deprecated
      */
     public const API_URL = './Customizing/global/plugins/Services/Repository/RepositoryObject/LiveVoting/ilias.php';
     /**
-     * @var string
-     *
      * @deprecated
      */
     public const RESULT_API_URL = './Customizing/global/plugins/Services/Repository/RepositoryObject/LiveVoting/api.php';
     /**
-     * @var string
-     *
      * @deprecated
      */
     public const F_REQUEST_FREQUENCY = 'request_frequency';
     /**
-     * @var string
-     *
      * @deprecated
      */
     public const F_RESULT_API = 'result_api';
     /**
-     * @var string
-     *
      * @deprecated
      */
     public const F_USE_SERIF_FONT_FOR_PINS = 'use_serif_font_for_pins';
     /**
-     * @var string
-     *
      * @deprecated
      */
     public const F_API_TYPE = 'api_type';
     /**
-     * @var string
-     *
      * @deprecated
      */
     public const F_API_TOKEN = 'api_token';
     /**
-     * @var string
-     *
      * @deprecated
      */
     public const F_USE_GLOBAL_CACHE = 'use_global_cache';
     /**
-     * @var string
-     *
      * @deprecated
      */
     public const F_ACTIVATE_POWERPOINT_EXPORT = 'ppt_export';
     /**
-     * @var string
-     *
      * @deprecated
      */
     public const F_ALLOW_SHORTLINK_PRESENTER = 'allow_shortlink_presenter';
     /**
-     * @var string
-     *
      * @deprecated
      */
     public const F_ALLOW_SHORTLINK_PRESENTER_LINK = 'allow_shortlink_link_presenter';
     /**
-     * @var string
-     *
      * @deprecated
      */
     public const REWRITE_RULE_PRESENTER = "RewriteRule ^/?presenter(/\\w*)(/\\w*)(/\\w*)?(/\\w*)? /Customizing/global/plugins/Services/Repository/RepositoryObject/LiveVoting/presenter.php?xlvo_pin=$1&xlvo_puk=$2&xlvo_voting=$3&xlvo_ppt=$4 [L]";
@@ -159,46 +110,32 @@ class xlvoConf extends CachingActiveRecord
      * Min client update frequency in seconds.
      * This value should never be set bellow 1 second.
      *
-     * @var string
-     *
      * @deprecated
      */
     public const MIN_CLIENT_UPDATE_FREQUENCY = 1;
     /**
      * Max client update frequency in seconds.
      *
-     * @var string
-     *
      * @deprecated
      */
     public const MAX_CLIENT_UPDATE_FREQUENCY = 60;
     /**
-     * @var string
-     *
      * @deprecated
      */
     public const TABLE_NAME = 'xlvo_config';
     /**
-     * @var array
-     *
      * @deprecated
      */
-    protected static $cache = array();
+    protected static array $cache = [];
     /**
-     * @var array
-     *
      * @deprecated
      */
-    protected static $cache_loaded = array();
+    protected static array $cache_loaded = [];
     /**
-     * @var bool
-     *
      * @deprecated
      */
-    protected $ar_safe_read = false;
+    protected bool $ar_safe_read = false;
     /**
-     * @var string
-     *
      * @db_has_field        true
      * @db_is_unique        true
      * @db_is_primary       true
@@ -208,34 +145,28 @@ class xlvoConf extends CachingActiveRecord
      *
      * @deprecated
      */
-    protected $name;
+    protected string $name;
     /**
-     * @var string
-     *
      * @db_has_field        true
      * @db_fieldtype        text
      * @db_length           4000
      *
      * @deprecated
      */
-    protected $value;
+    protected string $value;
 
     /**
-     * @return string
-     *
      * @deprecated
      */
-    public static function returnDbTableName()
+    public static function returnDbTableName(): string
     {
         return self::TABLE_NAME;
     }
 
     /**
-     * @return bool
-     *
      * @deprecated
      */
-    public static function isLatexEnabled()
+    public static function isLatexEnabled(): bool
     {
         $mathJaxSetting = new ilSetting("MathJax");
 
@@ -243,15 +174,13 @@ class xlvoConf extends CachingActiveRecord
     }
 
     /**
-     * @return string
-     *
      * @deprecated
      */
-    public static function getApiToken()
+    public static function getApiToken(): string
     {
         $token = self::getConfig(self::F_API_TOKEN);
         if (!$token) {
-            $token = md5(time()); // TODO: Use other not depcreated, safer hash algo (Like `hash("sha256", $hash)`)
+            $token = md5((string) time()); // TODO: Use other not depcreated, safer hash algo (Like `hash("sha256", $hash)`)
             self::set(self::F_API_TOKEN, $token);
         }
 
@@ -259,17 +188,15 @@ class xlvoConf extends CachingActiveRecord
     }
 
     /**
-     * @param $name
-     *
      * @return mixed
-     *
      * @deprecated
      */
     public static function getConfig($name)
     {
         if (!self::$cache_loaded[$name]) {
+            // TODO
             $obj = new self($name);
-            self::$cache[$name] = json_decode($obj->getValue());
+            self::$cache[$name] = json_decode($obj->getValue(), false, 512, JSON_THROW_ON_ERROR);
             self::$cache_loaded[$name] = true;
         }
 
@@ -277,55 +204,44 @@ class xlvoConf extends CachingActiveRecord
     }
 
     /**
-     * @return string
-     *
      * @deprecated
      */
-    public function getValue()
+    public function getValue(): string
     {
         return $this->value;
     }
 
     /**
-     * @param string $value
-     *
      * @deprecated
      */
-    public function setValue($value)
+    public function setValue(string $value): void
     {
         $this->value = $value;
     }
 
     /**
-     * @param $name
-     * @param $value
-     *
      * @deprecated
      */
-    public static function set($name, $value)
+    public static function set($name, $value): void
     {
         $obj = new self($name);
-        $obj->setValue(json_encode($value));
+        $obj->setValue(json_encode($value, JSON_THROW_ON_ERROR));
 
         $obj->store();
     }
 
     /**
-     * @return string
-     *
      * @deprecated
      */
-    public static function getFullApiURL()
+    public static function getFullApiURL(): string
     {
         return self::getBaseVoteURL() . ltrim(self::API_URL, "./");
     }
 
     /**
-     * @return string
-     *
      * @deprecated
      */
-    public static function getBaseVoteURL()
+    public static function getBaseVoteURL(): string
     {
         if (self::getConfig(self::F_ALLOW_SHORTLINK_VOTE)) {
             $url = self::getConfig(self::F_BASE_URL_VOTE);
@@ -339,65 +255,53 @@ class xlvoConf extends CachingActiveRecord
     }
 
     /**
-     * @return bool
-     *
      * @deprecated
      */
-    public static function isConfigUpToDate()
+    public static function isConfigUpToDate(): bool
     {
-        return self::getConfig(self::F_CONFIG_VERSION) == self::CONFIG_VERSION;
+        return self::getConfig(self::F_CONFIG_VERSION) === self::CONFIG_VERSION;
     }
 
     /**
      * @deprecated
      */
-    public static function load()
+    public static function load(): void
     {
         parent::get();
     }
 
     /**
-     * @param string $name
-     *
      * @deprecated
      */
-    public static function remove($name)
+    public static function remove(string $name): void
     {
         /**
          * @var xlvoConf $obj
          */
         $obj = self::find($name);
-        if ($obj !== null) {
-            $obj->delete();
-        }
+        $obj?->delete();
     }
 
     /**
-     * @return string
-     *
      * @deprecated
      */
-    public function getConnectorContainerName()
+    public function getConnectorContainerName(): string
     {
         return self::TABLE_NAME;
     }
 
     /**
-     * @return string
-     *
      * @deprecated
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
     /**
-     * @param string $name
-     *
      * @deprecated
      */
-    public function setName($name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }

@@ -8,25 +8,13 @@ use Endroid\QrCode\QrCode;
 use ilLiveVotingPlugin;
 use srag\DIC\LiveVoting\DICTrait;
 
-/**
- * Class xlvoQR
- *
- * @package LiveVoting\Player\QR
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 class xlvoQR
 {
     use DICTrait;
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
-    /**
-     * @param $content
-     * @param $size
-     *
-     * @return string
-     */
-    public static function getImageDataString($content, $size)
+    public static function getImageDataString(string $content, int $size): string
     {
         $qrCodeLarge = new QrCode($content);
         $qrCodeLarge->setErrorCorrection('high');

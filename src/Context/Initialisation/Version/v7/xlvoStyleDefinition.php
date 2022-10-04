@@ -9,85 +9,51 @@ use ilSkinStyleXML;
 use LiveVoting\Utils\LiveVotingTrait;
 use srag\DIC\LiveVoting\DICTrait;
 
-/**
- * Class xlvoStyleDefinition
- *
- * @package LiveVoting\Context\Initialisation\Version\v7
- */
 class xlvoStyleDefinition
 {
     use DICTrait;
     use LiveVotingTrait;
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    /**
-     * @var xlvoSkin
-     */
-    protected $skin;
+    protected xlvoSkin $skin;
 
-    /**
-     * xlvoStyleDefinition constructor.
-     */
     public function __construct()
     {
         $this->skin = new xlvoSkin();
     }
 
-    /**
-     * @return string
-     */
-    public function getSkin()
+    public function getSkin(): xlvoSkin
     {
         return $this->skin;
     }
 
-    /**
-     * @return string
-     */
-    public function getImageDirectory($style_id)
+    public function getImageDirectory($style_id): string
     {
         return '';
     }
 }
 
-/**
- * Class xlvoSkin
- *
- * @package LiveVoting\Context\Initialisation\Version\v7
- */
 class xlvoSkin
 {
     use DICTrait;
 
-    /**
-     * @return bool
-     */
-    public function hasStyle()
+    public function hasStyle(): bool
     {
         return false;
     }
 
-    /**
-     * @return ilSkinStyleXML
-     */
-    public function getDefaultStyle()
+    public function getDefaultStyle(): ilSkinStyleXML
     {
         // required with ilias 5.4
         return new ilSkinStyleXML($this->getId(), $this->getName());
     }
 
-    /**
-     * @return string
-     */
-    public function getId()
+    public function getId(): string
     {
         return 'delos';
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return 'Delos';
     }

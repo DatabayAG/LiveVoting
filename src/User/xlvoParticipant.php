@@ -8,95 +8,53 @@ use ilLiveVotingPlugin;
 use LiveVoting\Utils\LiveVotingTrait;
 use srag\DIC\LiveVoting\DICTrait;
 
-/**
- * Class xlvoParticipant
- *
- * @package LiveVoting\User
- * @author  Oskar Truffer <ot@studer-raimann.ch>
- */
 class xlvoParticipant
 {
     use DICTrait;
     use LiveVotingTrait;
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    /**
-     * @var int
-     */
-    protected $user_id;
-    /**
-     * @var string
-     */
-    protected $user_identifier;
-    /**
-     * @var int
-     */
-    protected $user_id_type;
-    /**
-     * @var int
-     */
-    protected $number;
+    protected int $user_id;
+    protected string $user_identifier;
+    protected int $user_id_type;
+    protected int $number;
 
-    /**
-     * @return int
-     */
-    public function getUserId()
+    public function getUserId(): int
     {
         return $this->user_id;
     }
 
-    /**
-     * @param int $user_id
-     */
-    public function setUserId($user_id)
+    public function setUserId(int $user_id): void
     {
         $this->user_id = $user_id;
     }
 
-    /**
-     * @return string
-     */
-    public function getUserIdentifier()
+    public function getUserIdentifier(): string
     {
         return $this->user_identifier;
     }
 
-    /**
-     * @param string $user_identifier
-     */
-    public function setUserIdentifier($user_identifier)
+    public function setUserIdentifier(string $user_identifier): void
     {
         $this->user_identifier = $user_identifier;
     }
 
-    /**
-     * @return int
-     */
-    public function getUserIdType()
+    public function getUserIdType(): int
     {
         return $this->user_id_type;
     }
 
-    /**
-     * @param int $user_id_type
-     */
-    public function setUserIdType($user_id_type)
+    public function setUserIdType(int $user_id_type): void
     {
         $this->user_id_type = $user_id_type;
     }
 
-    /**
-     * @return int
-     */
-    public function getNumber()
+    public function getNumber(): int
     {
         return $this->number;
     }
 
-    /**
-     * @param int $number
-     */
-    public function setNumber($number)
+    public function setNumber(int $number): void
     {
         $this->number = $number;
     }

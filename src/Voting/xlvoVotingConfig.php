@@ -24,8 +24,8 @@ use LiveVoting\Puk\Puk;
  */
 class xlvoVotingConfig extends CachingActiveRecord
 {
-    public const B_FROZEN_ALWAY_OFF = 0;
-    public const B_FROZEN_ALWAY_ON = 1;
+    public const B_FROZEN_ALWAY_OFF = false;
+    public const B_FROZEN_ALWAY_ON = true;
     public const B_FROZEN_REUSE = 2;
     public const B_RESULTS_ALWAY_OFF = 0;
     public const B_RESULTS_ALWAY_ON = 1;
@@ -41,149 +41,105 @@ class xlvoVotingConfig extends CachingActiveRecord
     public const F_SHOW_ATTENDEES = "show_attendees";
     public const TABLE_NAME = 'rep_robj_xlvo_config_n';
     /**
-     * @var int
-     *
      * @db_is_primary       true
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $obj_id;
+    protected int $obj_id;
     /**
-     * @var string
-     *
      * @db_has_field        true
      * @db_fieldtype        text
      * @db_length           256
      */
-    protected $pin = '';
+    protected string $pin = '';
     /**
-     * @var bool
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           1
      */
-    protected $obj_online = true;
+    protected bool $obj_online = true;
     /**
-     * @var bool
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           1
      */
-    protected $anonymous = true;
+    protected bool $anonymous = true;
     /**
-     * @var bool
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           1
      */
-    protected $terminable = false;
+    protected bool $terminable = false;
     /**
-     * @var string
-     *
      * @db_has_field        true
      * @db_fieldtype        timestamp
      */
-    protected $start_date;
+    protected string $start_date;
     /**
-     * @var string
-     *
      * @db_has_field        true
      * @db_fieldtype        timestamp
      */
-    protected $end_date;
+    protected string $end_date;
     /**
-     * @var bool
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           1
      */
-    protected $reuse_status = true;
+    protected bool $reuse_status = true;
     /**
-     * @var string
-     *
      * @db_has_field        true
      * @db_fieldtype        timestamp
      */
-    protected $last_access = '';
+    protected string $last_access = '';
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           1
      */
-    protected $frozen_behaviour = self::B_FROZEN_ALWAY_OFF;
+    protected bool $frozen_behaviour = self::B_FROZEN_ALWAY_OFF;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           1
      */
-    protected $results_behaviour = self::B_RESULTS_ALWAY_OFF;
+    protected int $results_behaviour = self::B_RESULTS_ALWAY_OFF;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           1
      */
-    protected $voting_history = false;
+    protected bool $voting_history = false;
+    protected bool $full_screen = true;
     /**
-     * @var bool
-     */
-    protected $full_screen = true;
-    /**
-     * @var bool
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           1
      */
-    protected $show_attendees = false;
+    protected bool $show_attendees = false;
+    protected bool $self_vote = false;
+    protected bool $keyboard_active = false;
     /**
-     * @var bool
-     */
-    protected $self_vote = false;
-    /**
-     * @var bool
-     */
-    protected $keyboard_active = false;
-    /**
-     * @var string
-     *
      * @db_has_field        true
      * @db_fieldtype        text
      * @db_length           256
      */
-    protected $puk = '';
+    protected string $puk = '';
 
     /**
-     * @return string
      * @deprecated
      */
-    public static function returnDbTableName()
+    public static function returnDbTableName(): string
     {
         return self::TABLE_NAME;
     }
 
-    /**
-     * @return string
-     */
-    public function getConnectorContainerName()
+    public function getConnectorContainerName(): string
     {
         return self::TABLE_NAME;
     }
 
-    /**
-     * @return bool
-     */
-    public function isAvailableForUser()
+    public function isAvailableForUser(): bool
     {
         if (!$this->getObjId()) {
             return false;
@@ -192,7 +148,7 @@ class xlvoVotingConfig extends CachingActiveRecord
         $ref_ids = ilObject2::_getAllReferences($this->getObjId());
         foreach ($ref_ids as $ref_id) {
             $item_data = ilObjectActivation::getItem($ref_id);
-            if ($item_data['timing_type'] == ilObjectActivation::TIMINGS_ACTIVATION) {
+            if ($item_data['timing_type'] === ilObjectActivation::TIMINGS_ACTIVATION) {
                 if ($item_data['timing_start'] > time() || $item_data['timing_end'] < time()) {
                     $available = false;
                 }
@@ -202,29 +158,17 @@ class xlvoVotingConfig extends CachingActiveRecord
         return $available;
     }
 
-    /**
-     * @return int
-     */
-    public function getObjId()
+    public function getObjId(): int
     {
         return $this->obj_id;
     }
 
-    /**
-     * @param int $obj_id
-     */
-    public function setObjId($obj_id)
+    public function setObjId(int $obj_id): void
     {
         $this->obj_id = $obj_id;
     }
 
-    /**
-     * @param bool $force_not_format
-     * @param int ref_id
-     *
-     * @return string
-     */
-    public function getShortLinkURL($force_not_format = false, $ref_id = 0)
+    public function getShortLinkURL(bool $force_not_format = false, int $ref_id = 0): string
     {
         global $DIC;
 
@@ -232,7 +176,7 @@ class xlvoVotingConfig extends CachingActiveRecord
 
         switch ($this->isAnonymous()) {
             case true:
-                $shortLinkEnabled = boolval(xlvoConf::getConfig(xlvoConf::F_ALLOW_SHORTLINK_VOTE));
+                $shortLinkEnabled = (bool) xlvoConf::getConfig(xlvoConf::F_ALLOW_SHORTLINK_VOTE);
 
                 if ($shortLinkEnabled) {
                     $url = xlvoConf::getConfig(xlvoConf::F_ALLOW_SHORTLINK_VOTE_LINK);
@@ -253,47 +197,27 @@ class xlvoVotingConfig extends CachingActiveRecord
         return $url;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isAnonymous()
+    public function isAnonymous(): bool
     {
         return $this->anonymous;
     }
 
-    /**
-     * @param boolean $anonymous
-     */
-    public function setAnonymous($anonymous)
+    public function setAnonymous(bool $anonymous): void
     {
         $this->anonymous = $anonymous;
     }
 
-    /**
-     * @return int
-     */
-    public function getPin()
+    public function getPin(): string
     {
         return $this->pin;
     }
 
-    /**
-     * @param int $pin
-     */
-    public function setPin($pin)
+    public function setPin(string $pin): void
     {
         $this->pin = $pin;
     }
 
-    /**
-     * @param int|null $voting_id
-     * @param bool     $power_point
-     * @param bool     $force_not_format
-     * @param bool     $https
-     *
-     * @return string
-     */
-    public function getPresenterLink($voting_id = null, $power_point = false, $force_not_format = false, $https = true)
+    public function getPresenterLink(int $voting_id = null, bool $power_point = false, bool $force_not_format = false, bool $https = true): ?string
     {
         $url = null;
 
@@ -301,7 +225,7 @@ class xlvoVotingConfig extends CachingActiveRecord
             return null;
         }
 
-        $shortLinkEnabled = boolval(xlvoConf::getConfig(xlvoConf::F_ALLOW_SHORTLINK_PRESENTER));
+        $shortLinkEnabled = (bool) xlvoConf::getConfig(xlvoConf::F_ALLOW_SHORTLINK_PRESENTER);
 
         if ($shortLinkEnabled) {
             $url = xlvoConf::getConfig(xlvoConf::F_ALLOW_SHORTLINK_PRESENTER_LINK);
@@ -332,232 +256,148 @@ class xlvoVotingConfig extends CachingActiveRecord
         }
 
         if (!$https) {
-            $url = substr($url, (stripos($url, "://") + 3));
+            $url = substr($url, (strpos($url, "://") + 3));
         }
 
         return $url;
     }
 
-    /**
-     * @return string
-     */
-    public function getPuk()
+    public function getPuk(): string
     {
         return $this->puk;
     }
 
-    /**
-     * @param string $puk
-     */
-    public function setPuk($puk)
+    public function setPuk(string $puk): void
     {
         $this->puk = $puk;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isObjOnline()
+    public function isObjOnline(): bool
     {
         return $this->obj_online;
     }
 
-    /**
-     * @param boolean $obj_online
-     */
-    public function setObjOnline($obj_online)
+    public function setObjOnline(bool $obj_online): void
     {
         $this->obj_online = $obj_online;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isTerminable()
+    public function isTerminable(): bool
     {
         return $this->terminable;
     }
 
-    /**
-     * @param boolean $terminable
-     */
-    public function setTerminable($terminable)
+    public function setTerminable(bool $terminable): void
     {
         $this->terminable = $terminable;
     }
 
-    /**
-     * @return string
-     */
-    public function getStartDate()
+    public function getStartDate(): string
     {
         return $this->start_date;
     }
 
-    /**
-     * @param string $start_date
-     */
-    public function setStartDate($start_date)
+    public function setStartDate(string $start_date): void
     {
         $this->start_date = $start_date;
     }
 
-    /**
-     * @return string
-     */
-    public function getEndDate()
+    public function getEndDate(): string
     {
         return $this->end_date;
     }
 
-    /**
-     * @param string $end_date
-     */
-    public function setEndDate($end_date)
+    public function setEndDate(string $end_date): void
     {
         $this->end_date = $end_date;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isReuseStatus()
+    public function isReuseStatus(): bool
     {
         return $this->reuse_status;
     }
 
-    /**
-     * @param boolean $reuse_status
-     */
-    public function setReuseStatus($reuse_status)
+    public function setReuseStatus(bool $reuse_status): void
     {
         $this->reuse_status = $reuse_status;
     }
 
-    /**
-     * @return string
-     */
-    public function getLastAccess()
+    public function getLastAccess(): string
     {
         return $this->last_access;
     }
 
-    /**
-     * @param string $last_access
-     */
-    public function setLastAccess($last_access)
+    public function setLastAccess(string $last_access): void
     {
         $this->last_access = $last_access;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isFullScreen()
+    public function isFullScreen(): bool
     {
         return $this->full_screen;
     }
 
-    /**
-     * @param boolean $full_screen
-     */
-    public function setFullScreen($full_screen)
+    public function setFullScreen(bool $full_screen): void
     {
         $this->full_screen = $full_screen;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isShowAttendees()
+    public function isShowAttendees(): bool
     {
         return $this->show_attendees;
     }
 
-    /**
-     * @param boolean $show_attendees
-     */
-    public function setShowAttendees($show_attendees)
+    public function setShowAttendees(bool $show_attendees): void
     {
         $this->show_attendees = $show_attendees;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isSelfVote()
+    public function isSelfVote(): bool
     {
         return $this->self_vote;
     }
 
-    /**
-     * @param boolean $self_vote
-     */
-    public function setSelfVote($self_vote)
+    public function setSelfVote(bool $self_vote): void
     {
         $this->self_vote = $self_vote;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isKeyboardActive()
+    public function isKeyboardActive(): bool
     {
         return $this->keyboard_active;
     }
 
-    /**
-     * @param boolean $keyboard_active
-     */
-    public function setKeyboardActive($keyboard_active)
+    public function setKeyboardActive(bool $keyboard_active): void
     {
         $this->keyboard_active = $keyboard_active;
     }
 
-    /**
-     * @return int
-     */
-    public function getFrozenBehaviour()
+    public function getFrozenBehaviour(): bool
     {
         return $this->frozen_behaviour;
     }
 
-    /**
-     * @param boolean $frozen_behaviour
-     */
-    public function setFrozenBehaviour($frozen_behaviour)
+    public function setFrozenBehaviour(bool $frozen_behaviour): void
     {
         $this->frozen_behaviour = $frozen_behaviour;
     }
 
-    /**
-     * @return int
-     */
-    public function getResultsBehaviour()
+    public function getResultsBehaviour(): int
     {
         return $this->results_behaviour;
     }
 
-    /**
-     * @param int $results_behaviour
-     */
-    public function setResultsBehaviour($results_behaviour)
+    public function setResultsBehaviour(int $results_behaviour): void
     {
         $this->results_behaviour = $results_behaviour;
     }
 
-    /**
-     * @return int
-     */
-    public function getVotingHistory()
+    public function getVotingHistory(): bool
     {
         return $this->voting_history;
     }
 
-    /**
-     * @param int $voting_history
-     */
-    public function setVotingHistory($voting_history)
+    public function setVotingHistory(bool $voting_history): void
     {
         $this->voting_history = $voting_history;
     }

@@ -31,24 +31,12 @@ class xlvoCache extends ilGlobalCache implements xlvoCacheService, Initialisable
     use DICTrait;
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    /**
-     * @var bool
-     */
-    protected static $override_active = false;
-    /**
-     * @var array
-     */
-    protected static $active_components
-        = array(
-            ilLiveVotingPlugin::PLUGIN_ID,
-        );
+    protected static bool $override_active = false;
+    protected static array $active_components = [
+        ilLiveVotingPlugin::PLUGIN_ID,
+    ];
 
-    /**
-     * @param null $component
-     *
-     * @return xlvoCache
-     */
-    public static function getInstance($component)
+    public static function getInstance(?string $component): xlvoCache
     {
         $service_type = self::getSettings()->getService();
         $xlvoCache = new self($service_type);
@@ -60,17 +48,14 @@ class xlvoCache extends ilGlobalCache implements xlvoCacheService, Initialisable
         return $xlvoCache;
     }
 
-    /**
-     * Init the cache.
-     */
-    public function init()
+    public function init(): void
     {
         $this->initCachingService();
         $this->setActive(true);
         self::setOverrideActive(true);
     }
 
-    protected function initCachingService()
+    protected function initCachingService(): void
     {
         /**
          * @var ilGlobalCacheService $ilGlobalCacheService
@@ -92,15 +77,10 @@ class xlvoCache extends ilGlobalCache implements xlvoCacheService, Initialisable
         }
 
         $this->global_cache = $ilGlobalCacheService;
-        $this->setActive(in_array($this->getComponent(), self::getActiveComponents()));
+        $this->setActive(in_array($this->getComponent(), self::getActiveComponents(), true));
     }
 
-    /**
-     * Checks if live voting is able to use the global cache.
-     *
-     * @return bool
-     */
-    private function isLiveVotingCacheEnabled()
+    private function isLiveVotingCacheEnabled(): ?bool
     {
         try {
             return (int) xlvoConf::getConfig(xlvoConf::F_USE_GLOBAL_CACHE) === 1;
@@ -109,12 +89,7 @@ class xlvoCache extends ilGlobalCache implements xlvoCacheService, Initialisable
         }
     }
 
-    /**
-     * @param $service_type
-     *
-     * @return string
-     */
-    public static function lookupServiceClassName($service_type)
+    public static function lookupServiceClassName(int $service_type): string
     {
         switch ($service_type) {
             case self::TYPE_APC:
@@ -135,21 +110,15 @@ class xlvoCache extends ilGlobalCache implements xlvoCacheService, Initialisable
         }
     }
 
-    /**
-     * @return array
-     */
-    public static function getActiveComponents()
+    public static function getActiveComponents(): array
     {
         return self::$active_components;
     }
 
     /**
-     * @param bool $complete
-     *
-     * @return bool
      * @throws RuntimeException
      */
-    public function flush($complete = false)
+    public function flush(bool $complete = false): bool
     {
         if (!$this->global_cache instanceof ilGlobalCacheService || !$this->isActive()) {
             return false;
@@ -158,39 +127,25 @@ class xlvoCache extends ilGlobalCache implements xlvoCacheService, Initialisable
         return parent::flush($complete);
     }
 
-    /**
-     * @return bool
-     */
-    public function isActive()
+    public function isActive(): bool
     {
         return self::isOverrideActive();
     }
 
-    /**
-     * @return boolean
-     */
-    public static function isOverrideActive()
+    public static function isOverrideActive(): bool
     {
         return self::$override_active;
     }
 
-    /**
-     * @param boolean $override_active
-     */
-    public static function setOverrideActive($override_active)
+    public static function setOverrideActive(bool $override_active): void
     {
         self::$override_active = $override_active;
     }
 
     /**
-     * Manually removes a cached value.
-     *
-     * @param string $key The unique key which represents the value.
-     *
-     * @return bool
      * @throws RuntimeException
      */
-    public function delete($key)
+    public function delete(string $key): bool
     {
         if (!$this->global_cache instanceof ilGlobalCacheService || !$this->isActive()) {
             return false;
@@ -200,13 +155,9 @@ class xlvoCache extends ilGlobalCache implements xlvoCacheService, Initialisable
     }
 
     /**
-     * @param string $key   An unique key.
-     * @param mixed  $value Serializable object or string.
-     * @param null   $ttl   Time to life measured in seconds.
-     *
-     * @return bool              True if the cache entry was set otherwise false.
+     * @param mixed $value Serializable object or string.
      */
-    public function set($key, $value, $ttl = null)
+    public function set(string $key, $value, int $ttl = null): bool
     {
         //		$ttl = $ttl ? $ttl : 480;
         if (!$this->global_cache instanceof ilGlobalCacheService || !$this->isActive()) {

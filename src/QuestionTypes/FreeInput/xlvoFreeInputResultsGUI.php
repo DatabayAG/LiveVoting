@@ -15,19 +15,11 @@ use LiveVoting\Voting\xlvoVotingManager2;
 use srag\CustomInputGUIs\LiveVoting\Waiter\Waiter;
 use xlvoFreeInputGUI;
 use xlvoPlayerGUI;
+use ilException;
 
-/**
- * Class xlvoFreeInputResultsGUI
- *
- * @package LiveVoting\QuestionTypes\FreeInput
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 class xlvoFreeInputResultsGUI extends xlvoInputResultsGUI
 {
-    /**
-     * @var bool
-     */
-    protected $edit_mode = false;
+    protected bool $edit_mode = false;
 
     public function __construct(xlvoVotingManager2 $manager, xlvoVoting $voting)
     {
@@ -55,13 +47,12 @@ class xlvoFreeInputResultsGUI extends xlvoInputResultsGUI
     }
 
     /**
-     * @return string
-     * @throws \ilException
+     * @throws ilException
      */
-    public function getHTML()
+    public function getHTML(): string
     {
         $button_states = $this->manager->getPlayer()->getButtonStates();
-        $this->edit_mode = ($button_states[xlvoFreeInputGUI::BUTTON_CATEGORIZE] == 'true');
+        $this->edit_mode = ($button_states[xlvoFreeInputGUI::BUTTON_CATEGORIZE] === 'true');
 
         $tpl = self::plugin()->template('default/QuestionTypes/FreeInput/tpl.free_input_results.html');
 
@@ -85,7 +76,7 @@ class xlvoFreeInputResultsGUI extends xlvoInputResultsGUI
                 try {
                     $categories->addBar(new xlvoBarFreeInputsGUI($this->manager->getVoting(), $vote), $cat_id);
                 } catch (xlvoPlayerException $e) {
-                    if ($e->getCode() == xlvoPlayerException::CATEGORY_NOT_FOUND) {
+                    if ($e->getCode() === xlvoPlayerException::CATEGORY_NOT_FOUND) {
                         $bars->addBar(new xlvoBarFreeInputsGUI($this->manager->getVoting(), $vote));
                     }
                 }
@@ -112,7 +103,7 @@ class xlvoFreeInputResultsGUI extends xlvoInputResultsGUI
         return $tpl->get();
     }
 
-    public function reset()
+    public function reset(): void
     {
         parent::reset();
         /** @var xlvoFreeInputCategory $category */
@@ -126,10 +117,8 @@ class xlvoFreeInputResultsGUI extends xlvoInputResultsGUI
 
     /**
      * @param xlvoVote[] $votes
-     *
-     * @return string
      */
-    public function getTextRepresentationForVotes(array $votes)
+    public function getTextRepresentationForVotes(array $votes): string
     {
         $string_votes = array();
         foreach ($votes as $vote) {

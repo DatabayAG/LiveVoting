@@ -9,12 +9,6 @@ use ilLiveVotingPlugin;
 use LiveVoting\Utils\LiveVotingTrait;
 use srag\DIC\LiveVoting\DICTrait;
 
-/**
- * Class xlvoContextLiveVoting
- *
- * @package LiveVoting\Context
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 class xlvoContextLiveVoting implements ilContextTemplate
 {
     use DICTrait;
@@ -22,78 +16,58 @@ class xlvoContextLiveVoting implements ilContextTemplate
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
-    /**
-     * @return bool
-     */
-    public static function supportsRedirects()
+    public static function supportsRedirects(): bool
     {
         return false;
     }
 
-    /**
-     * @return bool
-     */
-    public static function hasUser()
+    public static function hasUser(): bool
     {
         return true;
     }
 
-    /**
-     * @return bool
-     */
-    public static function usesHTTP()
+    public static function usesHTTP(): bool
     {
         return true;
     }
 
-    /**
-     * @return bool
-     */
-    public static function hasHTML()
+    public static function hasHTML(): bool
     {
         return true;
     }
 
-    /**
-     * @return bool
-     */
-    public static function usesTemplate()
+    public static function usesTemplate(): bool
     {
         return true;
     }
 
-    /**
-     * @return bool
-     */
-    public static function initClient()
+    public static function initClient(): bool
     {
         return true;
     }
 
-    /**
-     * @return bool
-     */
-    public static function doAuthentication()
+    public static function doAuthentication(): bool
     {
         return false;
     }
 
-    /**
-     * Check if persistent sessions are supported
-     * false for context cli
-     */
-    public static function supportsPersistentSessions()
+    public static function supportsPersistentSessions(): bool
     {
         return false;
     }
 
-    /**
-     * Check if push messages are supported, see #0018206
-     *
-     * @return bool
-     */
-    public static function supportsPushMessages()
+    public static function supportsPushMessages(): bool
     {
         return false;
+    }
+
+    public static function isSessionMainContext(): bool
+    {
+        return false;
+    }
+
+    public static function modifyHttpPath(string $httpPath): string
+    {
+        return $httpPath;
     }
 }

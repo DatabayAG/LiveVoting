@@ -11,13 +11,6 @@ use LiveVoting\Exceptions\xlvoPlayerException;
 use LiveVoting\Voting\xlvoVotingManager2;
 use srag\DIC\LiveVoting\DICTrait;
 
-/**
- * Class xlvoFreeInputCategoriesGUI
- *
- * @package LiveVoting\QuestionTypes\FreeInput
- *
- * @author  Theodor Truffer <tt@studer-raimann.ch>
- */
 class xlvoFreeInputCategoriesGUI
 {
     use DICTrait;
@@ -25,22 +18,10 @@ class xlvoFreeInputCategoriesGUI
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     public const TITLE = 'title';
     public const VOTES = 'votes';
-    /**
-     * @var bool
-     */
-    private $removable = false;
-    /**
-     * @var array
-     */
-    protected $categories = [];
+    private bool $removable = false;
+    protected array $categories = [];
 
-    /**
-     * xlvoFreeInputCategoriesGUI constructor.
-     *
-     * @param xlvoVotingManager2 $manager
-     * @param bool               $edit_mode
-     */
-    public function __construct(xlvoVotingManager2 $manager, $edit_mode = false)
+    public function __construct(xlvoVotingManager2 $manager, bool $edit_mode = false)
     {
         $this->setRemovable($edit_mode);
         /** @var xlvoFreeInputCategory $category */
@@ -60,29 +41,20 @@ class xlvoFreeInputCategoriesGUI
         }
     }
 
-    /**
-     * @return bool
-     */
-    public function isRemovable()
+    public function isRemovable(): bool
     {
         return $this->removable;
     }
 
-    /**
-     * @param bool $removable
-     */
-    public function setRemovable($removable)
+    public function setRemovable(bool $removable): void
     {
         $this->removable = $removable;
     }
 
     /**
-     * @param xlvoBarFreeInputsGUI $bar_gui
-     * @param integer              $cat_id
-     *
      * @throws xlvoPlayerException
      */
-    public function addBar(xlvoBarFreeInputsGUI $bar_gui, $cat_id)
+    public function addBar(xlvoBarFreeInputsGUI $bar_gui, int $cat_id): void
     {
         $bar_gui->setRemovable($this->isRemovable());
         if (!($this->categories[$cat_id][self::VOTES] instanceof xlvoBarGroupingCollectionGUI)) {
@@ -92,11 +64,10 @@ class xlvoFreeInputCategoriesGUI
     }
 
     /**
-     * @return string
      * @throws \ilTemplateException
      * @throws \srag\DIC\LiveVoting\Exception\DICException
      */
-    public function getHTML()
+    public function getHTML(): string
     {
         $tpl = self::plugin()->template('default/QuestionTypes/FreeInput/tpl.free_input_categories.html');
         // TODO: xlvoBarGroupingCollection GUI verwenden?

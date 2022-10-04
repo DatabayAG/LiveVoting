@@ -13,10 +13,6 @@ use LiveVoting\Voting\xlvoVotingManager2;
 use srag\DIC\LiveVoting\DICTrait;
 
 /**
- * Class ParamManager
- *
- * @package LiveVoting\Context\Param
- *
  * @author  Martin Studer <ms@studer-raimann.ch>
  */
 final class ParamManager
@@ -32,38 +28,14 @@ final class ParamManager
     public const PARAM_VOTING = 'xlvo_voting';
     public const PARAM_PPT = 'xlvo_ppt';
     public const PPT_START = 'ppt_start';
-    /**
-     * @var ParamManager
-     */
-    protected static $instance;
-    /**
-     * @var xlvoVotingManager2
-     */
-    protected static $instance_voting_manager2;
-    /**
-     * @var int
-     */
-    protected $ref_id;
-    /**
-     * @var string
-     */
-    protected $pin = '';
-    /**
-     * @var string
-     */
-    protected $puk = '';
-    /**
-     * @var int
-     */
-    protected $voting = 0;
-    /**
-     * @var bool
-     */
-    protected $ppt = false;
+    protected static self $instance;
+    protected static xlvoVotingManager2 $instance_voting_manager2;
+    protected int $ref_id;
+    protected string $pin = '';
+    protected string $puk = '';
+    protected int $voting = 0;
+    protected bool $ppt = false;
 
-    /**
-     * ParamManager constructor
-     */
     public function __construct()
     {
         $this->loadBaseClassIfNecessary();
@@ -71,10 +43,7 @@ final class ParamManager
         $this->loadAndPersistAllParams();
     }
 
-    /**
-     *
-     */
-    private function loadBaseClassIfNecessary()
+    private function loadBaseClassIfNecessary(): void
     {
         $baseClass = filter_input(INPUT_GET, "baseClass");
 
@@ -83,10 +52,7 @@ final class ParamManager
         }
     }
 
-    /**
-     *
-     */
-    private function loadAndPersistAllParams()
+    private function loadAndPersistAllParams(): void
     {
         $pin = trim(filter_input(INPUT_GET, self::PARAM_PIN), "/");
         if (!empty($pin)) {
@@ -95,7 +61,7 @@ final class ParamManager
 
         $ref_id = trim(filter_input(INPUT_GET, self::PARAM_REF_ID), "/");
         if (!empty($ref_id)) {
-            $this->setRefId($ref_id);
+            $this->setRefId((int) $ref_id);
         }
 
         $puk = trim(filter_input(INPUT_GET, self::PARAM_PUK), "/");
@@ -105,19 +71,16 @@ final class ParamManager
 
         $voting = trim(filter_input(INPUT_GET, self::PARAM_VOTING), "/");
         if (!empty($voting)) {
-            $this->setVoting($voting);
+            $this->setVoting((int) $voting);
         }
 
         $ppt = trim(filter_input(INPUT_GET, self::PARAM_PPT), "/");
         if (!empty($ppt)) {
-            $this->setPpt($ppt);
+            $this->setPpt((bool) $ppt);
         }
     }
 
-    /**
-     * @return self
-     */
-    public static function getInstance()
+    public static function getInstance(): self
     {
         if (!isset(self::$instance)) {
             self::$instance = new self();
@@ -126,15 +89,12 @@ final class ParamManager
         return self::$instance;
     }
 
-    /**
-     * @return int
-     */
-    public function getRefId()
+    public function getRefId(): int
     {
         $ref_id = trim(filter_input(INPUT_GET, self::PARAM_REF_ID), "/");
 
         if (!empty($ref_id)) {
-            $this->ref_id = $ref_id;
+            $this->ref_id = (int) $ref_id;
         }
 
         if (empty($this->ref_id)) {
@@ -146,20 +106,14 @@ final class ParamManager
         return $this->ref_id;
     }
 
-    /**
-     * @param int $ref_id
-     */
-    public function setRefId($ref_id)
+    public function setRefId(int $ref_id): void
     {
         $this->ref_id = $ref_id;
 
         self::dic()->ctrl()->setParameterByClass(self::PARAM_BASE_CLASS_NAME, self::PARAM_REF_ID, $ref_id);
     }
 
-    /**
-     * @return string
-     */
-    public function getPin()
+    public function getPin(): string
     {
         return $this->pin;
     }
@@ -167,61 +121,43 @@ final class ParamManager
     /**
      * @param string $pin
      */
-    public function setPin($pin)
+    public function setPin(string $pin): void
     {
         $this->pin = $pin;
 
         self::dic()->ctrl()->setParameterByClass(self::PARAM_BASE_CLASS_NAME, self::PARAM_PIN, $pin);
     }
 
-    /**
-     * @return string
-     */
-    public function getPuk()
+    public function getPuk(): string
     {
         return $this->puk;
     }
 
-    /**
-     * @param string $puk
-     */
-    public function setPuk($puk)
+    public function setPuk(string $puk): void
     {
         $this->puk = $puk;
 
         self::dic()->ctrl()->setParameterByClass(self::PARAM_BASE_CLASS_NAME, self::PARAM_PUK, $puk);
     }
 
-    /**
-     * @return int
-     */
-    public function getVoting()
+    public function getVoting(): int
     {
         return $this->voting;
     }
 
-    /**
-     * @param int $voting
-     */
-    public function setVoting($voting)
+    public function setVoting(int $voting): void
     {
         $this->voting = $voting;
 
         self::dic()->ctrl()->setParameterByClass(self::PARAM_BASE_CLASS_NAME, self::PARAM_VOTING, $voting);
     }
 
-    /**
-     * @return bool
-     */
-    public function isPpt()
+    public function isPpt(): bool
     {
         return $this->ppt;
     }
 
-    /**
-     * @param bool $ppt
-     */
-    public function setPpt($ppt)
+    public function setPpt(bool $ppt): void
     {
         $this->ppt = $ppt;
 

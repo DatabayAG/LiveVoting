@@ -8,47 +8,28 @@ use ilLiveVotingPlugin;
 use LiveVoting\Utils\LiveVotingTrait;
 use srag\DIC\LiveVoting\DICTrait;
 
-/**
- * Class xlvoJsResponse
- *
- * @package LiveVoting\Js
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 class xlvoJsResponse
 {
     use DICTrait;
     use LiveVotingTrait;
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    /**
-     * @var mixed
-     */
     protected $data;
 
-    /**
-     * xlvoJsResponse constructor.
-     *
-     * @param mixed $data
-     */
     protected function __construct($data)
     {
         $this->data = $data;
     }
 
-    /**
-     * @param $data
-     *
-     * @return xlvoJsResponse
-     */
-    public static function getInstance($data)
+    public static function getInstance($data): self
     {
         return new self($data);
     }
 
-    public function send()
+    public function send(): void
     {
         header('Content-type: application/json');
-        echo json_encode($this->data);
+        echo json_encode($this->data, JSON_THROW_ON_ERROR);
         exit;
     }
 }

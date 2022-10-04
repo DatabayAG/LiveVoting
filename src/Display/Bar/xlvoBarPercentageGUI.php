@@ -9,52 +9,20 @@ use ilTemplate;
 use LiveVoting\Utils\LiveVotingTrait;
 use srag\DIC\LiveVoting\DICTrait;
 
-/**
- * Class xlvoBarPercentageGUI
- *
- * @package LiveVoting\Display\Bar
- * @author  Daniel Aemmer <daniel.aemmer@phbern.ch>
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- * @version 1.0.0
- */
 class xlvoBarPercentageGUI implements xlvoGeneralBarGUI
 {
     use DICTrait;
     use LiveVotingTrait;
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    /**
-     * @var int
-     */
-    protected $votes = 0;
-    /**
-     * @var int
-     */
-    protected $max_votes = 100;
-    /**
-     * @var string
-     */
-    protected $option_letter = '';
-    /**
-     * @var ilTemplate
-     */
-    protected $tpl;
-    /**
-     * @var string
-     */
-    protected $title = '';
-    /**
-     * @var bool
-     */
-    protected $show_in_percent = false;
-    /**
-     * @var int
-     */
-    protected $round = 2;
+    protected int $votes = 0;
+    protected int $max_votes = 100;
+    protected string $option_letter = '';
+    protected ilTemplate $tpl;
+    protected string $title = '';
+    protected bool $show_in_percent = false;
+    protected int $round = 2;
 
-    /**
-     *
-     */
     public function __construct()
     {
     }
@@ -62,13 +30,13 @@ class xlvoBarPercentageGUI implements xlvoGeneralBarGUI
     /**
      * @return string
      */
-    public function getHTML()
+    public function getHTML(): string
     {
         $tpl = self::plugin()->template('default/Display/Bar/tpl.bar_percentage.html');
 
         $tpl->setVariable('TITLE', $this->getTitle());
 
-        $tpl->setVariable('ID', uniqid());
+        $tpl->setVariable('ID', uniqid('', true));
         $tpl->setVariable('TITLE', $this->getTitle());
 
         if ($this->getOptionLetter()) {
@@ -77,7 +45,7 @@ class xlvoBarPercentageGUI implements xlvoGeneralBarGUI
             $tpl->parseCurrentBlock();
         }
 
-        if ($this->getMaxVotes() == 0) {
+        if ($this->getMaxVotes() === 0) {
             $calculated_percentage = 0;
         } else {
             $calculated_percentage = $this->getVotes() / $this->getMaxVotes() * 100;
@@ -85,7 +53,7 @@ class xlvoBarPercentageGUI implements xlvoGeneralBarGUI
 
         $tpl->setVariable('MAX', $this->getMaxVotes());
         $tpl->setVariable('PERCENT', $this->getVotes());
-        $tpl->setVariable('PERCENT_STYLE', str_replace(',', '.', round($calculated_percentage, 1)));
+        $tpl->setVariable('PERCENT_STYLE', str_replace(',', '.', (string) round($calculated_percentage, 1)));
         if ($this->isShowInPercent()) {
             $tpl->setVariable('PERCENT_TEXT', round($calculated_percentage, $this->getRound()) . ' %');
         } else {
@@ -95,114 +63,72 @@ class xlvoBarPercentageGUI implements xlvoGeneralBarGUI
         return $tpl->get();
     }
 
-    /**
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @param string $title
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
 
-    /**
-     * @return string
-     */
-    public function getOptionLetter()
+    public function getOptionLetter(): string
     {
         return $this->option_letter;
     }
 
-    /**
-     * @param string $option_letter
-     */
-    public function setOptionLetter($option_letter)
+    public function setOptionLetter(string $option_letter): void
     {
         $this->option_letter = $option_letter;
     }
 
-    /**
-     * @return int
-     */
-    public function getMaxVotes()
+    public function getMaxVotes(): int
     {
         return $this->max_votes;
     }
 
-    /**
-     * @param int $max_votes
-     */
-    public function setMaxVotes($max_votes)
+    public function setMaxVotes(int $max_votes): void
     {
         $this->max_votes = $max_votes;
     }
 
-    /**
-     * @return int
-     */
-    public function getVotes()
+    public function getVotes(): int
     {
         return $this->votes;
     }
 
-    /**
-     * @param int $votes
-     */
-    public function setVotes($votes)
+    public function setVotes(int $votes): void
     {
         $this->votes = $votes;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isShowInPercent()
+    public function isShowInPercent(): bool
     {
         return $this->show_in_percent;
     }
 
-    /**
-     * @param boolean $show_in_percent
-     */
-    public function setShowInPercent($show_in_percent)
+    public function setShowInPercent(bool $show_in_percent): void
     {
         $this->show_in_percent = $show_in_percent;
     }
 
-    /**
-     * @return int
-     */
-    public function getRound()
+    public function getRound(): int
     {
         return $this->round;
     }
 
-    /**
-     * @param int $round
-     */
-    public function setRound($round)
+    public function setRound(int $round): void
     {
         $this->round = $round;
     }
 
-    /**
-     * @return ilTemplate
-     */
-    public function getTpl()
+    public function getTpl(): ilTemplate
     {
         return $this->tpl;
     }
 
-    /**
-     * @param ilTemplate $tpl
-     */
-    public function setTpl($tpl)
+    public function setTpl(ilTemplate $tpl): void
     {
         $this->tpl = $tpl;
     }

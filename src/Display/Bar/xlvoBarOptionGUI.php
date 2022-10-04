@@ -12,46 +12,18 @@ use LiveVoting\Voting\xlvoVoting;
 use LiveVoting\Voting\xlvoVotingManager2;
 use srag\DIC\LiveVoting\DICTrait;
 
-/**
- * Class xlvoBarOptionGUI
- *
- * @package LiveVoting\Display\Bar
- * @author  Daniel Aemmer <daniel.aemmer@phbern.ch>
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- * @version 1.0.0
- */
 class xlvoBarOptionGUI implements xlvoGeneralBarGUI
 {
     use DICTrait;
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    /**
-     * @var xlvoVoting
-     */
-    protected $voting;
-    /**
-     * @var xlvoOption
-     */
-    protected $option;
-    /**
-     * @var string
-     */
-    protected $option_letter;
-    /**
-     * @var ilTemplate
-     */
-    protected $tpl;
-    /**
-     * @var xlvoVotingManager2
-     */
-    protected $voting_manager;
+    protected xlvoVoting $voting;
+    protected xlvoOption $option;
+    protected string $option_letter;
+    protected ilTemplate $tpl;
+    protected xlvoVotingManager2 $voting_manager;
 
-    /**
-     * @param xlvoVoting $voting
-     * @param xlvoOption $option
-     * @param string     $option_letter
-     */
-    public function __construct(xlvoVoting $voting, xlvoOption $option, $option_letter)
+    public function __construct(xlvoVoting $voting, xlvoOption $option, string $option_letter)
     {
         $this->voting_manager = xlvoVotingManager2::getInstanceFromObjId($voting->getObjId());
         $this->voting = $voting;
@@ -60,20 +32,14 @@ class xlvoBarOptionGUI implements xlvoGeneralBarGUI
         $this->tpl = self::plugin()->template('default/Display/Bar/tpl.bar_option.html');
     }
 
-    /**
-     * @return string
-     */
-    public function getHTML()
+    public function getHTML(): string
     {
         $this->render();
 
         return $this->tpl->get();
     }
 
-    /**
-     *
-     */
-    protected function render()
+    protected function render(): void
     {
         $this->tpl->setVariable('OPTION_LETTER', $this->option_letter);
         $this->tpl->setVariable('OPTION_ID', $this->option->getId());
@@ -82,10 +48,7 @@ class xlvoBarOptionGUI implements xlvoGeneralBarGUI
         $this->tpl->setVariable('VOTE_ID', $this->getVoteId());
     }
 
-    /**
-     * @return string
-     */
-    private function getActiveBar()
+    private function getActiveBar(): string
     {
         /**
          * @var xlvoVote $vote
@@ -93,14 +56,14 @@ class xlvoBarOptionGUI implements xlvoGeneralBarGUI
         $vote = $this->voting_manager->getVotesOfUserOfOption($this->voting->getId(), $this->option->getId())->first(
         ); // TODO: Invalid method call?
         if ($vote instanceof xlvoVote) {
-            if ($vote->getStatus() == 1) {
+            if ($vote->getStatus() === 1) {
                 return "active";
-            } else {
-                return "";
             }
-        } else {
+
             return "";
         }
+
+        return "";
     }
 
     /**
@@ -115,10 +78,8 @@ class xlvoBarOptionGUI implements xlvoGeneralBarGUI
         ); // TODO: Invalid method call?
         if ($vote instanceof xlvoVote) {
             return $vote->getId();
-        } else {
-            $no_existing_vote = 0;
-
-            return $no_existing_vote;
         }
+
+        return 0;
     }
 }

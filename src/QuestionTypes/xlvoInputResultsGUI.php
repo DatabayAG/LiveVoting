@@ -17,50 +17,26 @@ use LiveVoting\Voting\xlvoVoting;
 use LiveVoting\Voting\xlvoVotingManager2;
 use srag\DIC\LiveVoting\DICTrait;
 
-/**
- * Class xlvoInputResultsGUI
- *
- * @package LiveVoting\QuestionTypes
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 abstract class xlvoInputResultsGUI
 {
     use DICTrait;
     use LiveVotingTrait;
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    /**
-     * @var xlvoVoting
-     */
-    protected $voting;
-    /**
-     * @var xlvoVotingManager2
-     */
-    protected $manager;
+    protected xlvoVoting $voting;
+    protected xlvoVotingManager2 $manager;
 
-    /**
-     * xlvoInputResultsGUI constructor.
-     *
-     * @param xlvoVotingManager2 $manager
-     * @param xlvoVoting         $voting
-     */
     public function __construct(xlvoVotingManager2 $manager, xlvoVoting $voting)
     {
         $this->manager = $manager;
         $this->voting = $voting;
     }
 
-    /**
-     * void method to add necessary JS and CSS to maintemplate
-     */
-    public static function addJsAndCss()
+    public static function addJsAndCss(): void
     {
     }
 
     /**
-     * @param xlvoVotingManager2 $manager
-     *
-     * @return xlvoInputResultsGUI
      * @throws ilException         Throws an ilException if no results gui class was found.
      */
     public static function getInstance(xlvoVotingManager2 $manager)
@@ -82,20 +58,12 @@ abstract class xlvoInputResultsGUI
         }
     }
 
-    /**
-     * @param string $key
-     *
-     * @return string
-     */
-    protected function txt($key)
+    protected function txt(string $key): string
     {
         return self::plugin()->translate($this->manager->getVoting()->getVotingType() . '_' . $key, 'qtype');
     }
 
-    /**
-     *
-     */
-    public function reset()
+    public function reset(): void
     {
         /**
          * @var xlvoVote $xlvoVote
@@ -113,17 +81,10 @@ abstract class xlvoInputResultsGUI
         }
     }
 
-    /**
-     * @return string
-     */
-    abstract public function getHTML();
+    abstract public function getHTML(): string;
 
     /**
      * @param xlvoVote[] $votes
-     *
-     * @return string
-     *
-     * TODO: Usage?
      */
-    abstract public function getTextRepresentationForVotes(array $votes);
+    abstract public function getTextRepresentationForVotes(array $votes): string;
 }

@@ -10,46 +10,20 @@ use LiveVoting\Option\xlvoOption;
 use LiveVoting\Utils\LiveVotingTrait;
 use srag\DIC\LiveVoting\DICTrait;
 
-/**
- * Class xlvoMovableBarGUI
- *
- * @package LiveVoting\Display\Bar
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 class xlvoBarMovableGUI implements xlvoGeneralBarGUI
 {
     use DICTrait;
     use LiveVotingTrait;
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    /**
-     * @var ilTemplate
-     */
-    protected $tpl;
-    /**
-     * @var xlvoOption[]
-     */
-    protected $options = array();
-    /**
-     * @var array
-     */
-    protected $order = array();
-    /**
-     * @var int
-     */
-    protected $vote_id = null;
-    /**
-     * @var bool
-     */
-    protected $show_option_letter = false;
+    protected ilTemplate $tpl;
+    /** @var xlvoOption[] */
+    protected array $options = [];
+    protected array $order = [];
+    protected int $vote_id;
+    protected bool $show_option_letter = false;
 
-    /**
-     * xlvoBarMovableGUI constructor.
-     *
-     * @param array $options
-     * @param array $order
-     */
-    public function __construct(array $options, array $order = array(), $vote_id = null)
+    public function __construct(array $options, array $order = [], $vote_id = null)
     {
         $this->options = $options;
         $this->order = $order;
@@ -57,10 +31,7 @@ class xlvoBarMovableGUI implements xlvoGeneralBarGUI
         $this->tpl = self::plugin()->template('default/Display/Bar/tpl.bar_movable.html', false);
     }
 
-    /**
-     * @return string
-     */
-    public function getHTML()
+    public function getHTML(): string
     {
         $i = 1;
         $this->tpl->setVariable('VOTE_ID', $this->vote_id);
@@ -96,18 +67,12 @@ class xlvoBarMovableGUI implements xlvoGeneralBarGUI
         return $this->tpl->get();
     }
 
-    /**
-     * @return string
-     */
-    public function getShowOptionLetter()
+    public function getShowOptionLetter(): bool|string
     {
         return $this->show_option_letter;
     }
 
-    /**
-     * @param string $show_option_letter
-     */
-    public function setShowOptionLetter($show_option_letter)
+    public function setShowOptionLetter(bool $show_option_letter): void
     {
         $this->show_option_letter = $show_option_letter;
     }

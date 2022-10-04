@@ -7,47 +7,16 @@ namespace LiveVoting\Display\Bar;
 use LiveVoting\Vote\xlvoVote;
 use LiveVoting\Voting\xlvoVoting;
 
-/**
- * Class xlvoBarFreeInputsGUI
- *
- * @package LiveVoting\Display\Bar
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 class xlvoBarFreeInputsGUI extends xlvoAbstractBarGUI implements xlvoGeneralBarGUI
 {
-    /**
-     * @var int
-     */
-    private $occurrences;
-    /**
-     * @var bool
-     */
-    private $removable = false;
-    /**
-     * @var bool
-     */
-    private $strong = false;
-    /**
-     * @var bool
-     */
-    private $center = false;
-    /**
-     * @var bool
-     */
-    private $big = false;
-    /**
-     * @var xlvoVoting
-     */
-    protected $voting;
-    /**
-     * @var xlvoVote
-     */
-    protected $vote;
+    private int $occurrences;
+    private bool $removable = false;
+    private bool $strong = false;
+    private bool $center = false;
+    private bool $big = false;
+    protected xlvoVoting $voting;
+    protected xlvoVote $vote;
 
-    /**
-     * @param xlvoVoting $voting
-     * @param xlvoVote   $vote
-     */
     public function __construct(xlvoVoting $voting, xlvoVote $vote)
     {
         parent::__construct();
@@ -57,10 +26,7 @@ class xlvoBarFreeInputsGUI extends xlvoAbstractBarGUI implements xlvoGeneralBarG
         $this->occurrences = 0;
     }
 
-    /**
-     * @return string
-     */
-    public function getHTML()
+    public function getHTML(): string
     {
         $this->render();
 
@@ -70,7 +36,7 @@ class xlvoBarFreeInputsGUI extends xlvoAbstractBarGUI implements xlvoGeneralBarG
     /**
      *
      */
-    protected function render()
+    protected function render(): void
     {
         $this->tpl->setVariable('FREE_INPUT', nl2br($this->vote->getFreeInput(), false));
         $this->tpl->setVariable('ID', $this->vote->getId());
@@ -94,96 +60,57 @@ class xlvoBarFreeInputsGUI extends xlvoAbstractBarGUI implements xlvoGeneralBarG
         }
     }
 
-    /**
-     * @return bool
-     */
-    public function isRemovable()
+    public function isRemovable(): bool
     {
         return $this->removable;
     }
 
-    /**
-     * @param bool $removable
-     */
-    public function setRemovable($removable)
+    public function setRemovable(bool $removable): void
     {
         $this->removable = $removable;
     }
 
-    /**
-     * @return bool
-     */
-    public function isCenter()
+    public function isCenter(): bool
     {
         return $this->center;
     }
 
-    /**
-     * @param bool $center
-     */
-    public function setCenter($center)
+    public function setCenter(bool $center): void
     {
         $this->center = $center;
     }
 
-    /**
-     * @return bool
-     */
-    public function isBig()
+    public function isBig(): bool
     {
         return $this->big;
     }
 
-    /**
-     * @param bool $big
-     */
-    public function setBig($big)
+    public function setBig(bool $big): void
     {
         $this->big = $big;
     }
 
-    /**
-     * @return bool
-     */
-    public function isStrong()
+    public function isStrong(): bool
     {
         return $this->strong;
     }
 
-    /**
-     * @param bool $strong
-     */
-    public function setStrong($strong)
+    public function setStrong(bool $strong): void
     {
         $this->strong = $strong;
     }
 
-    /**
-     * @return int
-     */
-    public function getOccurrences()
+    public function getOccurrences(): int
     {
         return $this->occurrences;
     }
 
-    /**
-     * @param int $occurrences
-     */
-    public function setOccurrences($occurrences)
+    public function setOccurrences(int $occurrences): void
     {
         $this->occurrences = $occurrences;
     }
 
-    /**
-     * Compares the freetext of the current with the given object.
-     * This function returns true if the free text is case insensitive equal to the
-     * given one.
-     *
-     * @param xlvoBarFreeInputsGUI $bar The object which should be used for the comparison.
-     *
-     * @return bool True if the freetext is case insensitive equal to the given one.
-     */
-    public function equals(xlvoGeneralBarGUI $bar)
+    public function equals(xlvoGeneralBarGUI $bar): bool
     {
         return strcasecmp(nl2br($this->vote->getFreeInput(), false), nl2br($bar->vote->getFreeInput(), false)) === 0;
     }

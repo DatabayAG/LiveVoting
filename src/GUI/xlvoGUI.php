@@ -11,13 +11,6 @@ use LiveVoting\Js\xlvoJs;
 use LiveVoting\Utils\LiveVotingTrait;
 use srag\DIC\LiveVoting\DICTrait;
 
-/**
- * Class xlvoGUI
- *
- * @package LiveVoting\GUI
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- * @version 1.0.0
- */
 abstract class xlvoGUI
 {
     use DICTrait;
@@ -34,39 +27,24 @@ abstract class xlvoGUI
     public const CMD_DELETE = 'delete';
     public const CMD_CANCEL = 'cancel';
     public const CMD_VIEW = 'view';
-    /**
-     * @var bool $is_api_call
-     */
-    protected $is_api_call;
-    /**
-     * @var ParamManager
-     */
-    protected $param_manager;
+    protected bool $is_api_call;
+    protected ParamManager $param_manager;
 
-    /**
-     *
-     */
     public function __construct()
     {
         $this->param_manager = ParamManager::getInstance();
 
-        $this->is_api_call = (self::dic()->ctrl()->getTargetScript() == xlvoConf::getFullApiURL());
+        $this->is_api_call = (self::dic()->ctrl()->getTargetScript() === xlvoConf::getFullApiURL());
 
         self::dic()->ctrl()->saveParameter($this, "lang");
     }
 
-    /**
-     *
-     */
-    protected function cancel()
+    protected function cancel(): void
     {
         self::dic()->ctrl()->redirect($this, self::CMD_STANDARD);
     }
 
-    /**
-     *
-     */
-    public function executeCommand()
+    public function executeCommand(): void
     {
         $nextClass = self::dic()->ctrl()->getNextClass();
         xlvoJs::getInstance()->name('Main')->init()->setRunCode();
@@ -81,7 +59,7 @@ abstract class xlvoGUI
                 self::dic()->ui()->mainTemplate()->fillJavaScriptFiles();
                 self::dic()->ui()->mainTemplate()->fillCssFiles();
                 self::dic()->ui()->mainTemplate()->fillOnLoadCode();
-                self::dic()->ui()->mainTemplate()->printToStdout(false, false, true);
+                self::dic()->ui()->mainTemplate()->printToStdout("", false, true);
             } else {
                 self::dic()->ui()->mainTemplate()->show(false);
             }

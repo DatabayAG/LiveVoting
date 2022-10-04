@@ -15,41 +15,22 @@ use xlvoNumberRangeGUI;
 use xlvoSingleVoteGUI;
 use xlvoVoter2GUI;
 
-/**
- * Class xlvoQuestionTypesGUI
- *
- *
- * @package LiveVoting\QuestionTypes
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- *
- */
 abstract class xlvoQuestionTypesGUI extends xlvoGUI
 {
     public const CMD_SUBMIT = 'submit';
-    /**
-     * @var xlvoVotingManager2
-     */
-    protected $manager;
-    /**
-     * @var bool
-     */
-    protected $show_question = true;
-    /**
-     * @var bool
-     */
-    protected $has_solution = false;
+    protected xlvoVotingManager2 $manager;
+    protected bool $show_question = true;
+    protected bool $has_solution = false;
 
     /**
-     * @param xlvoVotingManager2 $manager
-     * @param null               $override_type
      *
      * @return xlvoQuestionTypesGUI
      * @throws ilException                 Throws an ilException if no gui class was found.
      */
-    public static function getInstance(xlvoVotingManager2 $manager, $override_type = null)
+    public static function getInstance(xlvoVotingManager2 $manager, int $override_type = null): self
     {
         $class = xlvoQuestionTypes::getClassName(
-            $override_type ? $override_type : $manager->getVoting()->getVotingType()
+            (int) ($override_type ?: $manager->getVoting()->getVotingType())
         );
 
         $gui = null;
@@ -78,35 +59,19 @@ abstract class xlvoQuestionTypesGUI extends xlvoGUI
         return $gui;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return string
-     */
-    protected function txt($key)
+    protected function txt(string $key): string
     {
         return self::plugin()->translate($this->manager->getVoting()->getVotingType() . '_' . $key, 'qtype');
     }
 
-    /**
-     *
-     */
     abstract protected function submit();
 
-    /**
-     * @return array
-     */
-    protected function getButtonsStates()
+    protected function getButtonsStates(): array
     {
-        $xlvoPlayer = $this->getManager()->getPlayer();
-
-        return $xlvoPlayer->getButtonStates();
+        return $this->getManager()->getPlayer()->getButtonStates();
     }
 
-    /**
-     *
-     */
-    public function executeCommand()
+    public function executeCommand(): void
     {
         $nextClass = self::dic()->ctrl()->getNextClass();
 
@@ -115,7 +80,7 @@ abstract class xlvoQuestionTypesGUI extends xlvoGUI
                 $cmd = self::dic()->ctrl()->getCmd(self::CMD_STANDARD);
 
                 $this->{$cmd}();
-                if ($cmd == self::CMD_SUBMIT) {
+                if ($cmd === self::CMD_SUBMIT) {
                     $this->afterSubmit();
                 }
                 break;
@@ -125,45 +90,26 @@ abstract class xlvoQuestionTypesGUI extends xlvoGUI
         }
     }
 
-    /**
-     *
-     */
-    protected function afterSubmit()
+    protected function afterSubmit(): void
     {
         self::dic()->ctrl()->redirect(new xlvoVoter2GUI(), xlvoVoter2GUI::CMD_START_VOTER_PLAYER);
     }
 
-    /**
-     * @return boolean
-     */
-    public function isShowQuestion()
+    public function isShowQuestion(): bool
     {
         return $this->show_question;
     }
 
-    /**
-     * @param boolean $show_question
-     */
-    public function setShowQuestion($show_question)
+    public function setShowQuestion(bool $show_question): void
     {
         $this->show_question = $show_question;
     }
 
-    /**
-     * @param bool $current
-     */
-    abstract public function initJS(bool $current = false);
+    abstract public function initJS(bool $current = false): void;
 
-    /**
-     * @return string
-     */
-    abstract public function getMobileHTML();
+    abstract public function getMobileHTML(): string;
 
-    /**
-     * @param $button_id
-     * @param $data
-     */
-    public function handleButtonCall($button_id, $data)
+    public function handleButtonCall(int $button_id, $data): void
     {
         $this->saveButtonState($button_id, $data);
     }
@@ -173,11 +119,7 @@ abstract class xlvoQuestionTypesGUI extends xlvoGUI
     // Custom Buttons
     //
 
-    /**
-     * @param $button_id
-     * @param $state
-     */
-    protected function saveButtonState($button_id, $state)
+    protected function saveButtonState(int $button_id, $state): void
     {
         $xlvoPlayer = $this->getManager()->getPlayer();
         $states = $xlvoPlayer->getButtonStates();
@@ -186,26 +128,17 @@ abstract class xlvoQuestionTypesGUI extends xlvoGUI
         $xlvoPlayer->store();
     }
 
-    /**
-     * @return xlvoVotingManager2
-     */
-    public function getManager()
+    public function getManager(): xlvoVotingManager2
     {
         return $this->manager;
     }
 
-    /**
-     * @param xlvoVotingManager2 $manager
-     */
     public function setManager(xlvoVotingManager2 $manager): void
     {
         $this->manager = $manager;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasButtons()
+    public function hasButtons(): bool
     {
         return (count($this->getButtonInstances()) > 0);
     }
@@ -213,8 +146,8 @@ abstract class xlvoQuestionTypesGUI extends xlvoGUI
     /**
      * @return ilButtonBase[]
      */
-    public function getButtonInstances()
+    public function getButtonInstances(): array
     {
-        return array();
+        return [];
     }
 }

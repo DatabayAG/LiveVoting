@@ -10,18 +10,9 @@ use LiveVoting\Option\xlvoOption;
 use LiveVoting\QuestionTypes\SingleVote\xlvoSingleVoteResultsGUI;
 use xlvoCorrectOrderGUI;
 
-/**
- * Class xlvoCorrectOrderResultsGUI
- *
- * @package LiveVoting\QuestionTypes\CorrectOrder
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 class xlvoCorrectOrderResultsGUI extends xlvoSingleVoteResultsGUI
 {
-    /**
-     * @return string
-     */
-    public function getHTML()
+    public function getHTML(): string
     {
         $bars = new xlvoBarCollectionGUI();
 
@@ -29,16 +20,16 @@ class xlvoCorrectOrderResultsGUI extends xlvoSingleVoteResultsGUI
         foreach ($this->manager->getVoting()->getVotingOptions() as $xlvoOption) {
             $correct_order[(int) $xlvoOption->getCorrectPosition()] = $xlvoOption;
             $correct_order_ids[(int) $xlvoOption->getCorrectPosition()] = $xlvoOption->getId();
-        };
+        }
         ksort($correct_order);
         ksort($correct_order_ids);
-        $correct_order_json = json_encode(array_values($correct_order_ids));
+        $correct_order_json = json_encode(array_values($correct_order_ids), JSON_THROW_ON_ERROR);
 
         $votes = $this->manager->getVotesOfVoting();
         $correct_votes = 0;
         $wrong_votes = 0;
         foreach ($votes as $xlvoVote) {
-            if ($xlvoVote->getFreeInput() == $correct_order_json) {
+            if ($xlvoVote->getFreeInput() === $correct_order_json) {
                 $correct_votes++;
             } else {
                 $wrong_votes++;
@@ -84,25 +75,19 @@ class xlvoCorrectOrderResultsGUI extends xlvoSingleVoteResultsGUI
         return $bars->getHTML();
     }
 
-    /**
-     * @return bool
-     */
-    protected function isShowAbsolute()
+    protected function isShowAbsolute(): bool
     {
         $states = $this->getButtonsStates();
 
         return ($this->manager->getPlayer()->isShowResults(
-        ) && (bool) $states[xlvoCorrectOrderGUI::BUTTON_TOGGLE_PERCENTAGE]);
+        ) && $states[xlvoCorrectOrderGUI::BUTTON_TOGGLE_PERCENTAGE]);
     }
 
-    /**
-     * @return bool
-     */
-    protected function isShowCorrectOrder()
+    protected function isShowCorrectOrder(): bool
     {
         $states = $this->getButtonsStates();
 
-        return ((bool) $states[xlvoCorrectOrderGUI::BUTTON_TOTTLE_DISPLAY_CORRECT_ORDER] && $this->manager->getPlayer(
+        return ($states[xlvoCorrectOrderGUI::BUTTON_TOTTLE_DISPLAY_CORRECT_ORDER] && $this->manager->getPlayer(
         )->isShowResults());
     }
 }

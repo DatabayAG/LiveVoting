@@ -10,40 +10,19 @@ use LiveVoting\QuestionTypes\xlvoResultGUI;
 use LiveVoting\Utils\LiveVotingTrait;
 use srag\DIC\LiveVoting\DICTrait;
 use xlvoResultsGUI;
+use ilCSVWriter;
 
-/**
- * Class xlvoResultsTableGUI
- *
- * @package LiveVoting\Results
- * @author  Oskar Truffer <ot@studer-raimann.ch>
- */
 class xlvoResultsTableGUI extends ilTable2GUI
 {
     use DICTrait;
     use LiveVotingTrait;
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    /**
-     * @var array
-     */
-    protected $filter;
-    /**
-     * @var bool
-     */
-    protected $showHistory = false;
-    /**
-     * @var xlvoResultsGUI
-     */
-    protected $parent_obj;
+    protected array $filter;
+    protected bool $showHistory = false;
+    protected ?object $parent_obj;
 
-    /**
-     * xlvoResultsTableGUI constructor.
-     *
-     * @param        $a_parent_obj
-     * @param string $a_parent_cmd
-     * @param bool   $show_history
-     */
-    public function __construct(xlvoResultsGUI $a_parent_obj, $a_parent_cmd, $show_history = false)
+    public function __construct(xlvoResultsGUI $a_parent_obj, string $a_parent_cmd, bool $show_history = false)
     {
         $this->setId('xlvo_results');
         parent::__construct($a_parent_obj, $a_parent_cmd);
@@ -56,7 +35,7 @@ class xlvoResultsTableGUI extends ilTable2GUI
         $this->buildColumns();
     }
 
-    protected function buildColumns()
+    protected function buildColumns(): void
     {
         $this->addColumn(self::plugin()->translate('common_position'), 'position', '1%');
         $this->addColumn(self::plugin()->translate('common_user'), 'user', '10%');
@@ -68,18 +47,12 @@ class xlvoResultsTableGUI extends ilTable2GUI
         }
     }
 
-    /**
-     * @return boolean
-     */
-    public function isShowHistory()
+    public function isShowHistory(): bool
     {
         return $this->showHistory;
     }
 
-    /**
-     * @param boolean $showHistory
-     */
-    public function setShowHistory($showHistory)
+    public function setShowHistory(bool $showHistory): void
     {
         $this->showHistory = $showHistory;
     }
@@ -89,19 +62,14 @@ class xlvoResultsTableGUI extends ilTable2GUI
      *
      * @return null
      */
-    protected function fillHeaderCSV($a_csv)
+    protected function fillHeaderCSV(object $a_csv): void
     {
-        return null;
     }
 
-    /**
-     * @param object $a_csv
-     * @param array  $a_set
-     */
-    protected function fillRowCSV($a_csv, $a_set)
+    protected function fillRowCSV(ilCSVWriter $a_csv, array $a_set): void
     {
         $a_set = array_intersect_key($a_set, $this->getCSVCols());
-        array_walk($a_set, function (&$value) {
+        array_walk($a_set, static function (&$value) {
             //			$value = mb_convert_encoding($value, 'ISO-8859-1');
             //			$value = mb_convert_encoding($value, "UTF-8", "UTF-8");
             //			$value = utf8_encode($value);
@@ -110,24 +78,21 @@ class xlvoResultsTableGUI extends ilTable2GUI
         parent::fillRowCSV($a_csv, $a_set);
     }
 
-    /**
-     * @return array
-     */
-    protected function getCSVCols()
+    protected function getCSVCols(): array
     {
-        return array(
+        return [
             'participant' => 'participant',
             'title' => 'title',
             'question' => 'question',
             'answer' => 'answer',
-        );
+        ];
     }
 
     /**
      * @param $obj_id
      * @param $round_id
      */
-    public function buildData($obj_id, $round_id)
+    public function buildData(int $obj_id, int $round_id): void
     {
         $xlvoResults = new xlvoResults($obj_id, $round_id);
 
@@ -135,19 +100,14 @@ class xlvoResultsTableGUI extends ilTable2GUI
             $this->filter,
             $this->parent_obj->getParticipantNameCallable(),
             function ($voting, $votes) {
-                $resultsGUI = xlvoResultGUI::getInstance($voting);
-
-                return $resultsGUI->getTextRepresentation($votes);
+                return xlvoResultGUI::getInstance($voting)->getTextRepresentation($votes);
             }
         );
 
         $this->setData($a_data);
     }
 
-    /**
-     * @param array $record
-     */
-    public function fillRow($record)
+    public function fillRow(array $record): void
     {
         $this->tpl->setVariable("POSITION", $record['position']);
         $this->tpl->setVariable("USER", $record['participant']);
@@ -167,20 +127,14 @@ class xlvoResultsTableGUI extends ilTable2GUI
         }
     }
 
-    /**
-     * @param     $question
-     * @param int $length
-     *
-     * @return string
-     */
-    protected function shorten($question, $length = xlvoResultsGUI::LENGTH)
+    protected function shorten($question, int $length = xlvoResultsGUI::LENGTH): string
     {
         $closure = $this->parent_obj->getShortener($length);
 
         return $closure($question);
     }
 
-    public function initFilter()
+    public function initFilter(): void
     {
         $this->filter['participant'] = $this->getFilterItemByPostVar('participant')->getValue();
         $this->filter['voting'] = $this->getFilterItemByPostVar('voting')->getValue();

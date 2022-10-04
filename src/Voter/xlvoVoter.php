@@ -8,23 +8,13 @@ use DateTime;
 use LiveVoting\Cache\CachingActiveRecord;
 use LiveVoting\Conf\xlvoConf;
 use LiveVoting\User\xlvoUser;
+use DateTimeInterface;
 
-/**
- * Class xlvoVoter
- *
- * @package LiveVoting\Voter
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 class xlvoVoter extends CachingActiveRecord
 {
-    /**
-     * Default client update delay in seconds
-     */
     public const DEFAULT_CLIENT_UPDATE_DELAY = 1;
     public const TABLE_NAME = 'xlvo_voter';
     /**
-     * @var int
-     *
      * @con_is_primary true
      * @con_is_unique  true
      * @con_sequence   true
@@ -32,51 +22,41 @@ class xlvoVoter extends CachingActiveRecord
      * @con_fieldtype  integer
      * @con_length     8
      */
-    protected $id;
+    protected int $id;
     /**
-     * @var int
-     *
      * @con_has_field  true
      * @con_fieldtype  integer
      * @con_length     8
      */
-    protected $player_id = 0;
+    protected int $player_id = 0;
     /**
-     * @var string
-     *
      * @con_has_field  true
      * @con_fieldtype  text
      * @con_length     128
      */
-    protected $user_identifier;
+    protected string $user_identifier;
     /**
-     * @var DateTime
-     *
      * @con_has_field  true
      * @con_fieldtype  timestamp
      */
-    protected $last_access;
+    protected DateTime $last_access;
 
     /**
-     * @return string
      * @deprecated
      */
-    public static function returnDbTableName()
+    public static function returnDbTableName(): string
     {
         return self::TABLE_NAME;
     }
 
-    /**
-     * @param $player_id
-     */
-    public static function register($player_id)
+    public static function register(int $player_id): void
     {
-        $obj = xlvoVoter::where(array(
+        $obj = self::where([
             'user_identifier' => xlvoUser::getInstance()->getIdentifier(),
             'player_id' => $player_id
-        ))->first();
+        ])->first();
 
-        if (!$obj instanceof xlvoVoter) {
+        if (!$obj instanceof self) {
             $obj = new self();
             $obj->setUserIdentifier(xlvoUser::getInstance()->getIdentifier());
             $obj->setPlayerId($player_id);
@@ -85,16 +65,8 @@ class xlvoVoter extends CachingActiveRecord
         $obj->store();
     }
 
-    /**
-     * @param $player_id
-     *
-     * @return int
-     */
-    public static function countVoters($player_id)
+    public static function countVoters(int $player_id): int
     {
-        /**
-         * @var float $delay
-         */
         $delay = xlvoConf::getConfig(xlvoConf::F_REQUEST_FREQUENCY);
 
         //check if we get some valid settings otherwise fall back to default value.
@@ -104,112 +76,74 @@ class xlvoVoter extends CachingActiveRecord
             $delay = self::DEFAULT_CLIENT_UPDATE_DELAY;
         }
 
-        return self::where(array('player_id' => $player_id))->where(array(
+        return self::where(['player_id' => $player_id])->where([
             'last_access' => date(DATE_ATOM, time() - ($delay + $delay * 0.5))
-        ), '>')->count();
+        ], '>')->count();
     }
 
-    /**
-     * @return string
-     */
-    public function getConnectorContainerName()
+    public function getConnectorContainerName(): string
     {
         return self::TABLE_NAME;
     }
 
-    /**
-     * @param $field_name
-     *
-     * @return mixed
-     */
-    public function sleep($field_name)
+    public function sleep($field_name): ?string
     {
-        if ($field_name == 'last_access') {
+        if ($field_name === 'last_access') {
             if (!$this->last_access instanceof DateTime) {
                 $this->last_access = new DateTime();
             }
 
-            return $this->last_access->format(DateTime::ATOM);
+            return $this->last_access->format(DateTimeInterface::ATOM);
         }
 
         return null;
     }
 
-    /**
-     * @param $field_name
-     * @param $field_value
-     *
-     * @return mixed
-     */
-    public function wakeUp($field_name, $field_value)
+    public function wakeUp($field_name, $field_value): ?DateTime
     {
-        if ($field_name == 'last_access') {
+        if ($field_name === 'last_access') {
             return new DateTime($field_value);
         }
 
         return null;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return int
-     */
-    public function getPlayerId()
+    public function getPlayerId(): int
     {
         return $this->player_id;
     }
 
-    /**
-     * @param int $player_id
-     */
-    public function setPlayerId($player_id)
+    public function setPlayerId(int $player_id): void
     {
         $this->player_id = $player_id;
     }
 
-    /**
-     * @return string
-     */
-    public function getUserIdentifier()
+    public function getUserIdentifier(): string
     {
         return $this->user_identifier;
     }
 
-    /**
-     * @param string $user_identifier
-     */
-    public function setUserIdentifier($user_identifier)
+    public function setUserIdentifier(string $user_identifier): void
     {
         $this->user_identifier = $user_identifier;
     }
 
-    /**
-     * @return DateTime
-     */
-    public function getLastAccess()
+    public function getLastAccess(): DateTime
     {
         return $this->last_access;
     }
 
-    /**
-     * @param DateTime $last_access
-     */
-    public function setLastAccess($last_access)
+    public function setLastAccess(DateTime $last_access): void
     {
         $this->last_access = $last_access;
     }

@@ -25,7 +25,6 @@ use srag\DIC\LiveVoting\DICTrait;
  */
 abstract class PropertyFormGUI extends ilPropertyFormGUI
 {
-
     use DICTrait;
 
     /**
@@ -33,55 +32,55 @@ abstract class PropertyFormGUI extends ilPropertyFormGUI
      *
      * @deprecated
      */
-    const LANG_MODULE = "";
+    public const LANG_MODULE = "";
     /**
      * @var string
      *
      * @deprecated
      */
-    const PROPERTY_CLASS = "class";
+    public const PROPERTY_CLASS = "class";
     /**
      * @var string
      *
      * @deprecated
      */
-    const PROPERTY_DISABLED = "disabled";
+    public const PROPERTY_DISABLED = "disabled";
     /**
      * @var string
      *
      * @deprecated
      */
-    const PROPERTY_MULTI = "multi";
+    public const PROPERTY_MULTI = "multi";
     /**
      * @var string
      *
      * @deprecated
      */
-    const PROPERTY_NOT_ADD = "not_add";
+    public const PROPERTY_NOT_ADD = "not_add";
     /**
      * @var string
      *
      * @deprecated
      */
-    const PROPERTY_OPTIONS = "options";
+    public const PROPERTY_OPTIONS = "options";
     /**
      * @var string
      *
      * @deprecated
      */
-    const PROPERTY_REQUIRED = "required";
+    public const PROPERTY_REQUIRED = "required";
     /**
      * @var string
      *
      * @deprecated
      */
-    const PROPERTY_SUBITEMS = "subitems";
+    public const PROPERTY_SUBITEMS = "subitems";
     /**
      * @var string
      *
      * @deprecated
      */
-    const PROPERTY_VALUE = "value";
+    public const PROPERTY_VALUE = "value";
     /**
      * @var array
      *
@@ -126,7 +125,7 @@ abstract class PropertyFormGUI extends ilPropertyFormGUI
      *
      * @deprecated
      */
-    public function checkInput() : bool
+    public function checkInput(): bool
     {
         return parent::checkInput();
     }
@@ -137,7 +136,7 @@ abstract class PropertyFormGUI extends ilPropertyFormGUI
      *
      * @deprecated
      */
-    public function storeForm() : bool
+    public function storeForm(): bool
     {
         if (!$this->storeFormCheck()) {
             return false;
@@ -157,7 +156,7 @@ abstract class PropertyFormGUI extends ilPropertyFormGUI
      *
      * @deprecated
      */
-    public function txt(string $key,/*?*/ string $default = null) : string
+    public function txt(string $key, /*?*/ string $default = null): string
     {
         if ($default !== null) {
             return self::plugin()->translate($key, static::LANG_MODULE, [], true, "", $default);
@@ -174,13 +173,13 @@ abstract class PropertyFormGUI extends ilPropertyFormGUI
      *
      * @deprecated
      */
-    protected abstract function getValue(string $key);
+    abstract protected function getValue(string $key);
 
 
     /**
      * @deprecated
      */
-    protected function initAction() : void
+    protected function initAction(): void
     {
         $this->setFormAction(self::dic()->ctrl()->getFormAction($this->parent));
     }
@@ -189,25 +188,25 @@ abstract class PropertyFormGUI extends ilPropertyFormGUI
     /**
      * @deprecated
      */
-    protected abstract function initCommands() : void ;
+    abstract protected function initCommands(): void ;
 
 
     /**
      * @deprecated
      */
-    protected abstract function initFields() : void ;
+    abstract protected function initFields(): void ;
 
 
     /**
      * @deprecated
      */
-    protected abstract function initId() : void ;
+    abstract protected function initId(): void ;
 
 
     /**
      * @deprecated
      */
-    protected abstract function initTitle() : void ;
+    abstract protected function initTitle(): void ;
 
 
     /**
@@ -215,7 +214,7 @@ abstract class PropertyFormGUI extends ilPropertyFormGUI
      *
      * @deprecated
      */
-    protected final function storeFormCheck() : bool
+    final protected function storeFormCheck(): bool
     {
         $this->setValuesByPost();
 
@@ -235,7 +234,7 @@ abstract class PropertyFormGUI extends ilPropertyFormGUI
      *
      * @deprecated
      */
-    protected abstract function storeValue(string $key, $value) : void ;
+    abstract protected function storeValue(string $key, $value): void ;
 
 
     /**
@@ -249,7 +248,7 @@ abstract class PropertyFormGUI extends ilPropertyFormGUI
      *
      * @deprecated
      */
-    private final function getFields(array $fields, $parent_item) : void
+    final private function getFields(array $fields, $parent_item): void
     {
         if (!is_array($fields)) {
             throw new PropertyFormGUIException("\$fields needs to be an array!", PropertyFormGUIException::CODE_INVALID_FIELD);
@@ -302,7 +301,7 @@ abstract class PropertyFormGUI extends ilPropertyFormGUI
                         } else {
                             if ($item instanceof ilFormSectionHeaderGUI) {
                                 // Fix 'Call to undefined method ilFormSectionHeaderGUI::setParent()'
-                                Closure::bind(function (ilFormSectionHeaderGUI $item) : void {
+                                Closure::bind(function (ilFormSectionHeaderGUI $item): void {
                                     $this->sub_items[]
                                         = $item; // https://github.com/ILIAS-eLearning/ILIAS/blob/b8a2a3a203d8fb5bab988849ab43616be7379551/Services/Form/classes/class.ilSubEnabledFormPropertyGUI.php#L45
                                 }, $parent_item, ilSubEnabledFormPropertyGUI::class)($item);
@@ -320,7 +319,7 @@ abstract class PropertyFormGUI extends ilPropertyFormGUI
     /**
      * @deprecated
      */
-    private final function initForm() : void
+    final private function initForm(): void
     {
         $this->initAction();
 
@@ -335,7 +334,7 @@ abstract class PropertyFormGUI extends ilPropertyFormGUI
     /**
      * @deprecated
      */
-    private final function initItems() : void
+    final private function initItems(): void
     {
         $this->initFields();
 
@@ -348,7 +347,7 @@ abstract class PropertyFormGUI extends ilPropertyFormGUI
      *
      * @deprecated
      */
-    private final function storeFormItems(array $fields) : void
+    final private function storeFormItems(array $fields): void
     {
         foreach ($fields as $key => $field) {
             if (isset($this->items_cache[$key])) {

@@ -9,60 +9,30 @@ use ilTemplate;
 use LiveVoting\Utils\LiveVotingTrait;
 use srag\DIC\LiveVoting\DICTrait;
 
-/**
- * Class xlvoAbstractBarGUI
- *
- * @package LiveVoting\Display\Bar
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 abstract class xlvoAbstractBarGUI implements xlvoGeneralBarGUI
 {
     use DICTrait;
     use LiveVotingTrait;
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    /**
-     * @var bool
-     */
-    private $strong = false;
-    /**
-     * @var bool
-     */
-    private $center = false;
-    /**
-     * @var bool
-     */
-    private $big = false;
-    /**
-     * @var bool
-     */
-    private $dark = false;
-    /**
-     * @var ilTemplate
-     */
-    protected $tpl;
+    private bool $strong = false;
+    private bool $center = false;
+    private bool $big = false;
+    private bool $dark = false;
+    protected ilTemplate $tpl;
 
-    /**
-     * xlvoAbstractBarGUI constructor.
-     */
     public function __construct()
     {
     }
 
-    /**
-     * @return string
-     */
-    public function getHTML()
+    public function getHTML(): string
     {
         $this->render();
 
         return $this->tpl->get();
     }
 
-    /**
-     *
-     */
-    protected function render()
+    protected function render(): void
     {
         $this->initTemplate();
         if ($this->isCenter()) {
@@ -80,10 +50,7 @@ abstract class xlvoAbstractBarGUI implements xlvoGeneralBarGUI
         }
     }
 
-    /**
-     *
-     */
-    protected function initTemplate()
+    protected function initTemplate(): void
     {
         $this->tpl = self::plugin()->template('default/Display/Bar/tpl.bar_free_input.html');
         self::dic()->ui()->mainTemplate()->addCss(
@@ -91,66 +58,42 @@ abstract class xlvoAbstractBarGUI implements xlvoGeneralBarGUI
         );
     }
 
-    /**
-     * @return bool
-     */
-    public function isCenter()
+    public function isCenter(): bool
     {
         return $this->center;
     }
 
-    /**
-     * @param bool $center
-     */
-    public function setCenter($center)
+    public function setCenter(bool $center): void
     {
         $this->center = $center;
     }
 
-    /**
-     * @return bool
-     */
-    public function isBig()
+    public function isBig(): bool
     {
         return $this->big;
     }
 
-    /**
-     * @param bool $big
-     */
-    public function setBig($big)
+    public function setBig(bool $big): void
     {
         $this->big = $big;
     }
 
-    /**
-     * @return bool
-     */
-    public function isDark()
+    public function isDark(): bool
     {
         return $this->dark;
     }
 
-    /**
-     * @param bool $dark
-     */
-    public function setDark($dark)
+    public function setDark(bool $dark): void
     {
         $this->dark = $dark;
     }
 
-    /**
-     * @return bool
-     */
-    public function isStrong()
+    public function isStrong(): bool
     {
         return $this->strong;
     }
 
-    /**
-     * @param bool $strong
-     */
-    public function setStrong($strong)
+    public function setStrong(bool $strong): void
     {
         $this->strong = $strong;
     }

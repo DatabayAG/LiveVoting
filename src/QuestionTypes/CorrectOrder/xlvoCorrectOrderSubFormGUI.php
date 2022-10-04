@@ -17,12 +17,6 @@ use srag\CustomInputGUIs\LiveVoting\TextInputGUI\TextInputGUI;
 use srag\CustomInputGUIs\LiveVoting\HiddenInputGUI\HiddenInputGUI;
 use ilGlobalPageTemplate;
 
-/**
- * Class xlvoCorrectOrderSubFormGUI
- *
- * @package LiveVoting\QuestionTypes\CorrectOrder
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
 {
     public const F_OPTIONS = 'options';
@@ -34,18 +28,13 @@ class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
     public const OPTION_RANDOMIZE_OPTIONS_AFTER_SAVE_INFO = 'option_randomise_option_after_save_info';
     public const CSS_FILE_PATH = './Customizing/global/plugins/Services/Repository/RepositoryObject/LiveVoting/templates/default/QuestionTypes/CorrectOrder/correct_order_form.css';
 
-    /**
-     * @var xlvoOption[]
-     */
-    protected $options = array();
+    /** @var xlvoOption[] */
+    protected array $options = array();
 
-    /**
-     *
-     */
-    protected function initFormElements()
+    protected function initFormElements(): void
     {
         $xlvoMultiLineInputGUI = new MultiLineNewInputGUI($this->txt(self::F_OPTIONS), self::F_OPTIONS);
-        $xlvoMultiLineInputGUI->setShowInputLabel(false);
+        $xlvoMultiLineInputGUI->setShowInputLabel(0);
         $xlvoMultiLineInputGUI->setShowSort(false);
 
         $randomiseOptionSequenceAfterSave = new ilCheckboxInputGUI(
@@ -82,12 +71,10 @@ class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
     }
 
     /**
-     * @param ilFormPropertyGUI $element
      * @param string|array      $value
-     *
      * @throws xlvoSubFormGUIHandleFieldException|ilException
      */
-    protected function handleField(ilFormPropertyGUI $element, $value)
+    protected function handleField(ilFormPropertyGUI $element, $value): void
     {
         switch ($element->getPostVar()) {
             case self::F_OPTIONS:
@@ -105,13 +92,13 @@ class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
                         // Correct position can only be inputed if not shuffle*/
                     $xlvoOption->setCorrectPosition($item[self::F_CORRECT_POSITION]);
                     /*}*/
-                    $xlvoOption->setType($this->getXlvoVoting()->getVotingType());
+                    $xlvoOption->setType((int) $this->getXlvoVoting()->getVotingType());
                     $this->options[] = $xlvoOption;
                     $pos++;
                 }
                 break;
             case self::OPTION_RANDOMIZE_OPTIONS_AFTER_SAVE:
-                $value = boolval($value);
+                $value = (bool) $value;
                 $this->getXlvoVoting()->setRandomiseOptionSequence($value);
                 break;
             default:
@@ -120,16 +107,14 @@ class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
     }
 
     /**
-     * @param ilFormPropertyGUI $element
-     *
-     * @return string|int|float|bool|array
+     * @return array|bool
      * @throws ilException
      */
     protected function getFieldValue(ilFormPropertyGUI $element)
     {
         if ($this->getXlvoVoting()->getRandomiseOptionSequence()) {
             // Sort options by correct position if shuffled
-            $this->options = xlvoOption::where(array("voting_id" => $this->getXlvoVoting()->getId()))->orderBy(
+            $this->options = xlvoOption::where(["voting_id" => $this->getXlvoVoting()->getId()])->orderBy(
                 "correct_position"
             )->get();
         } else {
@@ -160,10 +145,7 @@ class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
         }
     }
 
-    /**
-     *
-     */
-    protected function handleOptions()
+    protected function handleOptions(): void
     {
         $ids = array();
         foreach ($this->options as $xlvoOption) {
@@ -174,7 +156,7 @@ class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
         $options = $this->getXlvoVoting()->getVotingOptions();
 
         foreach ($options as $xlvoOption) {
-            if (!in_array($xlvoOption->getId(), $ids)) {
+            if (!in_array($xlvoOption->getId(), $ids, true)) {
                 $xlvoOption->delete();
             }
         }
@@ -198,13 +180,9 @@ class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
     }
 
     /**
-     * Randomises the position of the given options the position in the array is not modified at all.
-     *
      * @param xlvoOption[] $options The options which should be randomised.
-     *
-     * @return void
      */
-    private function randomiseOptionPosition(array &$options)
+    private function randomiseOptionPosition(array &$options): void
     {
         //reorder only if there is something to reorder
         if (count($options) < 2) {
@@ -213,7 +191,7 @@ class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
 
         $optionsLength = count($options);
         foreach ($options as $option) {
-            $newPosition = rand(1, $optionsLength);
+            $newPosition = random_int(1, $optionsLength);
             $previousOption = $this->findOptionByPosition($options, $newPosition);
             $previousOption->setPosition($option->getPosition());
             $option->setPosition($newPosition);
@@ -229,15 +207,10 @@ class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
     }
 
     /**
-     * Searches an option within the given option array by position.
-     *
      * @param xlvoOption[] $options The options which should be used to search the position.
-     * @param int          $position The position which should be searched for.
-     *
-     * @return xlvoOption
      * @throws InvalidArgumentException Thrown if the position is not found within the given options.
      */
-    private function findOptionByPosition(array &$options, $position)
+    private function findOptionByPosition(array $options, int $position): xlvoOption
     {
         foreach ($options as $option) {
             if ($option->getPosition() === $position) {
@@ -249,17 +222,13 @@ class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
     }
 
     /**
-     * Checks if at least one element is not correctly ordered.
-     *
      * @param xlvoOption[] $options The options which should be checked.
-     *
-     * @return bool                     True if at least one element is not correctly ordered otherwise false.
      */
-    private function isNotCorrectlyOrdered(array &$options)
+    private function isNotCorrectlyOrdered(array $options): bool
     {
         $incorrectOrder = 0;
         foreach ($options as $option) {
-            if (strcmp($option->getCorrectPosition(), strval($option->getPosition())) !== 0) {
+            if (strcmp($option->getCorrectPosition(), (string) $option->getPosition()) !== 0) {
                 $incorrectOrder++;
             }
         }
@@ -267,7 +236,7 @@ class xlvoCorrectOrderSubFormGUI extends xlvoSubFormGUI
         return $incorrectOrder > 0;
     }
 
-    public function addJsAndCss(ilGlobalPageTemplate $ilTemplate)
+    public function addJsAndCss(ilGlobalPageTemplate $ilTemplate): void
     {
         $ilTemplate->addCSS(self::CSS_FILE_PATH);
     }

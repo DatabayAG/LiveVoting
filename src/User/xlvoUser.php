@@ -8,12 +8,6 @@ use ilLiveVotingPlugin;
 use LiveVoting\Utils\LiveVotingTrait;
 use srag\DIC\LiveVoting\DICTrait;
 
-/**
- * Class xlvoUser
- *
- * @package LiveVoting\User
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 class xlvoUser
 {
     use DICTrait;
@@ -22,30 +16,15 @@ class xlvoUser
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     public const TYPE_ILIAS = 1;
     public const TYPE_PIN = 2;
-    /**
-     * @var xlvoUser
-     */
-    protected static $instance;
-    /**
-     * @var int
-     */
-    protected $type = self::TYPE_ILIAS;
-    /**
-     * @var string
-     */
-    protected $identifier = '';
+    protected static self $instance;
+    protected int $type = self::TYPE_ILIAS;
+    protected string $identifier = '';
 
-    /**
-     * xlvoUser constructor.
-     */
     protected function __construct()
     {
     }
 
-    /**
-     * @return xlvoUser
-     */
-    public static function getInstance()
+    public static function getInstance(): self
     {
         if (!isset(self::$instance)) {
             self::$instance = new self();
@@ -54,56 +33,34 @@ class xlvoUser
         return self::$instance;
     }
 
-    /**
-     * @return bool
-     */
-    public function isILIASUser()
+    public function isILIASUser(): bool
     {
-        return ($this->getType() == self::TYPE_ILIAS);
+        return ($this->getType() === self::TYPE_ILIAS);
     }
 
-    /**
-     * @return int
-     */
-    public function getType()
+    public function getType(): int
     {
         return $this->type;
     }
 
-    /**
-     * @param $type
-     *
-     * @return $this
-     */
-    public function setType($type)
+    public function setType(int $type): self
     {
         $this->type = $type;
 
         return $this;
     }
 
-    /**$
-     * @return bool
-     */
-    public function isPINUser()
+    public function isPINUser(): bool
     {
-        return ($this->getType() == self::TYPE_PIN);
+        return ($this->getType() === self::TYPE_PIN);
     }
 
-    /**
-     * @return string
-     */
-    public function getIdentifier()
+    public function getIdentifier(): string
     {
         return $this->identifier;
     }
 
-    /**
-     * @param $identifier
-     *
-     * @return $this
-     */
-    public function setIdentifier($identifier)
+    public function setIdentifier(string $identifier): self
     {
         $this->identifier = $identifier;
 

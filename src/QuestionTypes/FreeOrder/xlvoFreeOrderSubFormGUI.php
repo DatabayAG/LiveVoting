@@ -13,12 +13,6 @@ use srag\CustomInputGUIs\LiveVoting\MultiLineNewInputGUI\MultiLineNewInputGUI;
 use srag\CustomInputGUIs\LiveVoting\TextInputGUI\TextInputGUI;
 use srag\CustomInputGUIs\LiveVoting\HiddenInputGUI\HiddenInputGUI;
 
-/**
- * Class xlvoFreeOrderSubFormGUI
- *
- * @package LiveVoting\QuestionTypes\FreeOrder
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 class xlvoFreeOrderSubFormGUI extends xlvoSubFormGUI
 {
     public const F_OPTIONS = 'options';
@@ -26,18 +20,13 @@ class xlvoFreeOrderSubFormGUI extends xlvoSubFormGUI
     public const F_ID = 'id';
     public const F_POSITION = 'position';
     public const F_WEIGHT = 'weight';
-    /**
-     * @var xlvoOption[]
-     */
-    protected $options = array();
+    /** @var xlvoOption[] */
+    protected array $options = [];
 
-    /**
-     *
-     */
-    protected function initFormElements()
+    protected function initFormElements(): void
     {
         $xlvoMultiLineInputGUI = new MultiLineNewInputGUI($this->txt(self::F_OPTIONS), self::F_OPTIONS);
-        $xlvoMultiLineInputGUI->setShowInputLabel(false);
+        $xlvoMultiLineInputGUI->setShowInputLabel(0);
         $xlvoMultiLineInputGUI->setShowSort(true);
 
         $h = new HiddenInputGUI(self::F_ID);
@@ -51,12 +40,10 @@ class xlvoFreeOrderSubFormGUI extends xlvoSubFormGUI
     }
 
     /**
-     * @param ilFormPropertyGUI $element
      * @param string|array      $value
-     *
      * @throws xlvoSubFormGUIHandleFieldException|ilException
      */
-    protected function handleField(ilFormPropertyGUI $element, $value)
+    protected function handleField(ilFormPropertyGUI $element, $value): void
     {
         switch ($element->getPostVar()) {
             case self::F_OPTIONS:
@@ -71,7 +58,7 @@ class xlvoFreeOrderSubFormGUI extends xlvoSubFormGUI
                     $xlvoOption->setVotingId($this->getXlvoVoting()->getId());
                     $xlvoOption->setPosition($pos);
                     $xlvoOption->setCorrectPosition($item[self::F_WEIGHT]);
-                    $xlvoOption->setType($this->getXlvoVoting()->getVotingType());
+                    $xlvoOption->setType((int) $this->getXlvoVoting()->getVotingType());
                     $this->options[] = $xlvoOption;
                     $pos++;
                 }
@@ -82,12 +69,9 @@ class xlvoFreeOrderSubFormGUI extends xlvoSubFormGUI
     }
 
     /**
-     * @param ilFormPropertyGUI $element
-     *
-     * @return string|int|float|array
      * @throws ilException
      */
-    protected function getFieldValue(ilFormPropertyGUI $element)
+    protected function getFieldValue(ilFormPropertyGUI $element): array
     {
         switch ($element->getPostVar()) {
             case self::F_OPTIONS:
@@ -97,12 +81,12 @@ class xlvoFreeOrderSubFormGUI extends xlvoSubFormGUI
                  */
                 $options = $this->getXlvoVoting()->getVotingOptions();
                 foreach ($options as $option) {
-                    $array[] = array(
+                    $array[] = [
                         self::F_ID => $option->getId(),
                         self::F_TEXT => $option->getTextForEditor(),
                         self::F_POSITION => $option->getPosition(),
                         self::F_WEIGHT => $option->getCorrectPosition(),
-                    );
+                    ];
                 }
 
                 return $array;
@@ -112,10 +96,7 @@ class xlvoFreeOrderSubFormGUI extends xlvoSubFormGUI
         }
     }
 
-    /**
-     *
-     */
-    protected function handleOptions()
+    protected function handleOptions(): void
     {
         $ids = array();
         foreach ($this->options as $xlvoOption) {
@@ -126,7 +107,7 @@ class xlvoFreeOrderSubFormGUI extends xlvoSubFormGUI
         $options = $this->getXlvoVoting()->getVotingOptions();
 
         foreach ($options as $xlvoOption) {
-            if (!in_array($xlvoOption->getId(), $ids)) {
+            if (!in_array($xlvoOption->getId(), $ids, true)) {
                 $xlvoOption->delete();
             }
         }

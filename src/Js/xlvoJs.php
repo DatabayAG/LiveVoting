@@ -13,12 +13,6 @@ use srag\DIC\LiveVoting\DICTrait;
 use ilSetting;
 use ilMathJax;
 
-/**
- * Class xlvoJs
- *
- * @package LiveVoting\Js
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 class xlvoJs
 {
     use DICTrait;
@@ -29,57 +23,25 @@ class xlvoJs
     public const API_URL = xlvoConf::API_URL;
     public const BASE_URL_SETTING = 'base_url';
     public const BASE_PATH = './Customizing/global/plugins/Services/Repository/RepositoryObject/LiveVoting/js/';
-    /**
-     * @var string
-     */
-    protected $class_name = '';
-    /**
-     * @var string
-     */
-    protected $setting_class_name = '';
-    /**
-     * @var bool
-     */
-    protected $init = false;
-    /**
-     * @var string
-     */
-    protected $lib = '';
-    /**
-     * @var string
-     */
-    protected $name = '';
-    /**
-     * @var string
-     */
-    protected $category = '';
-    /**
-     * @var xlvoJsSettings
-     */
-    protected $settings;
+    protected string $class_name = '';
+    protected string $setting_class_name = '';
+    protected bool $init = false;
+    protected string $lib = '';
+    protected string $name = '';
+    protected string $category = '';
+    protected xlvoJsSettings $settings;
 
-    /**
-     * xlvoJs constructor.
-     */
     protected function __construct()
     {
         $this->settings = new xlvoJsSettings();
     }
 
-    /**
-     * @return xlvoJs
-     */
-    public static function getInstance()
+    public static function getInstance(): self
     {
         return new self();
     }
 
-    /**
-     * @param array $settings
-     *
-     * @return $this
-     */
-    public function addSettings(array $settings)
+    public function addSettings(array $settings): self
     {
         foreach ($settings as $k => $v) {
             $this->settings->addSetting($k, $v);
@@ -88,12 +50,7 @@ class xlvoJs
         return $this;
     }
 
-    /**
-     * @param array $translations
-     *
-     * @return $this
-     */
-    public function addTranslations(array $translations)
+    public function addTranslations(array $translations): self
     {
         foreach ($translations as $translation) {
             $this->settings->addTranslation($translation);
@@ -102,14 +59,7 @@ class xlvoJs
         return $this;
     }
 
-    /**
-     * @param xlvoGUI $xlvoGUI
-     * @param array   $additional_classes
-     * @param string  $cmd
-     *
-     * @return $this
-     */
-    public function api(xlvoGUI $xlvoGUI, array $additional_classes = array(), $cmd = '')
+    public function api(xlvoGUI $xlvoGUI, array $additional_classes = [], string $cmd = ''): xlvoJs
     {
         $ilCtrl2 = clone(self::dic()->ctrl());
         //self::dic()->ctrl()->initBaseClass(ilUIPluginRouterGUI::class);
@@ -126,37 +76,21 @@ class xlvoJs
         return $this;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return $this
-     */
-    public function name($name)
+    public function name(string $name): self
     {
         $this->name = $name;
 
         return $this;
     }
 
-    /**
-     * @param string $category
-     *
-     * @return $this
-     */
-    public function category($category)
+    public function category(string $category): self
     {
         $this->category = $category;
 
         return $this;
     }
 
-    /**
-     * @param xlvoGUI $xlvoGUI
-     * @param string  $cmd
-     *
-     * @return $this
-     */
-    public function ilias(xlvoGUI $xlvoGUI, $cmd = '')
+    public function ilias(xlvoGUI $xlvoGUI, string $cmd = ''): self
     {
         $this->settings->addSetting(
             self::BASE_URL_SETTING,
@@ -166,20 +100,14 @@ class xlvoJs
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getLibraryURL()
+    public function getLibraryURL(): string
     {
         $this->resolveLib();
 
         return $this->lib;
     }
 
-    /**
-     *
-     */
-    protected function resolveLib()
+    protected function resolveLib(): void
     {
         $base_path = self::BASE_PATH;
         $category = ($this->category ? $this->category . '/' : '') . $this->name . '/';
@@ -187,17 +115,14 @@ class xlvoJs
         $file_name_min = ilLiveVotingPlugin::PLUGIN_ID . $this->name . '.min.js';
         $full_path_min = $base_path . $category . $file_name_min;
         $full_path = $base_path . $category . $file_name;
-        if (is_file($full_path_min) && !self::DEVELOP) {
+        if (!self::DEVELOP && is_file($full_path_min)) {
             $this->lib = $full_path_min;
         } else {
             $this->lib = $full_path;
         }
     }
 
-    /**
-     * @return $this
-     */
-    public function init()
+    public function init(): self
     {
         $this->init = true;
         $this->resolveLib();
@@ -207,13 +132,7 @@ class xlvoJs
         return $this;
     }
 
-    /**
-     * @param string $name_of_lib
-     * @param bool   $external
-     *
-     * @return $this
-     */
-    public function addLibToHeader($name_of_lib, $external = true)
+    public function addLibToHeader(string $name_of_lib, bool $external = true): self
     {
         if ($external) {
             self::dic()->ui()->mainTemplate()->addJavascript(self::plugin()->directory() . '/js/libs/' . $name_of_lib);
@@ -224,21 +143,12 @@ class xlvoJs
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function setInitCode()
+    public function setInitCode(): self
     {
         return $this->call("init", $this->settings->asJson());
     }
 
-    /**
-     * @param string $method
-     * @param string $params
-     *
-     * @return $this
-     */
-    public function call($method, $params = '')
+    public function call(string $method, string $params = ''): self
     {
         if (!$this->init) {
             return $this;
@@ -248,49 +158,29 @@ class xlvoJs
         return $this;
     }
 
-    /**
-     * @param string $code
-     *
-     * @return $this
-     */
-    public function addOnLoadCode($code)
+    public function addOnLoadCode(string $code): self
     {
         self::dic()->ui()->mainTemplate()->addOnLoadCode($code);
 
         return $this;
     }
 
-    /**
-     * @param string $method
-     * @param string $params
-     *
-     * @return string
-     */
-    public function getCallCode($method, $params = '')
+    public function getCallCode(string $method, string $params = ''): string
     {
         return ilLiveVotingPlugin::PLUGIN_ID . $this->name . '.' . $method . '(' . $params . ');';
     }
 
-    /**
-     * @return string
-     */
-    public function getRunCode()
+    public function getRunCode(): string
     {
         return '<script>' . $this->getCallCode("run") . '</script>';
     }
 
-    /**
-     * @return $thiss
-     */
-    public function setRunCode()
+    public function setRunCode(): self
     {
         return $this->call("run");
     }
 
-    /**
-     *
-     */
-    public function initMathJax()
+    public function initMathJax(): void
     {
         $mathJaxSetting = new ilSetting("MathJax");
         if (strpos(

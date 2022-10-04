@@ -10,30 +10,18 @@ use LiveVoting\QuestionTypes\xlvoInputResultsGUI;
 use LiveVoting\Vote\xlvoVote;
 use xlvoSingleVoteGUI;
 
-/**
- * Class xlvoSingleVoteResultsGUI
- *
- * @package LiveVoting\QuestionTypes\SingleVote
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 class xlvoSingleVoteResultsGUI extends xlvoInputResultsGUI
 {
-    /**
-     * @return string
-     */
-    public function getHTML()
+    public function getHTML(): string
     {
         if ($this->voting->isMultiSelection()) {
             return $this->getHTMLMulti();
-        } else {
-            return $this->getHTMLSingle();
         }
+
+        return $this->getHTMLSingle();
     }
 
-    /**
-     * @return string
-     */
-    protected function getHTMLMulti()
+    protected function getHTMLMulti(): string
     {
         $total_votes = $this->manager->countVotes();
         $voters = $this->manager->countVoters();
@@ -57,29 +45,20 @@ class xlvoSingleVoteResultsGUI extends xlvoInputResultsGUI
         return $bars->getHTML();
     }
 
-    /**
-     * @return bool
-     */
-    protected function isShowAbsolute()
+    protected function isShowAbsolute(): bool
     {
         $states = $this->getButtonsStates();
 
         return ($this->manager->getPlayer()->isShowResults(
-        ) && (bool) $states[xlvoSingleVoteGUI::BUTTON_TOGGLE_PERCENTAGE]);
+        ) && $states[xlvoSingleVoteGUI::BUTTON_TOGGLE_PERCENTAGE]);
     }
 
-    /**
-     * @return array
-     */
-    protected function getButtonsStates()
+    protected function getButtonsStates(): array
     {
         return $this->manager->getPlayer()->getButtonStates();
     }
 
-    /**
-     * @return string
-     */
-    protected function getHTMLSingle()
+    protected function getHTMLSingle(): string
     {
         $total_votes = $this->manager->countVotes();
         $voters = $this->manager->countVoters();
@@ -105,10 +84,8 @@ class xlvoSingleVoteResultsGUI extends xlvoInputResultsGUI
 
     /**
      * @param xlvoVote[] $votes
-     *
-     * @return string
      */
-    public function getTextRepresentationForVotes(array $votes)
+    public function getTextRepresentationForVotes(array $votes): string
     {
         return "TODO"; //TODO: implement me.
     }

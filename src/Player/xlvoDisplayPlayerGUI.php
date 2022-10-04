@@ -19,56 +19,24 @@ use LiveVoting\Voting\xlvoVotingConfig;
 use LiveVoting\Voting\xlvoVotingManager2;
 use srag\DIC\LiveVoting\DICTrait;
 
-/**
- * Class xlvoDisplayPlayerGUI
- *
- * @package LiveVoting\Player
- * @author  Daniel Aemmer <daniel.aemmer@phbern.ch>
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- * @version 1.0.0
- *
- * The display is used in the view of a admin when presenting the livevoting, only the content of a voting
- */
 class xlvoDisplayPlayerGUI
 {
     use DICTrait;
     use LiveVotingTrait;
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    /**
-     * @var ilTemplate
-     */
-    protected $tpl;
-    /**
-     * @var xlvoVoting
-     */
-    protected $voting;
-    /**
-     * @var int
-     */
-    protected $answer_count = 64;
-    /**
-     * @var xlvoVotingManager2
-     */
-    protected $manager;
+    protected ilTemplate $tpl;
+    protected xlvoVoting $voting;
+    protected int $answer_count = 64;
+    protected xlvoVotingManager2 $manager;
 
-    /**
-     * xlvoDisplayPlayerGUI constructor.
-     *
-     * @param xlvoVotingManager2 $manager
-     */
     public function __construct(xlvoVotingManager2 $manager)
     {
         $this->manager = $manager;
         $this->tpl = self::plugin()->template('default/Player/tpl.player.html');
     }
 
-    /**
-     * @param bool $inner
-     *
-     * @return string
-     */
-    public function getHTML($inner = false)
+    public function getHTML(bool $inner = false): string
     {
         $this->render();
         $open = '<div id="xlvo-display-player" class="display-player panel panel-primary">';
@@ -76,16 +44,15 @@ class xlvoDisplayPlayerGUI
 
         if ($inner) {
             return $this->tpl->get();
-        } else {
-            return $open . $this->tpl->get() . $close;
         }
+
+        return $open . $this->tpl->get() . $close;
     }
 
     /**
-     * @throws xlvoVotingManagerException
      * @throws ilException
      */
-    protected function render()
+    protected function render(): void
     {
         /**
          * @var xlvoVotingConfig $config
@@ -147,31 +114,28 @@ class xlvoDisplayPlayerGUI
         $this->tpl->setVariable('POSITION', $this->manager->getVotingPosition());
     }
 
-    /**
-     * @param xlvoOption $option
-     */
-    protected function addOption(xlvoOption $option)
+    protected function addOption(xlvoOption $option): void
     {
-        if ($option->getType() == xlvoQuestionTypes::TYPE_FREE_INPUT) {
+        if ($option->getType() === xlvoQuestionTypes::TYPE_FREE_INPUT) {
             return;
         }
 
         //workaround due to the old question design.
         // TODO: Move to xlvoNumberRangeResultsGUI
-        if ($option->getType() == xlvoQuestionTypes::TYPE_NUMBER_RANGE) {
+        if ($option->getType() === xlvoQuestionTypes::TYPE_NUMBER_RANGE) {
             $columnWith = 6; //because of bootstrap grid 12 = 100%, 6 = 50% therefore 2 columns
-            $percentage = (int) $this->manager->getVoting()->getPercentage() === 1 ? ' %' : '';
+            $percentage = $this->manager->getVoting()->getPercentage() === 1 ? ' %' : '';
 
             $this->tpl->setCurrentBlock('option2');
             $this->tpl->setVariable('OPTION_LETTER', self::plugin()->translate('qtype_6_range_start'));
             $this->tpl->setVariable('OPTION_COL', $columnWith);
-            $this->tpl->setVariable('OPTION_TEXT', "{$this->manager->getVoting()->getStartRange()}{$percentage}");
+            $this->tpl->setVariable('OPTION_TEXT', "{$this->manager->getVoting()->getStartRange()}$percentage");
             $this->tpl->parseCurrentBlock();
 
             $this->tpl->setCurrentBlock('option2');
             $this->tpl->setVariable('OPTION_LETTER', self::plugin()->translate('qtype_6_range_end'));
             $this->tpl->setVariable('OPTION_COL', $columnWith);
-            $this->tpl->setVariable('OPTION_TEXT', "{$this->manager->getVoting()->getEndRange()}{$percentage}");
+            $this->tpl->setVariable('OPTION_TEXT', "{$this->manager->getVoting()->getEndRange()}$percentage");
             $this->tpl->parseCurrentBlock();
 
             return;

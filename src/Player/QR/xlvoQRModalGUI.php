@@ -12,24 +12,13 @@ use LiveVoting\Pin\xlvoPin;
 use LiveVoting\Voting\xlvoVotingConfig;
 use srag\DIC\LiveVoting\DICTrait;
 
-/**
- * Class xlvoQRModalGUI
- *
- * @package LiveVoting\Player\QR
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 class xlvoQRModalGUI extends ilModalGUI
 {
     use DICTrait;
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
 
-    /**
-     * @param xlvoVotingConfig $xlvoVotingConfig
-     *
-     * @return xlvoQRModalGUI
-     */
-    public static function getInstanceFromVotingConfig(xlvoVotingConfig $xlvoVotingConfig)
+    public static function getInstanceFromVotingConfig(xlvoVotingConfig $xlvoVotingConfig): self
     {
         xlvoJs::getInstance()->name('Modal')->addSettings(array('id' => 'QRModal'))->category('Player')->init(
         )->setRunCode();

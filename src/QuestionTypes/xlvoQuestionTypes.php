@@ -35,40 +35,33 @@ class xlvoQuestionTypes
     public const CORRECT_ORDER = 'CorrectOrder';
     public const FREE_ORDER = 'FreeOrder';
     public const NUMBER_RANGE = 'NumberRange';
-    /**
-     * @var array
-     */
-    protected static $active_types
-        = array(
+    /** @var int[]  */
+    protected static array $active_types
+        = [
             self::TYPE_FREE_INPUT,
             self::TYPE_SINGLE_VOTE,
             self::TYPE_CORRECT_ORDER,
             self::TYPE_FREE_ORDER,
             self::TYPE_NUMBER_RANGE
-        );
-    /**
-     * @var array
-     */
-    protected static $class_map
-        = array(
+        ];
+    /** @var string[]  */
+    protected static array $class_map
+        = [
             self::TYPE_SINGLE_VOTE => self::SINGLE_VOTE,
             self::TYPE_FREE_INPUT => self::FREE_INPUT,
             self::TYPE_CORRECT_ORDER => self::CORRECT_ORDER,
             self::TYPE_FREE_ORDER => self::FREE_ORDER,
             self::TYPE_NUMBER_RANGE => self::NUMBER_RANGE
-        );
+        ];
 
-    /**
-     * @return array
-     */
-    public static function getActiveTypes()
+    public static function getActiveTypes(): array
     {
         // TODO: Just return self::$active_types;
 
         $f = new ReflectionClass(self::class);
         $types = array();
         foreach ($f->getConstants() as $constant_name => $constant) {
-            if (strpos($constant_name, 'TYPE_') === 0 && in_array($constant, self::$active_types)) {
+            if (strpos($constant_name, 'TYPE_') === 0 && in_array($constant, self::$active_types, true)) {
                 $types[] = $constant;
             }
         }
@@ -77,12 +70,9 @@ class xlvoQuestionTypes
     }
 
     /**
-     * @param $type
-     *
-     * @return mixed
      * @throws xlvoVotingManagerException
      */
-    public static function getClassName($type)
+    public static function getClassName(int $type): string
     {
         if (!isset(self::$class_map[$type])) {
             //			throw new xlvoVotingManagerException('Type not available');

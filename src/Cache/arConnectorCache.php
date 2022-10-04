@@ -29,11 +29,6 @@ class arConnectorCache extends arConnector
     private $arConnectorDB;
     private $cache;
 
-    /**
-     * arConnectorCache constructor.
-     *
-     * @param arConnector $arConnectorDB
-     */
     public function __construct(arConnector $arConnectorDB)
     {
         $this->arConnectorDB = $arConnectorDB;
@@ -41,8 +36,6 @@ class arConnectorCache extends arConnector
     }
 
     /**
-     * @param ActiveRecord $ar
-     *
      * @return mixed
      */
     public function nextID(ActiveRecord $ar)
@@ -50,123 +43,64 @@ class arConnectorCache extends arConnector
         return $this->arConnectorDB->nextID($ar);
     }
 
-    /**
-     * @param ActiveRecord $ar
-     *
-     * @return mixed
-     */
-    public function checkConnection(ActiveRecord $ar)
+    public function checkConnection(ActiveRecord $ar): bool
     {
         return $this->arConnectorDB->checkConnection($ar);
     }
 
-    /**
-     * @param ActiveRecord  $ar
-     * @param               $fields
-     *
-     * @return bool
-     */
-    public function installDatabase(ActiveRecord $ar, $fields)
+    public function installDatabase(ActiveRecord $ar, $fields): bool
     {
         return $this->arConnectorDB->installDatabase($ar, $fields);
     }
 
-    /**
-     * @param ActiveRecord $ar
-     *
-     * @return bool
-     */
-    public function updateDatabase(ActiveRecord $ar)
+    public function updateDatabase(ActiveRecord $ar): bool
     {
         return $this->arConnectorDB->updateDatabase($ar);
     }
 
-    /**
-     * @param ActiveRecord $ar
-     *
-     * @return true
-     */
-    public function resetDatabase(ActiveRecord $ar)
+    public function resetDatabase(ActiveRecord $ar): bool
     {
         return $this->arConnectorDB->resetDatabase($ar);
     }
 
-    /**
-     * @param ActiveRecord $ar
-     *
-     * @return void
-     */
-    public function truncateDatabase(ActiveRecord $ar)
+    public function truncateDatabase(ActiveRecord $ar): bool
     {
-        $this->arConnectorDB->truncateDatabase($ar);
+        return $this->arConnectorDB->truncateDatabase($ar);
     }
 
-    /**
-     * @param ActiveRecord $ar
-     *
-     * @return mixed
-     *
-     */
-    public function checkTableExists(ActiveRecord $ar)
+    public function checkTableExists(ActiveRecord $ar): bool
     {
         return $this->arConnectorDB->checkTableExists($ar);
     }
 
-    /**
-     * @param ActiveRecord  $ar
-     * @param               $field_name
-     *
-     * @return mixed
-     */
-    public function checkFieldExists(ActiveRecord $ar, $field_name)
+    public function checkFieldExists(ActiveRecord $ar, string $field_name): bool
     {
         return $this->arConnectorDB->checkFieldExists($ar, $field_name);
     }
 
     /**
-     * @param ActiveRecord  $ar
-     * @param               $field_name
-     *
-     * @return bool
      * @throws arException
      */
-    public function removeField(ActiveRecord $ar, $field_name)
+    public function removeField(ActiveRecord $ar, string $field_name): bool
     {
         return $this->arConnectorDB->removeField($ar, $field_name);
     }
 
     /**
-     * @param ActiveRecord  $ar
-     * @param               $old_name
-     * @param               $new_name
-     *
-     * @return bool
      * @throws arException
      */
-    public function renameField(ActiveRecord $ar, $old_name, $new_name)
+    public function renameField(ActiveRecord $ar, string $old_name, string $new_name): bool
     {
         return $this->arConnectorDB->renameField($ar, $old_name, $new_name);
     }
 
-    /**
-     * @param ActiveRecord $ar
-     *
-     * @return void
-     */
-    public function create(ActiveRecord $ar)
+    public function create(ActiveRecord $ar): void
     {
         $this->arConnectorDB->create($ar);
         $this->storeActiveRecordInCache($ar);
     }
 
-    /**
-     * Stores an active record into the xlvoCache.
-     *
-     * @param ActiveRecord $ar
-     *
-     * @return void
-     */
-    private function storeActiveRecordInCache(ActiveRecord $ar)
+    private function storeActiveRecordInCache(ActiveRecord $ar): void
     {
         if ($this->cache->isActive()) {
             $key = $ar->getConnectorContainerName() . "_" . $ar->getPrimaryFieldValue();
@@ -176,12 +110,7 @@ class arConnectorCache extends arConnector
         }
     }
 
-    /**
-     * @param ActiveRecord $ar
-     *
-     * @return array
-     */
-    public function read(ActiveRecord $ar)
+    public function read(ActiveRecord $ar): array
     {
         if ($this->cache->isActive()) {
             $key = $ar->getConnectorContainerName() . "_" . $ar->getPrimaryFieldValue();
@@ -206,23 +135,13 @@ class arConnectorCache extends arConnector
         return $results;
     }
 
-    /**
-     * @param ActiveRecord $ar
-     *
-     * @return void
-     */
-    public function update(ActiveRecord $ar)
+    public function update(ActiveRecord $ar): void
     {
         $this->arConnectorDB->update($ar);
         $this->storeActiveRecordInCache($ar);
     }
 
-    /**
-     * @param ActiveRecord $ar
-     *
-     * @return void
-     */
-    public function delete(ActiveRecord $ar)
+    public function delete(ActiveRecord $ar): void
     {
         $this->arConnectorDB->delete($ar);
 
@@ -232,41 +151,22 @@ class arConnectorCache extends arConnector
         }
     }
 
-    /**
-     * @param ActiveRecordList $arl
-     *
-     * @return mixed
-     */
-    public function readSet(ActiveRecordList $arl)
+    public function readSet(ActiveRecordList $arl): array
     {
         return $this->arConnectorDB->readSet($arl);
     }
 
-    /**
-     * @param ActiveRecordList $arl
-     *
-     * @return int
-     */
-    public function affectedRows(ActiveRecordList $arl)
+    public function affectedRows(ActiveRecordList $arl): int
     {
         return $this->arConnectorDB->affectedRows($arl);
     }
 
-    /**
-     * @param $value
-     * @param $type
-     *
-     * @return string
-     */
-    public function quote($value, $type)
+    public function quote($value, string $type): string
     {
         return $this->arConnectorDB->quote($value, $type);
     }
 
-    /**
-     * @param ActiveRecord $ar
-     */
-    public function updateIndices(ActiveRecord $ar)
+    public function updateIndices(ActiveRecord $ar): void
     {
         $this->arConnectorDB->updateIndices($ar);
     }

@@ -18,11 +18,9 @@ use LiveVoting\Utils\LiveVotingTrait;
 use LiveVoting\Voting\xlvoVotingManager2;
 use srag\DIC\LiveVoting\DICTrait;
 use stdClass;
+use DOMNode;
 
 /**
- * Class xlvoApi
- *
- * @package LiveVoting\Api
  * @author  Fabian Schmid <fs@studer-raimann.ch>
  */
 class xlvoApi
@@ -33,30 +31,12 @@ class xlvoApi
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     public const TYPE_JSON = 1;
     public const TYPE_XML = 2;
-    /**
-     * @var int
-     */
-    protected $type = self::TYPE_XML;
-    /**
-     * @var string
-     */
-    protected $token = '';
-    /**
-     * @var xlvoPin
-     */
-    protected $pin;
-    /**
-     * @var stdClass
-     */
-    protected $data;
+    protected int $type = self::TYPE_XML;
+    protected string $token = '';
+    protected xlvoPin $pin;
+    protected stdClass $data;
 
-    /**
-     * xlvoApi constructor.
-     *
-     * @param xlvoPin $pin
-     * @param string  $token
-     */
-    public function __construct(xlvoPin $pin, $token)
+    public function __construct(xlvoPin $pin, string $token)
     {
         $this->pin = $pin;
         $this->token = $token;
@@ -72,16 +52,16 @@ class xlvoApi
         $data->Info->Round = $latestRound->getRoundNumber();
         $data->Info->RoundId = $latestRound->getId();
         $data->Info->Pin = $pin->getPin();
-        $data->Info->Date = date(DATE_ISO8601);
-        $data->Votings = array();
+        $data->Info->Date = date(DATE_ATOM);
+        $data->Votings = [];
 
         $xlvoResults = new xlvoResults($manager->getObjId(), $latestRound->getId());
 
         foreach ($manager->getAllVotings() as $xlvoVoting) {
             $stdClass = $xlvoVoting->_toJson();
-            $stdClass->Voters = array();
+            $stdClass->Voters = [];
 
-            foreach ($xlvoResults->getData(array('voting' => $xlvoVoting->getId())) as $item) {
+            foreach ($xlvoResults->getData(['voting' => $xlvoVoting->getId()]) as $item) {
                 $Voter = new stdClass();
                 $Voter->Identifier = $item['participant'];
                 $Voter->AnswerIds = $item['answer_ids'];
@@ -96,13 +76,13 @@ class xlvoApi
         $this->data = $data;
     }
 
-    protected function initType()
+    protected function initType(): void
     {
         $type = xlvoConf::getConfig(xlvoConf::F_API_TYPE);
-        $this->setType($type ? $type : self::TYPE_JSON);
+        $this->setType($type ?: self::TYPE_JSON);
     }
 
-    protected function check()
+    protected function check(): void
     {
         xlvoPin::checkPinAndGetObjId($this->getPin()->getPin());
 
@@ -114,44 +94,32 @@ class xlvoApi
         }
     }
 
-    /**
-     * @return xlvoPin
-     */
-    public function getPin()
+    public function getPin(): xlvoPin
     {
         return $this->pin;
     }
 
-    /**
-     * @param xlvoPin $pin
-     */
-    public function setPin($pin)
+    public function setPin(xlvoPin $pin): void
     {
         $this->pin = $pin;
     }
 
-    /**
-     * @return string
-     */
-    public function getToken()
+    public function getToken(): string
     {
         return $this->token;
     }
 
-    /**
-     * @param string $token
-     */
-    public function setToken($token)
+    public function setToken(string $token): void
     {
         $this->token = $token;
     }
 
-    public function send()
+    public function send(): void
     {
         switch ($this->type) {
             case self::TYPE_JSON:
                 header('Content-Type: application/json');
-                echo json_encode($this->data);
+                echo json_encode($this->data, JSON_THROW_ON_ERROR);
                 break;
             case self::TYPE_XML:
                 $domxml = new DOMDocument('1.0', 'UTF-8');
@@ -166,13 +134,13 @@ class xlvoApi
     }
 
     /**
-     * @param DOMElement|\DOMNode  $dom
+     * @param DOMElement|DOMNode   $dom
      * @param                      $key
      * @param                      $data
      *
-     * @return mixed
+     * @return DOMElement|DOMNode
      */
-    protected function appendXMLElement($dom, $key, $data)
+    protected function appendXMLElement($dom, string $key, $data)
     {
         $return = $dom;
         switch (true) {
@@ -196,34 +164,22 @@ class xlvoApi
         return $return;
     }
 
-    /**
-     * @return int
-     */
-    public function getType()
+    public function getType(): int
     {
         return $this->type;
     }
 
-    /**
-     * @param int $type
-     */
-    public function setType($type)
+    public function setType(int $type): void
     {
         $this->type = $type;
     }
 
-    /**
-     * @return stdClass
-     */
-    public function getData()
+    public function getData(): stdClass
     {
         return $this->data;
     }
 
-    /**
-     * @param stdClass $data
-     */
-    public function setData($data)
+    public function setData(stdClass $data): void
     {
         $this->data = $data;
     }

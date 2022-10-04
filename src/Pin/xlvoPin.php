@@ -17,13 +17,6 @@ use LiveVoting\Voting\xlvoVotingConfig;
 use srag\DIC\LiveVoting\DICTrait;
 use stdClass;
 
-/**
- * Class xlvoPin
- *
- * @package LiveVoting\Pin
- *
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 class xlvoPin
 {
     use DICTrait;
@@ -31,37 +24,14 @@ class xlvoPin
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
     public const CACHE_TTL_SECONDS = 1800;
-    /**
-     * @var xlvoCacheService $cache
-     */
-    private $cache;
-    /**
-     * @var string
-     */
-    protected $pin = '';
-    /**
-     * @var bool
-     */
-    protected $use_lowercase = false;
-    /**
-     * @var bool
-     */
-    protected $use_uppercase = true;
-    /**
-     * @var bool
-     */
-    protected $use_numbers = true;
-    /**
-     * @var int
-     */
-    protected $pin_length = 4;
+    private ?xlvoCacheService $cache;
+    protected string $pin = '';
+    protected bool $use_lowercase = false;
+    protected bool $use_uppercase = true;
+    protected bool $use_numbers = true;
+    protected int $pin_length = 4;
 
-    /**
-     * xlvoPin constructor.
-     *
-     * @param string $pin
-     */
-    public function __construct($pin = '')
+    public function __construct(string $pin = '')
     {
         if (!$pin) {
             $this->generatePIN();
@@ -72,12 +42,9 @@ class xlvoPin
         $this->cache = xlvoCacheFactory::getInstance();
     }
 
-    /**
-     *
-     */
-    protected function generatePIN()
+    protected function generatePIN(): void
     {
-        $array = array();
+        $array = [];
 
         // numbers
         if ($this->isUseNumbers()) {
@@ -105,10 +72,10 @@ class xlvoPin
 
         while (!$pin_found) {
             for ($i = 1; $i <= $this->getPinLength(); $i++) {
-                $rnd = mt_rand(0, count($array) - 1);
+                $rnd = random_int(0, count($array) - 1);
                 $pin .= $array[$rnd];
             }
-            if (xlvoVotingConfig::where(array('pin' => $pin))->count() <= 0) {
+            if (xlvoVotingConfig::where(['pin' => $pin])->count() <= 0) {
                 $pin_found = true;
             }
         }
@@ -116,77 +83,47 @@ class xlvoPin
         $this->setPin($pin);
     }
 
-    /**
-     * @return boolean
-     */
-    public function isUseNumbers()
+    public function isUseNumbers(): bool
     {
         return $this->use_numbers;
     }
 
-    /**
-     * @param boolean $use_numbers
-     */
-    public function setUseNumbers($use_numbers)
+    public function setUseNumbers(bool $use_numbers): void
     {
         $this->use_numbers = $use_numbers;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isUseLowercase()
+    public function isUseLowercase(): bool
     {
         return $this->use_lowercase;
     }
 
-    /**
-     * @param boolean $use_lowercase
-     */
-    public function setUseLowercase($use_lowercase)
+    public function setUseLowercase(bool $use_lowercase): void
     {
         $this->use_lowercase = $use_lowercase;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isUseUppercase()
+    public function isUseUppercase(): bool
     {
         return $this->use_uppercase;
     }
 
-    /**
-     * @param boolean $use_uppercase
-     */
-    public function setUseUppercase($use_uppercase)
+    public function setUseUppercase(bool $use_uppercase): void
     {
         $this->use_uppercase = $use_uppercase;
     }
 
-    /**
-     * @return int
-     */
-    public function getPinLength()
+    public function getPinLength(): int
     {
         return $this->pin_length;
     }
 
-    /**
-     * @param int $pin_length
-     */
-    public function setPinLength($pin_length)
+    public function setPinLength(int $pin_length): void
     {
         $this->pin_length = $pin_length;
     }
 
-    /**
-     * @param string $pin
-     * @param bool   $force_not_format
-     *
-     * @return string
-     */
-    public static function formatPin($pin, $force_not_format = false)
+    public static function formatPin(string $pin, bool $force_not_format = false): string
     {
         if (!$force_not_format && xlvoConf::getConfig(xlvoConf::F_USE_SERIF_FONT_FOR_PINS)) {
             $pin = '<span class="serif_font">' . $pin . '</span>';
@@ -195,12 +132,7 @@ class xlvoPin
         return $pin;
     }
 
-    /**
-     * @param int $obj_id
-     *
-     * @return int
-     */
-    public static function lookupPin($obj_id)
+    public static function lookupPin(int $obj_id): int
     {
         /**
          * @var xlvoVotingConfig $xlvoVotingConfig
@@ -210,31 +142,21 @@ class xlvoPin
         return $xlvoVotingConfig->getPin();
     }
 
-    /**
-     * @param string $pin
-     *
-     * @return int
-     * @throws xlvoVoterException
-     */
-    public static function checkPinAndGetObjId($pin, $safe_mode = true)
+    public static function checkPinAndGetObjId(string $pin, $safe_mode = true): int
     {
         $cache = xlvoCacheFactory::getInstance();
 
-        if ($cache->isActive()) {
+        if ($cache && $cache->isActive()) {
             return self::checkPinAndGetObjIdWithCache($pin, $safe_mode);
-        } else {
-            return self::checkPinAndGetObjIdWithoutCache($pin, $safe_mode);
         }
+
+        return self::checkPinAndGetObjIdWithoutCache($pin, $safe_mode);
     }
 
     /**
-     * @param string $pin
-     * @param bool   $safe_mode
-     *
-     * @return int
      * @throws xlvoVoterException
      */
-    private static function checkPinAndGetObjIdWithCache($pin, $safe_mode = true)
+    private static function checkPinAndGetObjIdWithCache(string $pin, bool $safe_mode = true): int
     {
         global $DIC;
 
@@ -305,13 +227,9 @@ class xlvoPin
     }
 
     /**
-     * @param string $pin
-     * @param bool   $safe_mode
-     *
-     * @return int
      * @throws xlvoVoterException
      */
-    private static function checkPinAndGetObjIdWithoutCache($pin, $safe_mode = true)
+    private static function checkPinAndGetObjIdWithoutCache(string $pin, bool $safe_mode = true): int
     {
         $xlvoVotingConfig = xlvoVotingConfig::where(array('pin' => $pin))->first();
 
@@ -343,22 +261,16 @@ class xlvoPin
         return 0;
     }
 
-    /**
-     * @return bool|string
-     */
-    public function getLastAccess()
+    public function getLastAccess(): ?string
     {
         if ($this->cache->isActive()) {
             return $this->getLastAccessWithCache();
-        } else {
-            return $this->getLastAccessWithoutCache();
         }
+
+        return $this->getLastAccessWithoutCache();
     }
 
-    /**
-     * @return bool|string
-     */
-    private function getLastAccessWithCache()
+    private function getLastAccessWithCache(): ?string
     {
         $key = xlvoVotingConfig::TABLE_NAME . '_pin_' . $this->getPin();
         /**
@@ -379,7 +291,7 @@ class xlvoPin
             }
 
             if (!($xlvoVotingConfig instanceof xlvoVotingConfig)) {
-                return false;
+                return null;
             }
         }
 
@@ -391,31 +303,22 @@ class xlvoPin
         return $xlvoVotingConfigObject->getLastAccess();
     }
 
-    /**
-     * @return string
-     */
-    public function getPin()
+    public function getPin(): string
     {
         return $this->pin;
     }
 
-    /**
-     * @param string $pin
-     */
-    public function setPin($pin)
+    public function setPin(string $pin): void
     {
         $this->pin = $pin;
     }
 
-    /**
-     * @return bool|string
-     */
-    private function getLastAccessWithoutCache()
+    private function getLastAccessWithoutCache(): ?string
     {
         $xlvoVotingConfig = xlvoVotingConfig::where(array('pin' => $this->getPin()))->first();
 
         if (!($xlvoVotingConfig instanceof xlvoVotingConfig)) {
-            return false;
+            return null;
         }
 
         return $xlvoVotingConfig->getLastAccess();

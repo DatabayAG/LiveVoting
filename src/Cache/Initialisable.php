@@ -24,10 +24,7 @@ namespace LiveVoting\Cache;
 interface Initialisable
 {
     /**
-     * Initialise the cache.
-     *
-     * @return void
      * @internal
      */
-    public function init();
+    public function init(): void;
 }

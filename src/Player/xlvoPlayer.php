@@ -15,14 +15,6 @@ use LiveVoting\Voting\xlvoVoting;
 use stdClass;
 use xlvoCorrectOrderGUI;
 
-/**
- * Class xlvoPlayer
- *
- * @package LiveVoting\Player
- * @author  Daniel Aemmer <daniel.aemmer@phbern.ch>
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- * @version 1.0.0
- */
 class xlvoPlayer extends CachingActiveRecord
 {
     public const STAT_STOPPED = 0;
@@ -34,124 +26,91 @@ class xlvoPlayer extends CachingActiveRecord
     public const SECONDS_TO_SLEEP = 30;
     public const CACHE_TTL_SECONDS = 1800;
     public const TABLE_NAME = 'rep_robj_xlvo_player_n';
+    protected static array $instance_cache = [];
     /**
-     * @var array
-     */
-    protected static $instance_cache = array();
-    /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      * @db_is_primary       true
      * @con_sequence        true
      */
-    protected $id;
+    protected int $id;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $obj_id;
+    protected int $obj_id;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $active_voting;
+    protected int $active_voting;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $status;
+    protected int $status;
     /**
-     * @var bool
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           1
      */
-    protected $frozen = true;
+    protected bool $frozen = true;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $timestamp_refresh;
+    protected int $timestamp_refresh;
     /**
-     * @var bool
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           1
      */
-    protected $show_results = false;
+    protected bool $show_results = false;
     /**
-     * @var array
-     *
      * @db_has_field        true
      * @db_fieldtype        text
      * @db_length           1024
      */
-    protected $button_states = array();
+    protected array $button_states = [];
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           2
      */
-    protected $countdown = 0;
+    protected int $countdown = 0;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $countdown_start = 0;
+    protected int $countdown_start = 0;
     /**
-     * @var bool
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           1
      */
-    protected $force_reload = false;
+    protected bool $force_reload = false;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $round_id = 0;
+    protected int $round_id = 0;
 
     /**
-     * @return string
      * @deprecated
      */
-    public static function returnDbTableName()
+    public static function returnDbTableName(): string
     {
         return self::TABLE_NAME;
     }
 
-    /**
-     * @param $obj_id
-     *
-     * @return xlvoPlayer
-     */
-    public static function getInstanceForObjId($obj_id)
+    public static function getInstanceForObjId(int $obj_id): xlvoPlayer
     {
         //use in memory instance if possible
         if (!empty(self::$instance_cache[$obj_id])) {
@@ -160,11 +119,11 @@ class xlvoPlayer extends CachingActiveRecord
 
         //if possible use cache
         $cache = xlvoCacheFactory::getInstance();
-        if ($cache->isActive()) {
+        if ($cache && $cache->isActive()) {
             return self::getInstanceForObjectIdWithCache($obj_id);
-        } else {
-            return self::getInstanceForObjectIdWithoutCache($obj_id);
         }
+
+        return self::getInstanceForObjectIdWithoutCache($obj_id);
     }
 
     private static function getInstanceForObjectIdWithCache($obj_id)
@@ -196,7 +155,7 @@ class xlvoPlayer extends CachingActiveRecord
         return self::$instance_cache[$obj_id];
     }
 
-    private static function getInstanceForObjectIdWithoutCache($obj_id)
+    private static function getInstanceForObjectIdWithoutCache(int $obj_id)
     {
         $obj = self::where(array('obj_id' => $obj_id))->first();
         if (!$obj instanceof self) {
@@ -208,18 +167,12 @@ class xlvoPlayer extends CachingActiveRecord
         return self::$instance_cache[$obj_id];
     }
 
-    /**
-     * @return string
-     */
-    public function getConnectorContainerName()
+    public function getConnectorContainerName(): string
     {
         return self::TABLE_NAME;
     }
 
-    /**
-     * @param int $voting_id
-     */
-    public function toggleFreeze($voting_id = 0)
+    public function toggleFreeze(int $voting_id = 0): void
     {
         if ($this->isFrozen()) {
             $this->unfreeze($voting_id);
@@ -228,26 +181,17 @@ class xlvoPlayer extends CachingActiveRecord
         }
     }
 
-    /**
-     * @return boolean
-     */
-    public function isFrozen()
+    public function isFrozen(): bool
     {
         return $this->frozen;
     }
 
-    /**
-     * @param boolean $frozen
-     */
-    public function setFrozen($frozen)
+    public function setFrozen(bool $frozen): void
     {
         $this->frozen = $frozen;
     }
 
-    /**
-     * @param int $voting_id
-     */
-    public function unfreeze($voting_id = 0)
+    public function unfreeze(int $voting_id = 0): void
     {
         if ($voting_id > 0) {
             $this->setActiveVoting($voting_id);
@@ -261,19 +205,12 @@ class xlvoPlayer extends CachingActiveRecord
         $this->store();
     }
 
-    /**
-     * @param int $active_voting
-     * @param bool $store
-     */
-    public function setActiveVoting($active_voting)
+    public function setActiveVoting(int $active_voting): void
     {
         $this->active_voting = $active_voting;
     }
 
-    /**
-     * @param bool $store
-     */
-    public function resetCountDown($store = true)
+    public function resetCountDown(bool $store = true): void
     {
         $this->setCountdown(0);
         $this->setCountdownStart(0);
@@ -282,10 +219,7 @@ class xlvoPlayer extends CachingActiveRecord
         }
     }
 
-    /**
-     *
-     */
-    public function freeze()
+    public function freeze(): void
     {
         $this->setFrozen(true);
         $this->resetCountDown(false);
@@ -298,72 +232,62 @@ class xlvoPlayer extends CachingActiveRecord
     /**
      * @param $seconds
      */
-    public function startCountDown($seconds)
+    public function startCountDown(int $seconds): void
     {
-        $this->unfreeze(trim(filter_input(INPUT_GET, ParamManager::PARAM_VOTING), "/"));
+        $this->unfreeze((int) trim(filter_input(INPUT_GET, ParamManager::PARAM_VOTING), "/"));
         $this->setCountdown($seconds);
         $this->setCountdownStart(time());
         $this->store();
     }
 
-    public function show()
+    public function show(): void
     {
         $this->setShowResults(true);
         $this->store();
     }
 
-    public function hide()
+    public function hide(): void
     {
         $this->setShowResults(false);
         $this->store();
     }
 
-    public function toggleResults()
+    public function toggleResults(): void
     {
         $this->setShowResults(!$this->isShowResults());
         $this->store();
     }
 
-    /**
-     * @return boolean
-     */
-    public function isShowResults()
+    public function isShowResults(): bool
     {
         return $this->show_results;
     }
 
-    /**
-     * @param boolean $show_results
-     */
-    public function setShowResults($show_results)
+    public function setShowResults(bool $show_results): void
     {
         $this->show_results = $show_results;
     }
 
-    public function terminate()
+    public function terminate(): void
     {
-        $this->setStatus(xlvoPlayer::STAT_END_VOTING);
+        $this->setStatus(self::STAT_END_VOTING);
         $this->freeze();
     }
 
-    /**
-     * @return stdClass
-     */
-    public function getStdClassForVoter()
+    public function getStdClassForVoter(): stdClass
     {
         $obj = new stdClass();
-        $obj->status = (int) $this->getStatus(false);
+        $obj->status = $this->getStatus(false);
         $obj->force_reload = false;
-        $obj->active_voting_id = (int) $this->getActiveVotingId();
-        $obj->countdown = (int) $this->remainingCountDown();
-        $obj->has_countdown = (bool) $this->isCountDownRunning();
+        $obj->active_voting_id = $this->getActiveVotingId();
+        $obj->countdown = $this->remainingCountDown();
+        $obj->has_countdown = $this->isCountDownRunning();
         $obj->countdown_classname = $this->getCountdownClassname();
-        $obj->frozen = (bool) $this->isFrozen();
-        $obj->show_results = (bool) $this->isShowResults();
-        if ($this->getActiveVotingId() == xlvoQuestionTypes::TYPE_FREE_ORDER) {
-            $obj->show_correct_order = boolval(
-                $this->getButtonStates()[xlvoCorrectOrderGUI::BUTTON_TOTTLE_DISPLAY_CORRECT_ORDER]
-            );
+        $obj->frozen = $this->isFrozen();
+        $obj->show_results = $this->isShowResults();
+        if ($this->getActiveVotingId() === xlvoQuestionTypes::TYPE_FREE_ORDER) {
+            $obj->show_correct_order = (bool) $this->getButtonStates(
+            )[xlvoCorrectOrderGUI::BUTTON_TOTTLE_DISPLAY_CORRECT_ORDER];
         } else {
             $obj->show_correct_order = false;
         }
@@ -371,12 +295,7 @@ class xlvoPlayer extends CachingActiveRecord
         return $obj;
     }
 
-    /**
-     * @param bool $simulate_user
-     *
-     * @return int
-     */
-    public function getStatus($simulate_user = false)
+    public function getStatus(bool $simulate_user = false): int
     {
         /*if ($simulate_user && $this->isFrozenOrUnattended()) {
             return self::STAT_FROZEN;
@@ -385,120 +304,85 @@ class xlvoPlayer extends CachingActiveRecord
         return $this->status;
     }
 
-    /**
-     * @param int $status
-     */
-    public function setStatus($status)
+    public function setStatus(int $status): void
     {
         $this->status = $status;
     }
 
-    /**
-     * @return int
-     */
-    public function getActiveVotingId()
+    public function getActiveVotingId(): int
     {
         return $this->active_voting;
     }
 
-    /**
-     * @return int
-     */
-    public function remainingCountDown()
+    public function remainingCountDown(): int
     {
         return $this->getCountdownStart() - time() + $this->getCountdown();
     }
 
-    /**
-     * @return int
-     */
-    public function getCountdownStart()
+    public function getCountdownStart(): int
     {
         return $this->countdown_start;
     }
 
-    /**
-     * @param int $countdown_start
-     */
-    public function setCountdownStart($countdown_start)
+    public function setCountdownStart(int $countdown_start): void
     {
         $this->countdown_start = $countdown_start;
     }
 
-    /**
-     * @return int
-     */
-    public function getCountdown()
+    public function getCountdown(): int
     {
         return $this->countdown;
     }
 
-    /**
-     * @param int $countdown
-     */
-    public function setCountdown($countdown)
+    public function setCountdown(int $countdown): void
     {
         $this->countdown = $countdown;
     }
 
-    /**
-     * @return bool
-     */
-    public function isCountDownRunning()
+    public function isCountDownRunning(): bool
     {
         return ($this->remainingCountDown() > 0 || $this->getCountdownStart() > 0);
     }
 
-    /**
-     * @return string
-     */
-    public function getCountdownClassname()
+    public function getCountdownClassname(): string
     {
         $cd = $this->remainingCountDown();
 
         return $cd > 10 ? 'running' : ($cd > 5 ? 'warning' : 'danger');
     }
 
-    /**
-     * @return array
-     */
-    public function getButtonStates()
+    public function getButtonStates(): array
     {
         return $this->button_states;
     }
 
-    /**
-     * @param array $button_states
-     */
-    public function setButtonStates($button_states)
+    public function setButtonStates(array $button_states): void
     {
         $this->button_states = $button_states;
     }
 
-    /**
-     * @return stdClass
-     */
-    public function getStdClassForPlayer()
+    public function getStdClassForPlayer(): stdClass
     {
         $obj = new stdClass();
-        $obj->is_first = (bool) $this->getCurrentVotingObject()->isFirst();
-        $obj->is_last = (bool) $this->getCurrentVotingObject()->isLast();
-        $obj->status = (int) $this->getStatus(false);
-        $obj->active_voting_id = (int) $this->getActiveVotingId();
-        $obj->show_results = (bool) $this->isShowResults();
-        $obj->frozen = (bool) $this->isFrozen();
-        $obj->votes = (int) xlvoVote::where(array(
+        $obj->is_first = $this->getCurrentVotingObject()->isFirst();
+        $obj->is_last = $this->getCurrentVotingObject()->isLast();
+        $obj->status = $this->getStatus(false);
+        $obj->active_voting_id = $this->getActiveVotingId();
+        $obj->show_results = $this->isShowResults();
+        $obj->frozen = $this->isFrozen();
+        $obj->votes = xlvoVote::where([
             'voting_id' => $this->getCurrentVotingObject()->getId(),
             'status' => xlvoVote::STAT_ACTIVE,
             'round_id' => $this->getRoundId()
-        ))->count();
+        ])->count();
 
-        $last_update = xlvoVote::where(array(
+        $last_update = xlvoVote::where([
             'voting_id' => $this->getActiveVotingId(),
             'status' => xlvoVote::STAT_ACTIVE,
             'round_id' => $this->getRoundId()
-        ))->orderBy('last_update', 'DESC')->getArray('last_update', 'last_update');
-        $last_update = array_shift(array_values($last_update));
+        ])->orderBy('last_update', 'DESC')->getArray('last_update', 'last_update');
+        $updates = array_values($last_update);
+        $last_update = array_shift($updates);
         $obj->last_update = (int) $last_update;
         $obj->attendees = self::plugin()->translate("start_online", "", [(int) xlvoVoter::countVoters($this->getId())]);
         $obj->qtype = $this->getQuestionTypeClassName();
@@ -508,130 +392,91 @@ class xlvoPlayer extends CachingActiveRecord
         return $obj;
     }
 
-    /**
-     * @return xlvoVoting
-     */
-    protected function getCurrentVotingObject()
+    protected function getCurrentVotingObject(): xlvoVoting
     {
         return xlvoVoting::find($this->getActiveVotingId());
     }
 
-    /**
-     * @return int
-     */
-    public function getRoundId()
+    public function getRoundId(): int
     {
         return $this->round_id;
     }
 
-    /**
-     * @param int $round_id
-     */
-    public function setRoundId($round_id)
+    public function setRoundId(int $round_id): void
     {
         $this->round_id = $round_id;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return string
-     */
-    public function getQuestionTypeClassName()
+    public function getQuestionTypeClassName(): string
     {
         return xlvoQuestionTypes::getClassName($this->getActiveVotingId());
     }
 
-    /**
-     * @return bool
-     */
-    public function isFrozenOrUnattended()
+    public function isFrozenOrUnattended(): bool
     {
-        if ($this->getStatus(false) == self::STAT_RUNNING) {
-            return (bool) ($this->isFrozen() || $this->isUnattended());
-        } else {
-            return false;
+        if ($this->getStatus(false) === self::STAT_RUNNING) {
+            return $this->isFrozen() || $this->isUnattended();
         }
+
+        return false;
     }
 
-    /**
-     * @return bool
-     */
-    public function isUnattended()
+    public function isUnattended(): bool
     {
-        if ($this->getStatus() != self::STAT_STOPPED and ($this->getTimestampRefresh() < (time(
+        if ($this->getStatus() !== self::STAT_STOPPED && ($this->getTimestampRefresh() < (time(
         ) - self::SECONDS_TO_SLEEP))) {
             $this->setStatus(self::STAT_STOPPED);
             $this->store();
         }
-        if ($this->getStatus() == self::STAT_START_VOTING) {
+        if ($this->getStatus() === self::STAT_START_VOTING) {
             return false;
         }
-        if ($this->getStatus() == self::STAT_STOPPED) {
+        if ($this->getStatus() === self::STAT_STOPPED) {
             return false;
         }
 
-        return (bool) ($this->getTimestampRefresh() < (time() - self::SECONDS_ACTIVE));
+        return $this->getTimestampRefresh() < (time() - self::SECONDS_ACTIVE);
     }
 
-    /**
-     * @return int
-     */
-    public function getTimestampRefresh()
+    public function getTimestampRefresh(): int
     {
         return $this->timestamp_refresh;
     }
 
-    /**
-     * @param int $timestamp_refresh
-     */
-    public function setTimestampRefresh($timestamp_refresh)
+    public function setTimestampRefresh(int $timestamp_refresh): void
     {
         $this->timestamp_refresh = $timestamp_refresh;
     }
 
-    /**
-     * @param $voting_id
-     */
-    public function prepareStart($voting_id)
+    public function prepareStart(int $voting_id): void
     {
         $this->setStatus(self::STAT_START_VOTING);
-        $this->setActiveVoting($voting_id, false);
+        $this->setActiveVoting($voting_id);
         $this->setRoundId(xlvoRound::getLatestRoundId($this->getObjId()));
         $this->store();
     }
 
-    /**
-     * @return int
-     */
-    public function getObjId()
+    public function getObjId(): int
     {
         return $this->obj_id;
     }
 
-    /**
-     * @param int $obj_id
-     */
-    public function setObjId($obj_id)
+    public function setObjId(int $obj_id): void
     {
         $this->obj_id = $obj_id;
     }
 
-    public function attend()
+    public function attend(): void
     {
         $this->setStatus(self::STAT_RUNNING);
         $this->setTimestampRefresh(time());
@@ -640,60 +485,43 @@ class xlvoPlayer extends CachingActiveRecord
         }
     }
 
-    /**
-     * @return boolean
-     */
-    public function isForceReload()
+    public function isForceReload(): bool
     {
         return $this->force_reload;
     }
 
-    /**
-     * @param boolean $force_reload
-     */
-    public function setForceReload($force_reload)
+    public function setForceReload(bool $force_reload): void
     {
         $this->force_reload = $force_reload;
     }
 
-    /**
-     * @param $field_name
-     *
-     * @return mixed|string
-     */
-    public function sleep($field_name)
+    public function sleep(string $field_name): ?string
     {
         switch ($field_name) {
             case 'button_states':
                 $var = $this->{$field_name};
                 if (!is_array($var)) {
-                    $var = array();
+                    $var = [];
                 }
 
-                return json_encode($var);
+                return json_encode($var, JSON_THROW_ON_ERROR);
         }
 
         return null;
     }
 
-    /**
-     * @param $field_name
-     * @param $field_value
-     *
-     * @return mixed|null
-     */
-    public function wakeUp($field_name, $field_value)
+    public function wakeUp(string $field_name, $field_value): ?string
     {
         switch ($field_name) {
             case 'button_states':
                 if (!is_string($field_value)) {
                     return null;
                 }
-                $var = json_decode($field_value, true);
+                $var = json_decode($field_value, true, 512, JSON_THROW_ON_ERROR);
 
                 //check if we got the database entry
                 if (!is_array($var)) {
-                    $var = array();
+                    $var = [];
                 }
 
                 //check if we got a cache entry

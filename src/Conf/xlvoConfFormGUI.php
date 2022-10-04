@@ -17,6 +17,7 @@ use LiveVoting\Utils\LiveVotingTrait;
 use srag\CustomInputGUIs\LiveVoting\TextInputGUI\TextInputGUI;
 use srag\DIC\LiveVoting\DICTrait;
 use xlvoConfGUI;
+use LiveVoting\GUI\xlvoGUI;
 
 /**
  * Class xlvoConfFormGUI
@@ -31,20 +32,9 @@ class xlvoConfFormGUI extends ilPropertyFormGUI
     use LiveVotingTrait;
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    /**
-     * @var xlvoConf
-     */
-    protected $object;
-    /**
-     * @var xlvoConfGUI
-     */
-    protected $parent_gui;
+    protected xlvoConf $object;
+    protected xlvoConfGUI $parent_gui;
 
-    /**
-     * xlvoConfFormGUI constructor.
-     *
-     * @param xlvoConfGUI $parent_gui
-     */
     public function __construct(xlvoConfGUI $parent_gui)
     {
         parent::__construct();
@@ -53,10 +43,7 @@ class xlvoConfFormGUI extends ilPropertyFormGUI
         $this->initForm();
     }
 
-    /**
-     *
-     */
-    protected function initForm()
+    protected function initForm(): void
     {
         $this->setTarget('_top');
         $this->setFormAction(self::dic()->ctrl()->getFormAction($this->parent_gui));
@@ -169,19 +156,13 @@ class xlvoConfFormGUI extends ilPropertyFormGUI
         $this->addItem($use_serif_font_for_pins);
     }
 
-    /**
-     *
-     */
-    protected function initButtons()
+    protected function initButtons(): void
     {
-        $this->addCommandButton(xlvoConfGUI::CMD_UPDATE, $this->parent_gui->txt(xlvoConfGUI::CMD_UPDATE));
-        $this->addCommandButton(xlvoConfGUI::CMD_CANCEL, $this->parent_gui->txt(xlvoConfGUI::CMD_CANCEL));
+        $this->addCommandButton(xlvoGUI::CMD_UPDATE, $this->parent_gui->txt(xlvoGUI::CMD_UPDATE));
+        $this->addCommandButton(xlvoGUI::CMD_CANCEL, $this->parent_gui->txt(xlvoGUI::CMD_CANCEL));
     }
 
-    /**
-     *
-     */
-    public function fillForm()
+    public function fillForm(): void
     {
         $array = array();
         foreach ($this->getItems() as $item) {
@@ -190,13 +171,7 @@ class xlvoConfFormGUI extends ilPropertyFormGUI
         $this->setValuesByArray($array);
     }
 
-    /**
-     * @param $item
-     * @param $array
-     *
-     * @internal param $key
-     */
-    private function getValuesForItem($item, &$array)
+    private function getValuesForItem($item, &$array): void
     {
         if (self::checkItem($item)) {
             $key = $item->getPostVar();
@@ -209,30 +184,17 @@ class xlvoConfFormGUI extends ilPropertyFormGUI
         }
     }
 
-    /**
-     * @param $item
-     *
-     * @return bool
-     */
-    public static function checkItem($item)
+    public static function checkItem($item): bool
     {
         return !$item instanceof ilFormSectionHeaderGUI && !$item instanceof ilNonEditableValueGUI;
     }
 
-    /**
-     * @param $item
-     *
-     * @return bool
-     */
-    public static function checkForSubItem($item)
+    public static function checkForSubItem($item): bool
     {
         return !$item instanceof ilFormSectionHeaderGUI and !$item instanceof ilMultiSelectInputGUI;
     }
 
-    /**
-     * @return bool
-     */
-    public function saveObject()
+    public function saveObject(): bool
     {
         if (!$this->checkInput()) {
             return false;
@@ -245,10 +207,7 @@ class xlvoConfFormGUI extends ilPropertyFormGUI
         return true;
     }
 
-    /**
-     * @param $item
-     */
-    private function saveValueForItem($item)
+    private function saveValueForItem($item): void
     {
         if (self::checkItem($item)) {
             $key = $item->getPostVar();

@@ -15,12 +15,6 @@ use srag\CustomInputGUIs\LiveVoting\MultiLineNewInputGUI\MultiLineNewInputGUI;
 use srag\CustomInputGUIs\LiveVoting\TextInputGUI\TextInputGUI;
 use srag\CustomInputGUIs\LiveVoting\HiddenInputGUI\HiddenInputGUI;
 
-/**
- * Class xlvoSingleVoteSubFormGUI
- *
- * @package LiveVoting\QuestionTypes\SingleVote
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 class xlvoSingleVoteSubFormGUI extends xlvoSubFormGUI
 {
     public const F_MULTI_SELECTION = 'multi_selection';
@@ -28,15 +22,10 @@ class xlvoSingleVoteSubFormGUI extends xlvoSubFormGUI
     public const F_TEXT = 'text';
     public const F_COLORS = 'colors';
     public const F_ID = 'id';
-    /**
-     * @var xlvoOption[]
-     */
-    protected $options = array();
+    /** @var xlvoOption[] */
+    protected array $options = [];
 
-    /**
-     *
-     */
-    protected function initFormElements()
+    protected function initFormElements(): void
     {
         $cb = new ilCheckboxInputGUI($this->txt(self::F_MULTI_SELECTION), self::F_MULTI_SELECTION);
         $cb->setInfo($this->txt(self::F_MULTI_SELECTION . '_info'));
@@ -47,7 +36,7 @@ class xlvoSingleVoteSubFormGUI extends xlvoSubFormGUI
         //		$this->addFormElement($cb);
 
         $xlvoMultiLineInputGUI = new MultiLineNewInputGUI($this->txt(self::F_OPTIONS), self::F_OPTIONS);
-        $xlvoMultiLineInputGUI->setShowInputLabel(false);
+        $xlvoMultiLineInputGUI->setShowInputLabel(0);
 
         $xlvoMultiLineInputGUI->setShowSort(true);
 
@@ -67,7 +56,7 @@ class xlvoSingleVoteSubFormGUI extends xlvoSubFormGUI
      *
      * @throws xlvoSubFormGUIHandleFieldException|ilException
      */
-    protected function handleField(ilFormPropertyGUI $element, $value)
+    protected function handleField(ilFormPropertyGUI $element, $value): void
     {
         switch ($element->getPostVar()) {
             case self::F_MULTI_SELECTION:
@@ -84,7 +73,7 @@ class xlvoSingleVoteSubFormGUI extends xlvoSubFormGUI
                     $xlvoOption->setPosition($position);
                     $xlvoOption->setStatus(xlvoOption::STAT_ACTIVE);
                     $xlvoOption->setVotingId($this->getXlvoVoting()->getId());
-                    $xlvoOption->setType($this->getXlvoVoting()->getVotingType());
+                    $xlvoOption->setType((int) $this->getXlvoVoting()->getVotingType());
                     $this->options[] = $xlvoOption;
                     $position++;
                 }
@@ -110,7 +99,7 @@ class xlvoSingleVoteSubFormGUI extends xlvoSubFormGUI
                 return $this->getXlvoVoting()->isMultiSelection();
 
             case self::F_OPTIONS:
-                $array = array();
+                $array = [];
                 /**
                  * @var xlvoOption $option
                  */
@@ -132,12 +121,9 @@ class xlvoSingleVoteSubFormGUI extends xlvoSubFormGUI
         }
     }
 
-    /**
-     *
-     */
-    protected function handleOptions()
+    protected function handleOptions(): void
     {
-        $ids = array();
+        $ids = [];
         foreach ($this->options as $i => $xlvoOption) {
             $xlvoOption->setVotingId($this->getXlvoVoting()->getId());
             $xlvoOption->store();
@@ -145,7 +131,7 @@ class xlvoSingleVoteSubFormGUI extends xlvoSubFormGUI
         }
         $options = $this->getXlvoVoting()->getVotingOptions();
         foreach ($options as $xlvoOption) {
-            if (!in_array($xlvoOption->getId(), $ids)) {
+            if (!in_array($xlvoOption->getId(), $ids, true)) {
                 $xlvoOption->delete();
             }
         }

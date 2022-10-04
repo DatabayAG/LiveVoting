@@ -13,50 +13,24 @@ use LiveVoting\Utils\LiveVotingTrait;
 use LiveVoting\Voting\xlvoVoting;
 use LiveVoting\Voting\xlvoVotingConfig;
 use srag\DIC\LiveVoting\DICTrait;
+use ilShellUtil;
+use ilFileUtils;
+use ilFileDelivery;
 
-/**
- * Class PowerPointExport
- *
- * http://officeopenxml.com/anatomyofOOXML-pptx.php
- *
- * @package LiveVoting\PowerPointExport
- *
- * @author  studer + raimann ag - Team Custom 1 <support-custom1@studer-raimann.ch>
- */
 class PowerPointExport
 {
     use DICTrait;
     use LiveVotingTrait;
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    /**
-     * @var ilObjLiveVoting
-     */
-    protected $obj;
-    /**
-     * @var xlvoVotingConfig
-     */
-    protected $config;
-    /**
-     * @var string
-     */
-    protected $temp_folder;
-    /**
-     * @var string
-     */
-    protected $temp_file;
-    /**
-     * @var string
-     */
-    protected $file_name;
-    /**
-     * @var xlvoVoting[]
-     */
-    protected $votings;
+    protected ilObjLiveVoting $obj;
+    protected xlvoVotingConfig $config;
+    protected string $temp_folder;
+    protected string $temp_file;
+    protected string $file_name;
+    /** @var xlvoVoting[] */
+    protected array $votings;
 
-    /**
-     * @param ilObjLiveVoting $obj
-     */
     public function __construct(ilObjLiveVoting $obj)
     {
         $this->obj = $obj;
@@ -67,10 +41,7 @@ class PowerPointExport
         $this->file_name = $this->getFileName();
     }
 
-    /**
-     * @return string
-     */
-    protected function getTempFolder()
+    protected function getTempFolder(): string
     {
         $temp_directory = CLIENT_DATA_DIR . "/temp";
         //create it, if this plugin is the first one who uses it.
@@ -79,18 +50,12 @@ class PowerPointExport
         return $temp_directory . "/" . uniqid(ilLiveVotingPlugin::PLUGIN_ID . "_pp_", true);
     }
 
-    /**
-     * @return string
-     */
-    protected function getFileName()
+    protected function getFileName(): string
     {
         return $this->obj->getTitle() . ".pptx";
     }
 
-    /**
-     *
-     */
-    public function run()
+    public function run(): void
     {
         $this->loadVotings();
 
@@ -105,10 +70,7 @@ class PowerPointExport
         $this->deliver();
     }
 
-    /**
-     *
-     */
-    protected function loadVotings()
+    protected function loadVotings(): void
     {
         $this->votings = array_values(
             xlvoVoting::where([
@@ -118,21 +80,15 @@ class PowerPointExport
         ); // Correct index with array_values
     }
 
-    /**
-     *
-     */
-    protected function copyTemplate()
+    protected function copyTemplate(): void
     {
         // 	ilUtil::rCopy does not copy empty folders and rename unsecured extensions like .rels, so use simply UNIX copy
-        ilUtil::execQuoted(
+        ilShellUtil::execQuoted(
             'cp -r "' . __DIR__ . '/../../templates/PowerPointExport/pptx" "' . $this->temp_folder . '"'
         );
     }
 
-    /**
-     *
-     */
-    protected function setDocumentProperties()
+    protected function setDocumentProperties(): void
     {
         $core_tpl = self::plugin()->template($this->temp_folder . "/docProps/core.xml", false, true, false);
 
@@ -159,10 +115,7 @@ class PowerPointExport
         file_put_contents($this->temp_folder . "/docProps/app.xml", $app_tpl->get());
     }
 
-    /**
-     *
-     */
-    protected function addVotings()
+    protected function addVotings(): void
     {
         $this->updateContentTypesXML();
 
@@ -175,10 +128,7 @@ class PowerPointExport
         $this->updateNoteXML();
     }
 
-    /**
-     *
-     */
-    protected function updateContentTypesXML()
+    protected function updateContentTypesXML(): void
     {
         $core_types_tpl = self::plugin()->template($this->temp_folder . "/[Content_Types].xml", false, true, false);
 
@@ -194,10 +144,7 @@ class PowerPointExport
         file_put_contents($this->temp_folder . "/[Content_Types].xml", $core_types_tpl->get());
     }
 
-    /**
-     *
-     */
-    protected function updatePresentationXML()
+    protected function updatePresentationXML(): void
     {
         $presentation_tpl = self::plugin()->template($this->temp_folder . "/ppt/presentation.xml", false, true, false);
         $presentation_rels_tpl = self::plugin()->template(
@@ -232,10 +179,7 @@ class PowerPointExport
         file_put_contents($this->temp_folder . "/ppt/_rels/presentation.xml.rels", $presentation_rels_tpl->get());
     }
 
-    /**
-     *
-     */
-    protected function updateSlideXML()
+    protected function updateSlideXML(): void
     {
         foreach ($this->votings as $i => $voting) {
             $num = ($i + 1);
@@ -267,10 +211,10 @@ class PowerPointExport
 
             $slide_tpl->setVariable("QUESTION", htmlspecialchars($question));
 
-            file_put_contents($this->temp_folder . "/ppt/slides/slide{$num}.xml", $slide_tpl->get());
-            file_put_contents($this->temp_folder . "/ppt/slides/_rels/slide{$num}.xml.rels", $slide_rels_tpl->get());
+            file_put_contents($this->temp_folder . "/ppt/slides/slide$num.xml", $slide_tpl->get());
+            file_put_contents($this->temp_folder . "/ppt/slides/_rels/slide$num.xml.rels", $slide_rels_tpl->get());
 
-            copy($this->temp_folder . "/ppt/media/image.png", $this->temp_folder . "/ppt/media/image{$num}.png");
+            copy($this->temp_folder . "/ppt/media/image.png", $this->temp_folder . "/ppt/media/image$num.png");
         }
 
         unlink($this->temp_folder . "/ppt/slides/slide.xml");
@@ -278,12 +222,7 @@ class PowerPointExport
         unlink($this->temp_folder . "/ppt/media/image.png");
     }
 
-    /**
-     * Source http://php.net/manual/de/function.com-create-guid.php
-     *
-     * @return string
-     */
-    protected function guid()
+    protected function guid(): string
     {
         if (function_exists('com_create_guid')) {
             return "{" . trim(com_create_guid(), '{}') . "}";
@@ -292,22 +231,19 @@ class PowerPointExport
         return "{"
             . sprintf(
                 '%04X%04X-%04X-%04X-%04X-%04X%04X%04X',
-                mt_rand(0, 65535),
-                mt_rand(0, 65535),
-                mt_rand(0, 65535),
-                mt_rand(16384, 20479),
-                mt_rand(32768, 49151),
-                mt_rand(0, 65535),
-                mt_rand(0, 65535),
-                mt_rand(0, 65535)
+                random_int(0, 65535),
+                random_int(0, 65535),
+                random_int(0, 65535),
+                random_int(16384, 20479),
+                random_int(32768, 49151),
+                random_int(0, 65535),
+                random_int(0, 65535),
+                random_int(0, 65535)
             )
             . "}";
     }
 
-    /**
-     *
-     */
-    protected function updateWebExtensionXML()
+    protected function updateWebExtensionXML(): void
     {
         foreach ($this->votings as $i => $voting) {
             $num = ($i + 1);
@@ -340,11 +276,11 @@ class PowerPointExport
             $webextension_tpl->setVariable("SECURE", var_export(true, true));
 
             file_put_contents(
-                $this->temp_folder . "/ppt/webextensions/webextension{$num}.xml",
+                $this->temp_folder . "/ppt/webextensions/webextension$num.xml",
                 $webextension_tpl->get()
             );
             file_put_contents(
-                $this->temp_folder . "/ppt/webextensions/_rels/webextension{$num}.xml.rels",
+                $this->temp_folder . "/ppt/webextensions/_rels/webextension$num.xml.rels",
                 $webextension_rels_tpl->get()
             );
         }
@@ -353,10 +289,7 @@ class PowerPointExport
         unlink($this->temp_folder . "/ppt/webextensions/_rels/webextension.xml.rels");
     }
 
-    /**
-     *
-     */
-    protected function updateNoteXML()
+    protected function updateNoteXML(): void
     {
         foreach ($this->votings as $i => $voting) {
             $num = ($i + 1);
@@ -372,13 +305,11 @@ class PowerPointExport
 
             $note = implode(
                 "\n",
-                array_map(function ($txt, $value) {
+                array_map(static function (string $txt, string $value) {
                     if ($txt !== "" && $value !== "") {
                         return self::plugin()->translate($txt) . ": " . $value;
-                    } else {
-                        // Empty line
-                        return "";
                     }
+                    return "";
                 }, array_keys($data), $data)
             );
 
@@ -400,9 +331,9 @@ class PowerPointExport
 
             $notesslide_tpl->setVariable("NOTE", htmlspecialchars($note));
 
-            file_put_contents($this->temp_folder . "/ppt/notesSlides/notesSlide{$num}.xml", $notesslide_tpl->get());
+            file_put_contents($this->temp_folder . "/ppt/notesSlides/notesSlide$num.xml", $notesslide_tpl->get());
             file_put_contents(
-                $this->temp_folder . "/ppt/notesSlides/_rels/notesSlide{$num}.xml.rels",
+                $this->temp_folder . "/ppt/notesSlides/_rels/notesSlide$num.xml.rels",
                 $notesslide_rels_tpl->get()
             );
         }
@@ -411,21 +342,15 @@ class PowerPointExport
         unlink($this->temp_folder . "/ppt/notesSlides/_rels/notesSlide.xml.rels");
     }
 
-    /**
-     *
-     */
-    protected function zip()
+    protected function zip(): void
     {
-        ilUtil::zip($this->temp_folder, $this->temp_file, true);
+        ilFileUtils::zip($this->temp_folder, $this->temp_file, true);
 
-        ilUtil::delDir($this->temp_folder);
+        ilFileUtils::delDir($this->temp_folder);
     }
 
-    /**
-     *
-     */
-    protected function deliver()
+    protected function deliver(): void
     {
-        ilUtil::deliverFile($this->temp_file, $this->file_name, "", false, true, true);
+        ilFileDelivery::deliverFileLegacy($this->temp_file, $this->file_name, "", false, true, true);
     }
 }

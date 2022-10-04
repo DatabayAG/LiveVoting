@@ -6,128 +6,85 @@ namespace LiveVoting\QuestionTypes\FreeInput;
 
 use LiveVoting\Cache\CachingActiveRecord;
 
-/**
- * Class xlvoFreeInputCategory
- *
- * @package LiveVoting\QuestionTypes\FreeInput
- *
- * @author  Theodor Truffer <tt@studer-raimann.ch>
- */
 class xlvoFreeInputCategory extends CachingActiveRecord
 {
     public const TABLE_NAME = 'rep_robj_xlvo_cat';
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      * @db_is_primary       true
      * @con_sequence        true
      */
-    protected $id;
+    protected int $id;
     /**
-     * @var string
-     *
      * @db_has_field true
      * @db_fieldtype text
      * @db_length    256
      */
-    protected $title;
+    protected string $title;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $voting_id;
+    protected int $voting_id;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $round_id;
+    protected int $round_id;
 
     /**
-     * @return string
      * @deprecated
      */
-    public static function returnDbTableName()
+    public static function returnDbTableName(): string
     {
         return self::TABLE_NAME;
     }
 
-    /**
-     * @return string
-     */
-    public function getConnectorContainerName()
+    public function getConnectorContainerName(): string
     {
         return self::TABLE_NAME;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @param string $title
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
 
-    /**
-     * @return int
-     */
-    public function getVotingId()
+    public function getVotingId(): int
     {
         return $this->voting_id;
     }
 
-    /**
-     * @param int $voting_id
-     */
-    public function setVotingId($voting_id)
+    public function setVotingId(int $voting_id): void
     {
         $this->voting_id = $voting_id;
     }
 
-    /**
-     * @return int
-     */
-    public function getRoundId()
+    public function getRoundId(): int
     {
         return $this->round_id;
     }
 
-    /**
-     * @param int $round_id
-     */
-    public function setRoundId($round_id)
+    public function setRoundId(int $round_id): void
     {
         $this->round_id = $round_id;
     }

@@ -8,55 +8,30 @@ use ilLiveVotingPlugin;
 use LiveVoting\Utils\LiveVotingTrait;
 use srag\DIC\LiveVoting\DICTrait;
 
-/**
- * Class xlvoJsSettings
- *
- * @package LiveVoting\Js
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 class xlvoJsSettings
 {
     use DICTrait;
     use LiveVotingTrait;
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    /**
-     * @var array
-     */
-    protected $settings = array();
-    /**
-     * @var array
-     */
-    protected $translations = array();
+    protected array $settings = [];
+    protected array $translations = [];
 
-    /**
-     *
-     */
     public function __construct()
     {
     }
 
-    /**
-     * @param string $name
-     * @param mixed  $value
-     */
-    public function addSetting($name, $value)
+    public function addSetting(string $name, $value): void
     {
         $this->settings[$name] = $value;
     }
 
-    /**
-     * @param string $key
-     */
-    public function addTranslation($key)
+    public function addTranslation(string $key): void
     {
         $this->translations[$key] = self::plugin()->translate($key);
     }
 
-    /**
-     * @return string
-     */
-    public function asJson()
+    public function asJson(): string
     {
         $arr = array();
         foreach ($this->settings as $name => $value) {
@@ -67,6 +42,6 @@ class xlvoJsSettings
             $arr['lng'][$key] = $string;
         }
 
-        return json_encode($arr);
+        return json_encode($arr, JSON_THROW_ON_ERROR);
     }
 }

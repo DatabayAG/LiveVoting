@@ -8,241 +8,162 @@ use ilRTE;
 use ilUtil;
 use LiveVoting\Cache\CachingActiveRecord;
 use stdClass;
+use ilLegacyFormElementsUtil;
 
-/**
- * Class xlvoOption
- *
- * @package LiveVoting\Option
- * @author  Daniel Aemmer <daniel.aemmer@phbern.ch>
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- * @version 1.0.0
- */
 class xlvoOption extends CachingActiveRecord
 {
     public const STAT_INACTIVE = 0;
     public const STAT_ACTIVE = 1;
     public const TABLE_NAME = 'rep_robj_xlvo_option_n';
     /**
-     * @var string
-     *
      * @db_has_field        true
      * @db_fieldtype        text
      * @db_length           256
      */
-    protected $text;
+    protected string $text;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      * @db_is_primary       true
      * @con_sequence        true
      */
-    protected $id;
+    protected int $id;
     /**
-     * @var string
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $voting_id;
+    protected int $voting_id;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $type;
+    protected int $type;
     /**
-     * @var int
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $status = self::STAT_ACTIVE;
+    protected int $status = self::STAT_ACTIVE;
     /**
-     * @var string
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $position;
+    protected int $position;
     /**
-     * @var string
-     *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-    protected $correct_position = null;
+    protected ?string $correct_position = null;
 
     /**
-     * @return string
      * @deprecated
      */
-    public static function returnDbTableName()
+    public static function returnDbTableName(): string
     {
         return self::TABLE_NAME;
     }
 
-    /**
-     * @return string
-     */
-    public function getConnectorContainerName()
+    public function getConnectorContainerName(): string
     {
         return self::TABLE_NAME;
     }
 
-    /**
-     * @return string
-     */
-    public function getTextForPresentation()
+    public function getTextForPresentation(): string
     {
-        return ilUtil::prepareTextareaOutput($this->getTextForEditor(), true);
+        return ilLegacyFormElementsUtil::prepareTextareaOutput($this->getTextForEditor(), true);
     }
 
-    /**
-     * @return string
-     */
-    public function getTextForEditor()
+    public function getTextForEditor(): string
     {
         return ilRTE::_replaceMediaObjectImageSrc($this->text, 1);
     }
 
-    /**
-     * @return string
-     */
-    public function getCipher()
+    public function getCipher(): string
     {
         return chr($this->getPosition() + 64);
     }
 
-    /**
-     * @return int
-     */
-    public function getPosition()
+    public function getPosition(): int
     {
         return $this->position;
     }
 
-    /**
-     * @param int $position
-     */
-    public function setPosition($position)
+    public function setPosition(int $position): void
     {
         $this->position = $position;
     }
 
-    /**
-     * @return string
-     */
-    public function getVotingId()
+    public function getVotingId(): int
     {
         return $this->voting_id;
     }
 
-    /**
-     * @param string $voting_id
-     */
-    public function setVotingId($voting_id)
+    public function setVotingId(int $voting_id): void
     {
         $this->voting_id = $voting_id;
     }
 
-    /**
-     * @return int
-     */
-    public function getType()
+    public function getType(): int
     {
         return $this->type;
     }
 
-    /**
-     * @param int $type
-     */
-    public function setType($type)
+    public function setType(int $type): void
     {
         $this->type = $type;
     }
 
-    /**
-     * @return int
-     */
-    public function getStatus()
+    public function getStatus(): int
     {
         return $this->status;
     }
 
-    /**
-     * @param int $status
-     */
-    public function setStatus($status)
+    public function setStatus(int $status): void
     {
         $this->status = $status;
     }
 
-    /**
-     * @return string
-     */
-    public function getCorrectPosition()
+    public function getCorrectPosition(): ?string
     {
         return $this->correct_position;
     }
 
-    /**
-     * @param string $correct_position
-     */
-    public function setCorrectPosition($correct_position)
+    public function setCorrectPosition(string $correct_position): void
     {
         $this->correct_position = $correct_position;
     }
 
-    /**
-     * @return stdClass
-     */
-    public function _toJson()
+    public function _toJson(): stdClass
     {
         $class = new stdClass();
-        $class->Id = (int) $this->getId();
-        $class->Text = (string) $this->getText();
-        $class->Position = (int) $this->getPosition();
+        $class->Id = $this->getId();
+        $class->Text = $this->getText();
+        $class->Position = $this->getPosition();
 
         return $class;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return string
-     */
-    public function getText()
+    public function getText(): string
     {
         return $this->text;
     }
 
-    /**
-     * @param string $text
-     */
-    public function setText($text)
+    public function setText(string $text): void
     {
         $this->text = $text;
     }

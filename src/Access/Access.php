@@ -9,10 +9,6 @@ use LiveVoting\Utils\LiveVotingTrait;
 use srag\DIC\LiveVoting\DICTrait;
 
 /**
- * Class Access
- *
- * @package LiveVoting\Access
- *
  * @author  studer + raimann ag - Team Custom 1 <support-custom1@studer-raimann.ch>
  */
 final class Access
@@ -21,24 +17,15 @@ final class Access
     use LiveVotingTrait;
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    /**
-     * @var self
-     */
-    protected static $instance = null;
+    protected static self $instance;
 
-    /**
-     * Access constructor
-     */
     private function __construct()
     {
     }
 
-    /**
-     * @return self
-     */
-    public static function getInstance()/*: self*/
+    public static function getInstance(): self
     {
-        if (self::$instance === null) {
+        if (!isset(self::$instance)) {
             self::$instance = new self();
         }
 

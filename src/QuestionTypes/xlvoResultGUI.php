@@ -17,51 +17,29 @@ use LiveVoting\Vote\xlvoVote;
 use LiveVoting\Voting\xlvoVoting;
 use srag\DIC\LiveVoting\DICTrait;
 
-/**
- * Class xlvoResultGUI
- *
- *
- * @package LiveVoting\QuestionTypes
- * @author  Fabian Schmid <fs@studer-raimann.ch>
- */
 abstract class xlvoResultGUI
 {
     use DICTrait;
     use LiveVotingTrait;
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    /**
-     * @var xlvoVoting
-     */
-    protected $voting;
-    /**
-     * @var xlvoOption[]
-     */
-    protected $options;
+    protected xlvoVoting $voting;
+    /** @var xlvoOption[] */
+    protected array $options;
 
-    /**
-     * xlvoResultGUI constructor.
-     *
-     * @param xlvoVoting $voting
-     */
-    public function __construct($voting)
+    public function __construct(xlvoVoting $voting)
     {
         $this->voting = $voting;
         $this->options = $voting->getVotingOptions();
     }
 
     /**
-     * Creates an instance of the result gui.
-     *
-     * @param xlvoVoting $voting Finished or ongoing voting.
-     *
-     * @return xlvoResultGUI        Result GUI to display the voting results.
      * @throws ilException         Throws an ilException if no result gui class was found for the
      *                              given voting type.
      */
-    public static function getInstance(xlvoVoting $voting)
+    public static function getInstance(xlvoVoting $voting): self
     {
-        $class = xlvoQuestionTypes::getClassName($voting->getVotingType());
+        $class = xlvoQuestionTypes::getClassName((int) $voting->getVotingType());
 
         switch ($class) {
             case xlvoQuestionTypes::CORRECT_ORDER:
@@ -81,15 +59,11 @@ abstract class xlvoResultGUI
 
     /**
      * @param xlvoVote[] $votes
-     *
-     * @return string
      */
-    abstract public function getTextRepresentation(array $votes);
+    abstract public function getTextRepresentation(array $votes): string;
 
     /**
      * @param xlvoVote[] $votes
-     *
-     * @return string
      */
-    abstract public function getAPIRepresentation(array $votes);
+    abstract public function getAPIRepresentation(array $votes): string;
 }

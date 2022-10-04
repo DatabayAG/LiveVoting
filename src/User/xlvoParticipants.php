@@ -9,42 +9,22 @@ use LiveVoting\Utils\LiveVotingTrait;
 use LiveVoting\Vote\xlvoVote;
 use srag\DIC\LiveVoting\DICTrait;
 
-/**
- * Class xlvoParticipants
- *
- * @package LiveVoting\User
- */
 class xlvoParticipants
 {
     use DICTrait;
     use LiveVotingTrait;
 
     public const PLUGIN_CLASS_NAME = ilLiveVotingPlugin::class;
-    /**
-     * @var xlvoParticipants[]
-     */
-    protected static $instances = array();
-    /**
-     * @var int
-     */
-    protected $obj_id;
+    /** @var xlvoParticipants[] */
+    protected static array $instances = [];
+    protected int $obj_id;
 
-    /**
-     * xlvoParticipants constructor.
-     *
-     * @param $obj_id
-     */
-    protected function __construct($obj_id)
+    protected function __construct(int $obj_id)
     {
         $this->obj_id = $obj_id;
     }
 
-    /**
-     * @param $obj_id
-     *
-     * @return xlvoParticipants
-     */
-    public static function getInstance($obj_id)
+    public static function getInstance(int $obj_id): xlvoParticipants
     {
         if (!self::$instances[$obj_id]) {
             self::$instances[$obj_id] = new xlvoParticipants($obj_id);
@@ -54,12 +34,9 @@ class xlvoParticipants
     }
 
     /**
-     * @param int $round_id
-     * @param     $filter   string what's the participant id or identifier you're looking for?
-     *
      * @return xlvoParticipant[]
      */
-    public function getParticipantsForRound($round_id, $filter = null)
+    public function getParticipantsForRound(int $round_id, string $filter = null): array
     {
         if ($filter) {
             $query = "SELECT DISTINCT user_identifier, user_id FROM " . xlvoVote::TABLE_NAME
@@ -78,7 +55,7 @@ class xlvoParticipants
         $i = 0;
         while ($row = self::dic()->database()->fetchAssoc($result)) {
             $i++;
-            if ($filter && $row['user_id'] != $filter && $row['user_identifier'] != $filter) {
+            if ($filter && $row['user_id'] !== $filter && $row['user_identifier'] !== $filter) {
                 continue;
             }
             $user = new xlvoParticipant();
